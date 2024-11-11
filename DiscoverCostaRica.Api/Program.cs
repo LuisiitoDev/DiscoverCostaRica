@@ -7,23 +7,22 @@ using Microsoft.EntityFrameworkCore;
 using DiscoverCostaRica.Api.ExtendedMethods;
 using DiscoverCostaRica.Api.BackgroundServices;
 using DiscoverCostaRica.Api.Configuration;
+using DiscoverCostaRica.Api.Profiles;
 
-// code ~/.microsoft/usersecrets/30d2aea7-df7e-4cda-a366-079494c613ba/secrets.json
+// code ~/.microsoft/usersecrets/0c1b65b8-5105-468c-9773-f8b1dc7fc846/secrets.json
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<RedisConfiguration>(options => 
-{
-	options.Endpoint = "redis-10214.c282.east-us-mz.azure.redns.redis-cloud.com:10214";
-	options.Password = "ngCHlowKobEcoiasFSdvxX4FqqRHvOEO";
-});
+	builder.Configuration.GetSection("Azure").GetSection("Redis").Bind(options));
 
 builder.Services.AddDbContext<DiscoverCostaRicaContext>(options =>
 {
 	options.UseSqlServer(builder.Configuration["ConnectionStrings:DiscoverCostaRica"]);
 }, ServiceLifetime.Singleton);
 
+builder.Services.AddAutoMapper(typeof(AutomapperProfile));
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -1,4 +1,5 @@
 
+using DiscoverCostaRica.Api.Models.Dto;
 using DiscoverCostaRica.Api.Routes;
 using DiscoverCostaRica.Api.Services;
 using DiscoverCostaRica.Domain.Entities;
@@ -22,7 +23,7 @@ public class Beach : IEndpoint
 			Ideal for tourism, planning trips, or research purposes.
 			"""
 		})
-		.Produces<Beach[]>(StatusCodes.Status200OK);
+		.Produces<DtoBeach[]>(StatusCodes.Status200OK);
 	}
 
 
