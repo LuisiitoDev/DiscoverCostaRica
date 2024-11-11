@@ -6,11 +6,18 @@ using DiscoverCostaRica.Infraestructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using DiscoverCostaRica.Api.ExtendedMethods;
 using DiscoverCostaRica.Api.BackgroundServices;
+using DiscoverCostaRica.Api.Configuration;
 
 // code ~/.microsoft/usersecrets/30d2aea7-df7e-4cda-a366-079494c613ba/secrets.json
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<RedisConfiguration>(options => 
+{
+	options.Endpoint = "redis-10214.c282.east-us-mz.azure.redns.redis-cloud.com:10214";
+	options.Password = "ngCHlowKobEcoiasFSdvxX4FqqRHvOEO";
+});
 
 builder.Services.AddDbContext<DiscoverCostaRicaContext>(options =>
 {
