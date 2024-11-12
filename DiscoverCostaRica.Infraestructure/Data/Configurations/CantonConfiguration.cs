@@ -11,6 +11,8 @@ public class CantonConfiguration : IEntityTypeConfiguration<Canton>
         builder.ToTable("Canton");
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Name).IsRequired();
-        builder.HasMany(c => c.Districts);
+        builder.HasMany(c => c.Districts)
+        .WithOne(c => c.Canton)
+        .HasForeignKey(c => c.CantonId);
     }
 }

@@ -11,6 +11,8 @@ public class ProvinceConfiguration : IEntityTypeConfiguration<Province>
         builder.ToTable("Province");
         builder.HasKey(p => p.Id);
         builder.Property(p => p.Name).IsRequired();
-        builder.HasMany(p => p.Cantons);
+        builder.HasMany(p => p.Cantons)
+        .WithOne(p => p.Province)
+        .HasForeignKey(p => p.ProvinceId);
     }
 }

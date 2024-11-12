@@ -92,3 +92,4 @@ Logs/
 
 # Ignore .NET SDK locally installed files
 global.json
+DiscoverCostaRica.Api/service_account_key.json
