@@ -1,4 +1,4 @@
-using DiscoverCostaRica.Domain.Entities.Direction;
+using DiscoverCostaRica.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

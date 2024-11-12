@@ -1,5 +1,5 @@
 using DiscoverCostaRica.Api.Models;
-using DiscoverCostaRica.Domain.Entities.Direction;
+using DiscoverCostaRica.Domain.Entities;
 using DiscoverCostaRica.Infraestructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,26 +13,13 @@ public class DirectionService(DiscoverCostaRicaContext context)
         return provinces.Length > 0 ? provinces : Result<Province[]>.NotFound("No provinces found.");
     }
 
-    public async Task<Result<Canton[]>> GetCantons(int provinceId, CancellationToken cancellationToken)
+    public async Task<Result<Canton[]>> GetCantons(CancellationToken cancellationToken)
     {
-        var cantons = await context.Provinces
-        .Where(p => p.Id == provinceId)
-        .SelectMany(p => p.Cantons)
-        .ToArrayAsync(cancellationToken);
-
-        return cantons.Length > 0 ? cantons : Result<Canton[]>.NotFound("No cantons found.");
+         return Result<Canton[]>.NotFound("No districts found.");
     }
 
-    public async Task<Result<District[]>> GetDistricts(int provinceId, int cantonId, CancellationToken cancellationToken)
+    public async Task<Result<District[]>> GetDistricts(CancellationToken cancellationToken)
     {
-        var districts = await context.Provinces
-        .Include(p => p.Cantons))
-
-        return districts.Length > 0 ? districts : Result<District[]>.NotFound("No districts found.");
-    }
-
-    public async Task<Result<ProvinceDetail>> GetProvinceDetail(short provinceId, CancellationToken cancellationToken)
-    {
-        return await context.ProvinceDetails.FirstAsync(p => p.ProvinceId == provinceId, cancellationToken);
+        return Result<District[]>.NotFound("No districts found.");
     }
 }

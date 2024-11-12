@@ -1,4 +1,4 @@
-namespace DiscoverCostaRica.Domain.Entities.Direction;
+namespace DiscoverCostaRica.Domain.Entities;
 
 public class District
 {

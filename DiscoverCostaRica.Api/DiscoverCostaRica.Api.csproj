@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>0c1b65b8-5105-468c-9773-f8b1dc7fc846</UserSecretsId>
+    <UserSecretsId></UserSecretsId>
   </PropertyGroup>
 <!-- ~/.microsoft/usersecrets/0c1b65b8-5105-468c-9773-f8b1dc7fc846/secrets.json -->
   <ItemGroup>
