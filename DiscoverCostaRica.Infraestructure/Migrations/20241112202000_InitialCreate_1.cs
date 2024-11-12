@@ -5,7 +5,7 @@
 namespace DiscoverCostaRica.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate_1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,6 +22,20 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Beach", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dish",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dish", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -44,33 +58,13 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                     Id = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProvinceId = table.Column<short>(type: "smallint", nullable: true)
+                    ProvinceId = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Canton", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Canton_Province_ProvinceId",
-                        column: x => x.ProvinceId,
-                        principalTable: "Province",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProvinceDetail",
-                columns: table => new
-                {
-                    Id = table.Column<short>(type: "smallint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProvinceId = table.Column<short>(type: "smallint", nullable: false),
-                    History = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Map = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProvinceDetail", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProvinceDetail_Province_ProvinceId",
                         column: x => x.ProvinceId,
                         principalTable: "Province",
                         principalColumn: "Id",
@@ -81,10 +75,10 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                 name: "District",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CantonId = table.Column<short>(type: "smallint", nullable: true)
+                    CantonId = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,7 +87,8 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                         name: "FK_District_Canton_CantonId",
                         column: x => x.CantonId,
                         principalTable: "Canton",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -105,12 +100,6 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                 name: "IX_District_CantonId",
                 table: "District",
                 column: "CantonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProvinceDetail_ProvinceId",
-                table: "ProvinceDetail",
-                column: "ProvinceId",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -120,10 +109,10 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                 name: "Beach");
 
             migrationBuilder.DropTable(
-                name: "District");
+                name: "Dish");
 
             migrationBuilder.DropTable(
-                name: "ProvinceDetail");
+                name: "District");
 
             migrationBuilder.DropTable(
                 name: "Canton");

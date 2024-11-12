@@ -44,7 +44,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                     b.ToTable("Beach", (string)null);
                 });
 
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.Canton", b =>
+            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Canton", b =>
                 {
                     b.Property<short>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,71 +53,6 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<short?>("ProvinceId")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.ToTable("Canton", (string)null);
-                });
-
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.District", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<short?>("CantonId")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CantonId");
-
-                    b.ToTable("District", (string)null);
-                });
-
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.Province", b =>
-                {
-                    b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Province", (string)null);
-                });
-
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.ProvinceDetail", b =>
-                {
-                    b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
-
-                    b.Property<string>("History")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Map")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -126,10 +61,9 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProvinceId")
-                        .IsUnique();
+                    b.HasIndex("ProvinceId");
 
-                    b.ToTable("ProvinceDetail", (string)null);
+                    b.ToTable("Canton", (string)null);
                 });
 
             modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Dish", b =>
@@ -153,42 +87,75 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                     b.ToTable("Dish", (string)null);
                 });
 
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.Canton", b =>
+            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.District", b =>
                 {
-                    b.HasOne("DiscoverCostaRica.Domain.Entities.Direction.Province", null)
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
+
+                    b.Property<short>("CantonId")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CantonId");
+
+                    b.ToTable("District", (string)null);
+                });
+
+            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Province", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Province", (string)null);
+                });
+
+            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Canton", b =>
+                {
+                    b.HasOne("DiscoverCostaRica.Domain.Entities.Province", "Province")
                         .WithMany("Cantons")
-                        .HasForeignKey("ProvinceId");
-                });
-
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.District", b =>
-                {
-                    b.HasOne("DiscoverCostaRica.Domain.Entities.Direction.Canton", null)
-                        .WithMany("Districts")
-                        .HasForeignKey("CantonId");
-                });
-
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.ProvinceDetail", b =>
-                {
-                    b.HasOne("DiscoverCostaRica.Domain.Entities.Direction.Province", "Province")
-                        .WithOne("ProvinceDetail")
-                        .HasForeignKey("DiscoverCostaRica.Domain.Entities.Direction.ProvinceDetail", "ProvinceId")
+                        .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Province");
                 });
 
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.Canton", b =>
+            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.District", b =>
+                {
+                    b.HasOne("DiscoverCostaRica.Domain.Entities.Canton", "Canton")
+                        .WithMany("Districts")
+                        .HasForeignKey("CantonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Canton");
+                });
+
+            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Canton", b =>
                 {
                     b.Navigation("Districts");
                 });
 
-            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Direction.Province", b =>
+            modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Province", b =>
                 {
                     b.Navigation("Cantons");
-
-                    b.Navigation("ProvinceDetail")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

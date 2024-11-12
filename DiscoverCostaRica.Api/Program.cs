@@ -7,26 +7,37 @@ using DiscoverCostaRica.Api.Configuration;
 using DiscoverCostaRica.Api.Profiles;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using DiscoverCostaRica.Api.Middleware;
+using DiscoverCostaRica.Infraestructure.Services;
 
 // code ~/.microsoft/usersecrets/0c1b65b8-5105-468c-9773-f8b1dc7fc846/secrets.json
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+var credentialPath = Path.Combine(AppContext.BaseDirectory, "service_account_key.json");
+var secretManager = new SecretManagerService("discovercostarica",credentialPath);
+
+var connectionString = secretManager.GetSecret("DiscoverCostaRicaDB");
+var applicationInsights = secretManager.GetSecret("DiscoverCostaRicaApplicationInsights");
+var redisEndpoint = secretManager.GetSecret("RedisEndpoint");
+var redispassword = secretManager.GetSecret("RedisPassword");
+
 builder.Logging.AddApplicationInsights(
 	configureTelemetryConfiguration: config => 
-	 	config.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"],
+	 	config.ConnectionString = applicationInsights,
 	configureApplicationInsightsLoggerOptions: options => {}
 );
 
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("error", LogLevel.Error);
 
-builder.Services.Configure<RedisConfiguration>(options => 
-	builder.Configuration.GetSection("Azure").GetSection("Redis").Bind(options));
+builder.Services.Configure<RedisConfiguration>(options => {
+	options.Endpoint = redisEndpoint;
+	options.Endpoint = redispassword;
+});
 
 builder.Services.AddDbContext<DiscoverCostaRicaContext>(options =>
 {
-	options.UseSqlServer(builder.Configuration["ConnectionStrings:DiscoverCostaRica"]);
+	options.UseSqlServer(connectionString);
 }, ServiceLifetime.Singleton);
 
 builder.Services.AddAutoMapper(typeof(AutomapperProfile));
