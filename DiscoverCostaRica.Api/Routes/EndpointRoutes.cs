@@ -14,4 +14,9 @@ public static class EndpointRoutes
 		public const string GET_CANTONS = $"{API_ROUTE}/{VERSIONING}/Cantons";
 		public const string GET_DISTRICTS = $"{API_ROUTE}/{VERSIONING}/Districts";
 	}
+
+	public static class DISH_ROUTES
+	{
+		public const string GET_DISHES = $"{API_ROUTE}/{VERSIONING}/Dish";
+	}
 }

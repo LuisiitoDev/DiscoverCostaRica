@@ -11,6 +11,7 @@ public static class BuilderServicesExtendedMethods
 		collection.AddScoped<DirectionService>();
 		collection.AddSingleton<BeachCrawlerService>();
 		collection.AddSingleton<RedisCacheService>();
+		collection.AddSingleton<DishService>();
 		return collection;
 	}	
 }

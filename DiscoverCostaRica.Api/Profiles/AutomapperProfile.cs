@@ -1,6 +1,6 @@
 using AutoMapper;
-using DiscoverCostaRica.Api.Endpoints;
 using DiscoverCostaRica.Api.Models.Dto;
+using DiscoverCostaRica.Domain.Entities;
 
 namespace DiscoverCostaRica.Api.Profiles;
 public class AutomapperProfile : Profile
@@ -9,5 +9,7 @@ public class AutomapperProfile : Profile
     {
         // Beach mapping
         CreateMap<Beach, DtoBeach>().ReverseMap();
+        // Dish mapping
+        CreateMap<Dish, DtoDish>().ReverseMap();
     }
 }
