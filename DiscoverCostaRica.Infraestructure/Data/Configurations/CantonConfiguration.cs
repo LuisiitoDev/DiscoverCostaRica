@@ -10,6 +10,7 @@ public class CantonConfiguration : IEntityTypeConfiguration<Canton>
     {
         builder.ToTable("Canton");
         builder.HasKey(c => c.Id);
+        builder.Property(p => p.Id).ValueGeneratedNever();
         builder.Property(c => c.Name).IsRequired();
         builder.HasMany(c => c.Districts)
         .WithOne(c => c.Canton)

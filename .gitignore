@@ -38,7 +38,7 @@ packages/
 NUGET/
 
 # Microsoft Visual Studio Code
-.vscode/
+
 .vscode-test/
 
 # Rider
@@ -67,7 +67,7 @@ $RECYCLE.BIN/
 *.pidb
 
 # Comments
-.vscode/
+
 .vscode-test/
 
 # Local History of files
@@ -83,7 +83,7 @@ artifacts/
 Logs/
 
 # Visual Studio specific folders
-.vscode/
+
 .terraform/
 
 # Terraform files
@@ -93,3 +93,4 @@ Logs/
 # Ignore .NET SDK locally installed files
 global.json
 DiscoverCostaRica.Api/service_account_key.json
+DiscoverCostaRica.Functions/service_account_key.json

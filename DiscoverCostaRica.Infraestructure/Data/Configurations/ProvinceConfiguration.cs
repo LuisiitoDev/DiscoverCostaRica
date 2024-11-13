@@ -10,6 +10,7 @@ public class ProvinceConfiguration : IEntityTypeConfiguration<Province>
     {
         builder.ToTable("Province");
         builder.HasKey(p => p.Id);
+        builder.Property(p => p.Id).ValueGeneratedNever();
         builder.Property(p => p.Name).IsRequired();
         builder.HasMany(p => p.Cantons)
         .WithOne(p => p.Province)

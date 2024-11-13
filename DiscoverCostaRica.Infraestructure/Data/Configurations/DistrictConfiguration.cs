@@ -10,6 +10,7 @@ public class DistrictConfiguration : IEntityTypeConfiguration<District>
     {
         builder.ToTable("District");
         builder.HasKey(d => d.Id);
+        builder.Property(p => p.Id).ValueGeneratedNever();
         builder.Property(d => d.Name).IsRequired();
     }
 }

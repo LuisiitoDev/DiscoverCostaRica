@@ -13,13 +13,25 @@ public class DirectionService(DiscoverCostaRicaContext context)
         return provinces.Length > 0 ? provinces : Result<Province[]>.NotFound("No provinces found.");
     }
 
-    public async Task<Result<Canton[]>> GetCantons(CancellationToken cancellationToken)
+    public async Task<Result<Canton[]>> GetCantons(int provinceId, CancellationToken cancellationToken)
     {
-         return Result<Canton[]>.NotFound("No districts found.");
+        var cantons = await context.Provinces
+        .Include(p => p.Cantons)
+        .Where(p => p.Id == provinceId)
+        .SelectMany(p => p.Cantons)
+        .ToArrayAsync(cancellationToken);
+
+        return cantons.Length > 0 ? cantons : Result<Canton[]>.NotFound("No cantons found");
     }
 
-    public async Task<Result<District[]>> GetDistricts(CancellationToken cancellationToken)
+    public async Task<Result<District[]>> GetDistricts(int provinceId, int cantonId, CancellationToken cancellationToken)
     {
-        return Result<District[]>.NotFound("No districts found.");
+        var districts = await context.Cantons
+        .Include(p => p.Districts)
+        .Where(p => p.Id == cantonId && p.ProvinceId == provinceId)
+        .SelectMany(p => p.Districts)
+        .ToArrayAsync(cancellationToken);
+
+        return districts.Length > 0 ? districts : Result<District[]>.NotFound("No districts found");
     }
 }

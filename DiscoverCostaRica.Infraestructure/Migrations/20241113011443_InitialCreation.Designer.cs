@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiscoverCostaRica.Infraestructure.Migrations
 {
     [DbContext(typeof(DiscoverCostaRicaContext))]
-    [Migration("20241112202000_InitialCreate_1")]
-    partial class InitialCreate_1
+    [Migration("20241113011443_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,10 +50,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
             modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Canton", b =>
                 {
                     b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -93,10 +90,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
             modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.District", b =>
                 {
                     b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
 
                     b.Property<short>("CantonId")
                         .HasColumnType("smallint");
@@ -115,10 +109,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
             modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Province", b =>
                 {
                     b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -47,10 +47,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
             modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Canton", b =>
                 {
                     b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -90,10 +87,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
             modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.District", b =>
                 {
                     b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
 
                     b.Property<short>("CantonId")
                         .HasColumnType("smallint");
@@ -112,10 +106,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
             modelBuilder.Entity("DiscoverCostaRica.Domain.Entities.Province", b =>
                 {
                     b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()

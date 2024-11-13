@@ -5,7 +5,7 @@
 namespace DiscoverCostaRica.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate_1 : Migration
+    public partial class InitialCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,8 +42,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                 name: "Province",
                 columns: table => new
                 {
-                    Id = table.Column<short>(type: "smallint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<short>(type: "smallint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -55,8 +54,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                 name: "Canton",
                 columns: table => new
                 {
-                    Id = table.Column<short>(type: "smallint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<short>(type: "smallint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProvinceId = table.Column<short>(type: "smallint", nullable: false)
                 },
@@ -75,8 +73,7 @@ namespace DiscoverCostaRica.Infraestructure.Migrations
                 name: "District",
                 columns: table => new
                 {
-                    Id = table.Column<short>(type: "smallint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<short>(type: "smallint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CantonId = table.Column<short>(type: "smallint", nullable: false)
                 },
