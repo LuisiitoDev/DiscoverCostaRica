@@ -10,6 +10,7 @@ public static class BuilderServicesExtendedMethods
 		collection.AddScoped<DirectionService>();
 		collection.AddSingleton<RedisCacheService>();
 		collection.AddSingleton<DishService>();
+		collection.AddSingleton<AttractionService>();
 		return collection;
 	}	
 }

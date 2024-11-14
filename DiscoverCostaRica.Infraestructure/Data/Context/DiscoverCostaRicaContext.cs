@@ -23,5 +23,6 @@ public class DiscoverCostaRicaContext : DbContext
         modelBuilder.ApplyConfiguration(new CantonConfiguration());
         modelBuilder.ApplyConfiguration(new DistrictConfiguration());
         modelBuilder.ApplyConfiguration(new DishConfiguration());
+        modelBuilder.ApplyConfiguration(new AttractionConfiguration());
     }
 }
