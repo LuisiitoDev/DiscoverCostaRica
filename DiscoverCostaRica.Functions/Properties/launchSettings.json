@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "DiscoverCostaRica_Functions": {
+    "DiscoverCostaRica.Functions": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7026",
+      "commandLineArgs": "--port 7140",
       "launchBrowser": false
     }
   }
