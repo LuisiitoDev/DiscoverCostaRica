@@ -11,6 +11,7 @@ public static class BuilderServicesExtendedMethods
 		collection.AddSingleton<RedisCacheService>();
 		collection.AddSingleton<DishService>();
 		collection.AddSingleton<AttractionService>();
+		collection.AddSingleton<CountryService>();
 		return collection;
 	}	
 }

@@ -10,6 +10,7 @@ public class DiscoverCostaRicaContext : DbContext
         ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
+    public DbSet<Country> Countries { get; set; }
     public DbSet<Beach> Beaches { get; set; }
     public DbSet<Province> Provinces { get; set; }
     public DbSet<Canton> Cantons { get; set; }
@@ -24,5 +25,6 @@ public class DiscoverCostaRicaContext : DbContext
         modelBuilder.ApplyConfiguration(new DistrictConfiguration());
         modelBuilder.ApplyConfiguration(new DishConfiguration());
         modelBuilder.ApplyConfiguration(new AttractionConfiguration());
+        modelBuilder.ApplyConfiguration(new CountryConfiguration());
     }
 }

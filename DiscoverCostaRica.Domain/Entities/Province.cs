@@ -5,4 +5,6 @@ public class Province {
     public string Name { get; set; }
     public ICollection<Canton> Cantons { get; set; }
     public ICollection<Attraction> Attractions { get; set; }
+    public int CountryId { get; set; }
+    public Country Country { get; set; }
 }

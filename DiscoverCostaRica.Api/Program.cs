@@ -37,7 +37,12 @@ builder.Services.Configure<RedisConfiguration>(options => {
 
 builder.Services.AddDbContext<DiscoverCostaRicaContext>(options =>
 {
-	options.UseSqlServer(connectionString);
+	options.UseSqlServer(
+		connectionString,
+		options => options.EnableRetryOnFailure(
+			maxRetryCount: 5,
+			maxRetryDelay: TimeSpan.FromSeconds(30),
+			errorNumbersToAdd: null));
 }, ServiceLifetime.Singleton);
 
 builder.Services.AddAutoMapper(typeof(AutomapperProfile));
@@ -47,7 +52,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.RegisterServices();
-//builder.Services.AddHostedService<BeachBackgroundService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

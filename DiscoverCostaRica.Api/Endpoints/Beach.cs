@@ -2,9 +2,6 @@
 using DiscoverCostaRica.Api.Models.Dto;
 using DiscoverCostaRica.Api.Routes;
 using DiscoverCostaRica.Api.Services;
-using DiscoverCostaRica.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace DiscoverCostaRica.Api.Endpoints;
 
@@ -12,7 +9,7 @@ public class Beach : IEndpoint
 {
 	public static void Register(WebApplication app)
 	{
-		app.MapGet(EndpointRoutes.BeachRoutes.GET_BEACHES, GetBeaches)
+		app.MapGet(EndpointRoutes.BEACH_ROUTES.GET_BEACHES, GetBeaches)
 		.WithName("GetBeaches")
 		.WithOpenApi(operation => new(operation)
 		{
