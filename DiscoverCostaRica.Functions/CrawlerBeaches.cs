@@ -12,8 +12,6 @@ namespace DiscoverCostaRica.Functions
         [Function("CrawlerBeaches")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
         {
-            logger.LogInformation("C# HTTP trigger function processed a request.");
-
             var beaches = await crawler.FetchBeachesAsync();
             await context.Beaches.AddRangeAsync(beaches);
             await context.SaveChangesAsync();
