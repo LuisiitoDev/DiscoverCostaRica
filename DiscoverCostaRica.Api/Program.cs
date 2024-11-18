@@ -8,6 +8,8 @@ using DiscoverCostaRica.Api.Profiles;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using DiscoverCostaRica.Api.Middleware;
 using DiscoverCostaRica.Infraestructure.Services;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Json;
 
 // code ~/.microsoft/usersecrets/0c1b65b8-5105-468c-9773-f8b1dc7fc846/secrets.json
 
@@ -52,6 +54,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.RegisterServices();
+
+builder.Services.Configure<JsonOptions>(options => 
+{ 
+	options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; 
+});
 
 var app = builder.Build();
 

@@ -19,9 +19,5 @@ public class ProvinceConfiguration : IEntityTypeConfiguration<Province>
         builder.HasMany(p => p.Cantons)
         .WithOne(p => p.Province)
         .HasForeignKey(p => p.ProvinceId);
-
-        builder.HasMany(p => p.Attractions)
-        .WithOne(a => a.Province)
-        .HasForeignKey(a => a.ProviceId);
     }
 }

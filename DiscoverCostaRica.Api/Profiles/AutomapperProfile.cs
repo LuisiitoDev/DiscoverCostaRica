@@ -7,9 +7,8 @@ public class AutomapperProfile : Profile
 {
     public AutomapperProfile()
     {
-        // Beach mapping
         CreateMap<Beach, DtoBeach>().ReverseMap();
-        // Dish mapping
         CreateMap<Dish, DtoDish>().ReverseMap();
+        CreateMap<Volcano, DtoVolcano>().ReverseMap();
     }
 }

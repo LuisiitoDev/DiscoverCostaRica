@@ -16,6 +16,7 @@ public class DiscoverCostaRicaContext : DbContext
     public DbSet<Canton> Cantons { get; set; }
     public DbSet<District> Districts { get; set; }
     public DbSet<Dish> Dishes { get; set; }
+    public DbSet<Volcano> Volcanos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,7 +25,7 @@ public class DiscoverCostaRicaContext : DbContext
         modelBuilder.ApplyConfiguration(new CantonConfiguration());
         modelBuilder.ApplyConfiguration(new DistrictConfiguration());
         modelBuilder.ApplyConfiguration(new DishConfiguration());
-        modelBuilder.ApplyConfiguration(new AttractionConfiguration());
         modelBuilder.ApplyConfiguration(new CountryConfiguration());
+        modelBuilder.ApplyConfiguration(new VolcanoConfiguration());
     }
 }
