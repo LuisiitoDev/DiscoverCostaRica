@@ -1,4 +1,5 @@
 ﻿
+using DiscoverCostaRica.Api.Models.Dto;
 using DiscoverCostaRica.Api.Routes;
 using DiscoverCostaRica.Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +12,8 @@ public class Country : IEndpoint
     {
         app.MapGet(EndpointRoutes.COUNTRY_ROUTES.GET_COUNTRY, GetCountry)
             .WithName("GetCountry")
-            .WithOpenApi(operation => new(operation)
-            {
-                Summary = "Retrieve country information",
-                Description = """
-            This endpoint retrieves detailed information about a specific country.
-            It includes various data points such as the country's name, capital, population, area, 
-            and other relevant geographical and political information.
-            This endpoint is useful for applications that need to display or process country-specific data.
-        """
-            });
+            .WithOpenApi(OpenApiCountry.GetCountry)
+            .Produces<DtoCountry>(StatusCodes.Status200OK);
 
     }
 

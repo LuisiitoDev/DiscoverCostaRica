@@ -1,6 +1,6 @@
-namespace DiscoverCostaRica.Api.Configuration;
+﻿namespace DiscoverCostaRica.Functions.Configuration;
 
-public class RedisConfiguration
+public class CacheConfiguration
 {
     public string Endpoint { get; set; }
     public int Port { get; set; }

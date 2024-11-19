@@ -4,11 +4,11 @@ using System.Data.Entity;
 
 namespace DiscoverCostaRica.Functions.Services;
 
-public class VolcanoService(CacheService cache, DiscoverCostaRicaContext context)
+public class DishService(CacheService cache, DiscoverCostaRicaContext context)
 {
     public async Task Sync()
     {
-        var volcanos = await context.Volcanos.ToArrayAsync();
-        await cache.AddAsync(CacheKeys.ALL_VOLCANOS, volcanos);
+        var dishes = await context.Dishes.ToArrayAsync();
+        await cache.AddAsync(CacheKeys.ALL_DISHES, dishes);
     }
 }

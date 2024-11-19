@@ -10,5 +10,8 @@ public class AutomapperProfile : Profile
         CreateMap<Beach, DtoBeach>().ReverseMap();
         CreateMap<Dish, DtoDish>().ReverseMap();
         CreateMap<Volcano, DtoVolcano>().ReverseMap();
+        CreateMap<Province, DtoProvince>().ReverseMap();
+        CreateMap<Canton, DtoCanton>().ReverseMap();
+        CreateMap<District, DtoDistrict>().ReverseMap();
     }
 }

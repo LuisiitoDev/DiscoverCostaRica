@@ -1,5 +1,5 @@
-using System.Text.Json;
 using DiscoverCostaRica.Api.Models;
+using System.Text.Json;
 
 namespace DiscoverCostaRica.Api.Middleware;
 public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)

@@ -10,7 +10,7 @@ public class CountryService(DiscoverCostaRicaContext context, IMapper mapper)
 {
     public async Task<Result<DtoCountry>> GetCountry(int countryCode, CancellationToken cancellationToken)
     {
-        var country =await context.Countries
+        var country = await context.Countries
             .Include(c => c.Capital)
             .SingleOrDefaultAsync(c => c.CountryCode == countryCode, cancellationToken);
 
