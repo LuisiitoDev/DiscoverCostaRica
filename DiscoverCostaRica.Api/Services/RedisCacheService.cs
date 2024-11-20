@@ -13,7 +13,7 @@ public class RedisCacheService(IOptions<RedisConfiguration> configuration)
             EndPoints = { configuration.Value.Endpoint },
             User = "default",
             Password = configuration.Value.Password,
-            AbortOnConnectFail = false
+            AbortOnConnectFail = false,
         });
     });
     private IDatabase Db => redis.Value.GetDatabase();

@@ -22,7 +22,7 @@ public class CacheService(IOptions<CacheConfiguration> options)
 
     public async Task AddAsync<TValue>(string key, TValue value)
     {
-        if (await Db.KeyExistsAsync(key)) await Db.KeyDeleteAsync(key);
+        if (Db.KeyExists(key)) await Db.KeyDeleteAsync(key);
         await Db.StringSetAsync(key, JsonSerializer.Serialize(value));
     }
 }

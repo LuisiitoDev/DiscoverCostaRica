@@ -26,15 +26,21 @@ namespace DiscoverCostaRica.Functions.Functions
         }
 
         [Function("RefreshCacheFunction")]
-        public async Task Run([TimerTrigger("0 */5 * * * *")] TimerInfo myTimer)
+        public async Task Run([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer)
         {
-            _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+            try
+            {
+                _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
-            await volcanoService.Sync();
-            await beachService.Sync();
-            await dishService.Sync();
-            await provinceService.Sync();
-
+                await volcanoService.Sync();
+                await beachService.Sync();
+                await dishService.Sync();
+                await provinceService.Sync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.StackTrace);
+            }
         }
     }
 }

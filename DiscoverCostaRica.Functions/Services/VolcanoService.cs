@@ -1,6 +1,6 @@
 ﻿using DiscoverCostaRica.Domain.Constants;
 using DiscoverCostaRica.Infraestructure.Data.Context;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiscoverCostaRica.Functions.Services;
 

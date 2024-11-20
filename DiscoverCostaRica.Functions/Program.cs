@@ -1,7 +1,6 @@
 using DiscoverCostaRica.Functions.Configuration;
 using DiscoverCostaRica.Functions.Services;
 using DiscoverCostaRica.Infraestructure.Data.Context;
-using DiscoverCostaRica.Infraestructure.Services;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,19 +8,20 @@ using Microsoft.Extensions.Hosting;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 
-var credentialPath = Path.Combine(AppContext.BaseDirectory, "service_account_key.json");
-var secretManager = new SecretManagerService("discovercostarica", credentialPath);
+string redisEndpoint = builder.Configuration["Redis:Endpoint"]!;
+string redisPassword = builder.Configuration["Redis:Password"]!;
+string connectionString = builder.Configuration["DiscoverCostaRica"]!;
 
 builder.Services.Configure<CacheConfiguration>(options =>
 {
-    options.Endpoint = secretManager.GetSecret("RedisEndpoint");
-    options.Password = secretManager.GetSecret("RedisPassword");
+    options.Endpoint = redisEndpoint;
+    options.Password = redisPassword;
 });
 
 builder.Services.AddDbContext<DiscoverCostaRicaContext>(options =>
 {
     options.UseSqlServer(
-        secretManager.GetSecret("DiscoverCostaRicaDB"),
+        connectionString,
         options => options.EnableRetryOnFailure(
             maxRetryCount: 5,
             maxRetryDelay: TimeSpan.FromSeconds(30),

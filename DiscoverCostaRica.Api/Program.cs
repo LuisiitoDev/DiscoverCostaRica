@@ -4,29 +4,17 @@ using DiscoverCostaRica.Api.ExtendedMethods;
 using DiscoverCostaRica.Api.Middleware;
 using DiscoverCostaRica.Api.Profiles;
 using DiscoverCostaRica.Infraestructure.Data.Context;
-using DiscoverCostaRica.Infraestructure.Services;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
-// code ~/.microsoft/usersecrets/0c1b65b8-5105-468c-9773-f8b1dc7fc846/secrets.json
-
-
 var builder = WebApplication.CreateBuilder(args);
-
-var credentialPath = Path.Combine(AppContext.BaseDirectory, "service_account_key.json");
-var secretManager = new SecretManagerService("discovercostarica", credentialPath);
-
-var connectionString = secretManager.GetSecret("DiscoverCostaRicaDB");
-var applicationInsights = secretManager.GetSecret("DiscoverCostaRicaApplicationInsights");
-var redisEndpoint = secretManager.GetSecret("RedisEndpoint");
-var redispassword = secretManager.GetSecret("RedisPassword");
 
 builder.Logging.AddApplicationInsights(
     configureTelemetryConfiguration: config =>
-         config.ConnectionString = applicationInsights,
+         config.ConnectionString = builder.Configuration.GetConnectionString("ApplicationInsights"),
     configureApplicationInsightsLoggerOptions: options => { }
 );
 
@@ -34,14 +22,14 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("error", LogLevel.E
 
 builder.Services.Configure<RedisConfiguration>(options =>
 {
-    options.Endpoint = redisEndpoint;
-    options.Endpoint = redispassword;
+    options.Endpoint = builder.Configuration["Cache:Endpoint"]!;
+    options.Password = builder.Configuration["Cache:Password"]!;
 });
 
 builder.Services.AddDbContext<DiscoverCostaRicaContext>(options =>
 {
     options.UseSqlServer(
-        connectionString,
+        builder.Configuration.GetConnectionString("DiscoverCostaRica"),
         options => options.EnableRetryOnFailure(
             maxRetryCount: 5,
             maxRetryDelay: TimeSpan.FromSeconds(30),
