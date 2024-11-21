@@ -27,7 +27,7 @@ jobs:
         run: dotnet restore ./DiscoverCostaRica.sln
 
       - name: Build
-        run: dotnet build ./DiscoverCostaRica.sln --configuration Release --no-resotre
+        run: dotnet build ./DiscoverCostaRica.sln --configuration Release --no-restore
 
       - name: Publish
         run: dotnet publish ./DiscoverCostaRica.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
