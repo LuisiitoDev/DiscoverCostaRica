@@ -6,7 +6,6 @@ using DiscoverCostaRica.Api.Profiles;
 using DiscoverCostaRica.Infraestructure.Data.Context;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.ApplicationInsights;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -45,8 +44,6 @@ builder.Services.Configure<JsonOptions>(options =>
 
 
 var app = builder.Build();
-
-
 
 
 app.UseMiddleware<ExceptionMiddleware>();
