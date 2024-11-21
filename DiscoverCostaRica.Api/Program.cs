@@ -12,13 +12,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.AddApplicationInsights(
-    configureTelemetryConfiguration: config =>
-         config.ConnectionString = builder.Configuration.GetConnectionString("ApplicationInsights"),
-    configureApplicationInsightsLoggerOptions: options => { }
-);
-
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("error", LogLevel.Error);
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.Configure<RedisConfiguration>(options =>
 {
@@ -49,12 +43,12 @@ builder.Services.Configure<JsonOptions>(options =>
     options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
+
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+
+
 app.UseMiddleware<ExceptionMiddleware>();
 // Mapping endpoints
 var endpoints = Assembly
@@ -70,6 +64,12 @@ foreach (var endpoint in endpoints)
 }
 
 // Mapping endpoints
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.Run();
 
