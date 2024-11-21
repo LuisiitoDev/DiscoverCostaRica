@@ -1,10 +1,14 @@
-name: Discover Costa Rica
+name: Publish 🚀
 
-on: [push]
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+    - main
 
 env:
   AZURE_WEBAPP_NAME: discovercostarica
-  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  AZURE_WEBAPP_PACKAGE_PATH: './publish'
   DOTNET_VERSION: '8.0.x'
 
 jobs:
@@ -14,20 +18,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup .NET Core
+      - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Build and Publish
-        run: |
-          dotnet restore
-          dotnet build --configuration Release
-          dotnet publish -c Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/DiscoverCostaRica
+      - name: Restore
+        run: dotnet restore ./DiscoverCostaRica.sln
 
-      - name: Deploy to Azure Web App
+      - name: Build
+        run: dotnet build ./DiscoverCostaRica.sln --configuration Release --no-resotre
+
+      - name: Publish
+        run: dotnet publish ./DiscoverCostaRica.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+
+      - name: Deployment
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/DiscoverCostaRica
+          package: "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
