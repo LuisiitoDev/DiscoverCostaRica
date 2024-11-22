@@ -26,7 +26,7 @@ namespace DiscoverCostaRica.Functions.Functions
         }
 
         [Function("RefreshCacheFunction")]
-        public async Task Run([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer)
+        public async Task Run([TimerTrigger("0 0 */7 * *")] TimerInfo myTimer)
         {
             try
             {
