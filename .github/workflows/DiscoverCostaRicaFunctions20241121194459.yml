@@ -1,15 +1,18 @@
 name: Build and deploy .NET Core application to Function App DiscoverCostaRicaFunctions20241121194459
+
 on:
   push:
     branches:
     - main
+
 env:
   AZURE_FUNCTIONAPP_NAME: DiscoverCostaRicaFunctions20241121194459
   AZURE_FUNCTIONAPP_PACKAGE_PATH: DiscoverCostaRica.Functions\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: DiscoverCostaRica.Functions
-  DOTNET_CORE_VERSION_INPROC: 6.0.x
+  DOTNET_CORE_VERSION_INPROC: 8.0.x
+
 jobs:
   build:
     runs-on: windows-latest
@@ -20,7 +23,7 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
     - name: Setup .NET Core (for inproc extensions)
-      uses: actions/setup-dotnetv4
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION_INPROC }}
     - name: Restore
@@ -34,6 +37,7 @@ jobs:
       with:
         name: functionapp
         path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+
   deploy:
     runs-on: windows-latest
     needs: build
