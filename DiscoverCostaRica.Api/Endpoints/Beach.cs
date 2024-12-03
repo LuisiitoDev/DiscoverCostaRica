@@ -13,8 +13,6 @@ public class Beach : IEndpoint
         app.MapGet(EndpointRoutes.BEACH_ROUTES.GET_BEACHES, GetBeaches)
             .WithName("GetBeaches")
             .WithOpenApi(OpenApiBeach.GetBeach)
-            .WithApiVersionSet(VersioningConfiguration.GetVersion(app))
-            .MapToApiVersion(2, 0)
             .Produces<DtoBeach[]>(StatusCodes.Status200OK);
     }
 
