@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using DiscoverCostaRica.Api.Configuration;
 using DiscoverCostaRica.Api.Endpoints;
 using DiscoverCostaRica.Api.ExtendedMethods;
@@ -10,6 +12,23 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
+                                                    new HeaderApiVersionReader("x-api-version"),
+                                                    new MediaTypeApiVersionReader("x-api-version"));
+})
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+//builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
 builder.Configuration.AddEnvironmentVariables();
 
@@ -59,13 +78,20 @@ foreach (var endpoint in endpoints)
     var method = endpoint.GetMethod(nameof(IEndpoint.Register));
     method?.Invoke(null, [app]);
 }
-
 // Mapping endpoints
-
+var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseSwagger();
-app.UseSwaggerUI();
+//app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+            description.GroupName.ToUpperInvariant());
+    }
+});
 
 
 app.Run();
