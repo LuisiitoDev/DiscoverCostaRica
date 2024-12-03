@@ -114,19 +114,21 @@ function createEndpointSection(sectionId) {
     const section = document.createElement('div');
     section.id = sectionId;
     section.className = 'content-section';
+    section.style.width = '100%';
     section.innerHTML = `
-        <div class="endpoint-card">
-            <div class="endpoint-header">
-                <span class="endpoint-method method get">${data.method}</span>
-                <span class="endpoint-path">${data.path}</span>
-            </div>
-            <div class="endpoint-description">${data.description}</div>
-            <div class="response-example">
-                <pre><code>${JSON.stringify(data.response, null, 2)}</code></pre>
-            </div>
+    <div class="endpoint-card" style="width: 80%; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #fff; margin: 0 auto;">
+        <div class="endpoint-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="endpoint-method" style="font-weight: bold; color: #4CAF50;">${data.method}</span>
+            <span class="endpoint-path" style="font-size: 1.2em; color: #333;">${data.path}</span>
         </div>
-    `;
+        <div class="endpoint-description" style="margin-bottom: 20px; color: #666;">${data.description}</div>
+        <div class="response-example" style="background-color: #f9f9f9; padding: 10px; border-radius: 4px;">
+            <pre style="margin: 0;"><code>${JSON.stringify(data.response, null, 2)}</code></pre>
+        </div>
+    </div>
+`;
 
     document.querySelector('.content-wrapper').appendChild(section);
     section.classList.add('active');
+
 }

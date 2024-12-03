@@ -91,3 +91,110 @@ h1 {
         var(--blue) 80%, var(--blue) 100%
     );
 }
+
+body {
+    background: #ffffff url('../images/fauna-costarica.svg') no-repeat center center !important;
+    background-size: cover !important; /* Ajusta el tamaño para cubrir todo el contenido */
+}
+/* Main Content Styles */
+.main-content {
+}
+
+    .main-content h1, .main-content h2 {
+        color: #4a4a4a;
+        margin-bottom: 10px;
+    }
+
+    .main-content h1 {
+        font-size: 2em;
+    }
+
+    .main-content h2 {
+        font-size: 1.5em;
+    }
+
+    .main-content p {
+        margin-bottom: 1em;
+        line-height: 1.5;
+        color: #4a4a4a;
+    }
+
+    .main-content ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+        .main-content ul li {
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            border: 1px solid black; /* Agrega un borde delgado y negro */
+        }
+
+            .main-content ul li:not(:last-child) {
+                margin-bottom: 10px;
+            }
+
+    .main-content a {
+        color: #4a4a4a;
+        text-decoration: none;
+    }
+
+        .main-content a:hover {
+            text-decoration: underline;
+        }
+
+    .main-content .technologies, .main-content .diagram {
+        margin-top: 20px;
+    }
+
+        .main-content .diagram img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+
+@media (max-width: 768px) {
+    .main-content {
+        margin: 10px;
+        padding: 15px;
+    }
+}
+
+.endpoint-card {
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.endpoint-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.endpoint-method {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.endpoint-path {
+    font-size: 1.2em;
+    color: #333;
+}
+
+.endpoint-description {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.response-example {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 4px;
+}
