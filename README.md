@@ -2,7 +2,7 @@
 
 ## src
 
-### DiscoverCostaRica.Api V2
+### DiscoverCostaRica.Api
 
 - **Proyecto principal de la API**
     - **Controllers**: Controladores de la API
