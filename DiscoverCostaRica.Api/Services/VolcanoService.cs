@@ -14,8 +14,7 @@ public class VolcanoService(DiscoverCostaRicaContext context, RedisCacheService 
             return await cache.GetAsync<DtoVolcano[]>(CacheKeys.ALL_VOLCANOS);
 
         var volcanos = await context.Volcanos.ToArrayAsync(cancellationToken);
-        return volcanos.Length > 0 ?
-            mapper.Map<DtoVolcano[]>(volcanos) :
-            Result<DtoVolcano[]>.NotFound("Volcanos not found");
+
+        throw new Exception("No volcanos");
     }
 }

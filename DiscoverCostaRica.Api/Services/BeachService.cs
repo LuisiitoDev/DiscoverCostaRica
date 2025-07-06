@@ -10,12 +10,11 @@ public class BeachService(DiscoverCostaRicaContext context, RedisCacheService ca
 {
     public async Task<Result<DtoBeach[]>> GetBeaches(CancellationToken cancellationToken)
     {
-        if (await cache.ContainsKeyAsync(CacheKeys.ALL_BEACHES))
-            return await cache.GetAsync<DtoBeach[]>(CacheKeys.ALL_BEACHES);
+        // TODO: No cache needed.
 
         var beaches = await context.Beaches.ToArrayAsync(cancellationToken);
         return beaches.Length > 0 ?
             map.Map<DtoBeach[]>(beaches) :
-            Result<DtoBeach[]>.NotFound("No beaches found. Please check later for updates.");
+            Result<DtoBeach[]>.NotFound("No beaches found. Coming soon!");
     }
 }
