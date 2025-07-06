@@ -16,6 +16,6 @@ public class BeachService(DiscoverCostaRicaContext context, RedisCacheService ca
         var beaches = await context.Beaches.ToArrayAsync(cancellationToken);
         return beaches.Length > 0 ?
             map.Map<DtoBeach[]>(beaches) :
-            Result<DtoBeach[]>.NotFound("No beaches found. Please check later for updates.");
+            Result<DtoBeach[]>.NotFound("No beaches found. Comming soon!.");
     }
 }
