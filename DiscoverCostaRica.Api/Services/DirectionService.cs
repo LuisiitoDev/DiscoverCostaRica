@@ -21,6 +21,9 @@ public class DirectionService(DiscoverCostaRicaContext context, RedisCacheServic
 
     public async Task<Result<DtoCanton[]>> GetCantons(int provinceId, CancellationToken cancellationToken)
     {
+        if (await cacheService.ContainsKeyAsync(CacheKeys.Cantons))
+            return await cacheService.GetAsync<DtoCanton[]>(CacheKeys.Cantons);
+
         var cantons = await context.Provinces
         .Include(p => p.Cantons)
         .Where(p => p.Id == provinceId)
