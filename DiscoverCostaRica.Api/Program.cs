@@ -13,6 +13,8 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -63,6 +65,8 @@ builder.Services.Configure<JsonOptions>(options =>
 
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 
 app.UseMiddleware<ExceptionMiddleware>();

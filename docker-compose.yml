@@ -1,0 +1,27 @@
+services:
+  discovercostarica.volcanoservice.api:
+    image: ${DOCKER_REGISTRY-}discovercostaricavolcanoserviceapi
+    build:
+      context: .
+      dockerfile: DiscoverCostaRica.VolcanoService.Api/Dockerfile
+
+  discovercostarica.geoservice.api:
+    image: ${DOCKER_REGISTRY-}discovercostaricageoserviceapi
+    build:
+      context: .
+      dockerfile: DiscoverCostaRica.GeoService.Api/Dockerfile
+
+
+  discovercostarica.cultureserice.api:
+    image: ${DOCKER_REGISTRY-}discovercostaricaculturesericeapi
+    build:
+      context: .
+      dockerfile: DiscoverCostaRica.CultureSerice.Api/Dockerfile
+
+
+  discovercostarica.beaches.api:
+    image: ${DOCKER_REGISTRY-}discovercostaricabeachesapi
+    build:
+      context: .
+      dockerfile: DiscoverCostaRica.Beaches.Api/Dockerfile
+
