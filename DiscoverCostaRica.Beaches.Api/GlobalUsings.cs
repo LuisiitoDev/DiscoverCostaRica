@@ -1,0 +1,1 @@
+﻿global using static DiscoverCostaRica.Shared.Utils.SharedExtensions;

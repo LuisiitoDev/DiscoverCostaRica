@@ -1,15 +1,20 @@
 ﻿using DiscoverCostaRica.Shared.Responses;
-
+using Microsoft.AspNetCore.Http;
 namespace DiscoverCostaRica.Shared.Utils;
 
 public static class SharedExtensions
 {
-    public static class Result
+    extension<T>(Result<T> result)
     {
-        public static Success<TResult> Success<TResult>(TResult value, int statusCode = 200)
+        public IResult ToResult()
         {
-            return new Success<TResult>(value, statusCode);
+            return result.StatusCode switch
+            {
+                StatusCodes.Status200OK => Results.Ok(result),
+                StatusCodes.Status404NotFound => Results.NotFound(result),
+                StatusCodes.Status400BadRequest => Results.BadRequest(result),
+                _ => Results.Problem(result.Message, statusCode: result.StatusCode)
+            };
         }
     }
-
 }

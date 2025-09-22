@@ -22,6 +22,7 @@
     <ProjectReference Include="..\DiscoverCostaRica.Beaches.Domain\DiscoverCostaRica.Beaches.Domain.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Beaches.Infraestructure\DiscoverCostaRica.Beaches.Infraestructure.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
   </ItemGroup>
 
 </Project>

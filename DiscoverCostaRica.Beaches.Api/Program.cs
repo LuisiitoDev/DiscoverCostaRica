@@ -1,31 +1,39 @@
+using DiscoverCostaRica.Beaches.Api.Extensions;
 using DiscoverCostaRica.Beaches.Api.Profiles;
+using DiscoverCostaRica.Beaches.Application.Interfaces;
+using DiscoverCostaRica.Beaches.Application.Services;
+using DiscoverCostaRica.Beaches.Domain.Interfaces;
 using DiscoverCostaRica.Beaches.Infraestructure.Context;
+using DiscoverCostaRica.Beaches.Infraestructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<BeachContext>(options =>
 {
     options.UseSqlServer(
-        connectionString: builder.Configuration.GetConnectionString("DiscoverCostaRica") ?? throw new InvalidOperationException("Connection string 'DiscoverCostaRica' not found."),
+        connectionString: builder.Configuration.GetConnectionString("DiscoverCostaRica") 
+            ?? throw new InvalidOperationException("Connection string 'DiscoverCostaRica' not found."),
         options => options.EnableRetryOnFailure(
             maxRetryCount: 5,
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorNumbersToAdd: null));
-}, ServiceLifetime.Transient);
+}, ServiceLifetime.Scoped);
+
+builder.Services.AddTransient<IBeachRepository, BeachRepository>();
+builder.Services.AddTransient<IBeachService, BeachService>();
 
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
+app.MapBeachEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
