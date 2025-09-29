@@ -19,8 +19,8 @@
   <ItemGroup>
     <ProjectReference Include="..\DiscoverCostaRica.Api\DiscoverCostaRica.Api.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Beaches.Api\DiscoverCostaRica.Beaches.Api.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.CultureSerice.Api\DiscoverCostaRica.CultureSerice.Api.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.GeoService.Api\DiscoverCostaRica.GeoService.Api.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.CultureSerice.Api\DiscoverCostaRica.Culture.Api.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.GeoService.Api\DiscoverCostaRica.Geo.Api.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.VolcanoService.Api\DiscoverCostaRica.VolcanoService.Api.csproj" />
   </ItemGroup>
 
