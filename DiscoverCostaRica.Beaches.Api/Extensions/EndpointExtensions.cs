@@ -11,9 +11,11 @@ public static class EndpointExtensions
         var groups = endpoints.MapGroup("api/v1/beaches");
 
         groups.MapGet("/", BeachHandler.ExecuteAsync)
-            .WithName("Get beaches")
-            .WithSummary("Get Costa Rica beaches")
-            .WithDescription("Get all the beaches around Costa Rica")
+            .WithName("GetBeaches")
+            .WithSummary("Retrieve all beaches in Costa Rica")
+            .WithDescription(
+                "Returns a comprehensive list of beaches located throughout Costa Rica, " +
+                "including details such as location, characteristics, and available amenities.")
             .Produces<Result<List<DtoBeach>>>(StatusCodes.Status200OK)
             .ProducesValidationProblem()
             .Produces(StatusCodes.Status404NotFound)
