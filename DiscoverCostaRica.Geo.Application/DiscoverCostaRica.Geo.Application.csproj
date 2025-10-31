@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DiscoverCostaRica.Geo.Domain\DiscoverCostaRica.Geo.Domain.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Geo.Infraestructure\DiscoverCostaRica.Geo.Infraestructure.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
