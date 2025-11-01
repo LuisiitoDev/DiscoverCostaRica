@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>894140ad-63cd-4e4b-b46b-5be26e2c8718</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.4.2" />
+		<PackageReference Include="AutoMapper" Version="15.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-rc.2.25502.107" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0-preview.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DiscoverCostaRica.Geo.Application\DiscoverCostaRica.Geo.Application.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Geo.Domain\DiscoverCostaRica.Geo.Domain.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Geo.Infraestructure\DiscoverCostaRica.Geo.Infraestructure.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
