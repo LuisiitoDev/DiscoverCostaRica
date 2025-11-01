@@ -1,6 +1,0 @@
-@DiscoverCostaRica.Api_HostAddress = http://localhost:5233
-
-GET {{DiscoverCostaRica.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
