@@ -1,9 +1,10 @@
 using DiscoverCostaRica.Geo.Infraestructure.Context;
+using DiscoverCostaRica.Geo.Infraestructure.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddDiscoverCostaRicaContext<GeoContext>();
+builder.AddDiscoverCostaRicaContext<IGeoContext, GeoContext>();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

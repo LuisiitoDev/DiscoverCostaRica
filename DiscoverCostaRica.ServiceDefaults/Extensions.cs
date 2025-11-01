@@ -20,8 +20,17 @@ public static class Extensions
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";
 
-    public static IHostApplicationBuilder AddDiscoverCostaRicaContext<Context>(this IHostApplicationBuilder builder, string connectionStringKey = "DiscoverCostaRica")
-        where Context : DbContext
+    public static IHostApplicationBuilder AddMappingProfile<TProfile>(this IHostApplicationBuilder builder)
+        where TProfile : AutoMapper.Profile
+    {
+        builder.Services.AddAutoMapper(cfg => cfg.AddProfile(typeof(TProfile)));
+        return builder;
+    }
+
+    public static IHostApplicationBuilder AddDiscoverCostaRicaContext<TInterfaceContext, Context>(this IHostApplicationBuilder builder, string connectionStringKey = "DiscoverCostaRica")
+    where TInterfaceContext : class
+    where Context : DbContext, TInterfaceContext
+
 
     {
         builder.Services.AddDbContext<Context>(options =>
@@ -36,6 +45,8 @@ public static class Extensions
                             errorNumbersToAdd: null));
 
         }, ServiceLifetime.Scoped);
+
+        builder.Services.AddScoped<TInterfaceContext>(provider => provider.GetRequiredService<Context>());
 
         return builder;
     }
