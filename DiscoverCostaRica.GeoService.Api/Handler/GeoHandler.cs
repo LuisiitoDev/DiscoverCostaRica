@@ -1,5 +1,4 @@
 ﻿using DiscoverCostaRica.Geo.Application.Interfaces;
-using DiscoverCostaRica.Shared.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiscoverCostaRica.Geo.Api.Handler;

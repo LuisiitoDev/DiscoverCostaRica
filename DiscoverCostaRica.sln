@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.0.11012.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Api", "DiscoverCostaRica.Api\DiscoverCostaRica.Api.csproj", "{D0B0D3C5-9830-4EE8-9569-DF8292D6591C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Domain", "DiscoverCostaRica.Domain\DiscoverCostaRica.Domain.csproj", "{D88B9270-D223-4848-8593-F79CFF7C0696}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Infraestructure", "DiscoverCostaRica.Infraestructure\DiscoverCostaRica.Infraestructure.csproj", "{75809C4D-A3C7-41D8-A768-FCC1419DF28F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Functions", "DiscoverCostaRica.Functions\DiscoverCostaRica.Functions.csproj", "{7C7F4F7E-A259-49A7-A1D5-7BCEA3965C65}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.AppHost", "DiscoverCostaRica.AppHost\DiscoverCostaRica.AppHost.csproj", "{DDF3FA60-E781-419E-AE75-9F7DB98E7582}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.ServiceDefaults", "DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj", "{387107C0-AA60-7C8A-71E3-CAD35FAE59BA}"
@@ -43,23 +35,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Beaches.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Shared", "DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj", "{07A90D8F-70AF-4E8C-83D3-B30FF7721D73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Application", "..\DiscoverCostaRica.Culture.Application\DiscoverCostaRica.Culture.Application.csproj", "{E0024C42-FF2E-4B08-B49E-726D6E15B5B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Application", "DiscoverCostaRica.Culture.Application\DiscoverCostaRica.Culture.Application.csproj", "{E0024C42-FF2E-4B08-B49E-726D6E15B5B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Domain", "..\DiscoverCostaRica.Culture.Domain\DiscoverCostaRica.Culture.Domain.csproj", "{3B1F6AA1-4800-452D-825D-C5315DA5E3DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Domain", "DiscoverCostaRica.Culture.Domain\DiscoverCostaRica.Culture.Domain.csproj", "{3B1F6AA1-4800-452D-825D-C5315DA5E3DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Infraestructure", "..\DiscoverCostaRica.Culture.Infraestructure\DiscoverCostaRica.Culture.Infraestructure.csproj", "{E376070D-07C4-4E54-8FF8-2C91C907FF46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Infraestructure", "DiscoverCostaRica.Culture.Infraestructure\DiscoverCostaRica.Culture.Infraestructure.csproj", "{E376070D-07C4-4E54-8FF8-2C91C907FF46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Domain", "..\DiscoverCostaRica.Geo.Domain\DiscoverCostaRica.Geo.Domain.csproj", "{4954457E-E334-4E49-8F99-BC739E9591ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Domain", "DiscoverCostaRica.Geo.Domain\DiscoverCostaRica.Geo.Domain.csproj", "{4954457E-E334-4E49-8F99-BC739E9591ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Application", "..\DiscoverCostaRica.Geo.Application\DiscoverCostaRica.Geo.Application.csproj", "{73B1EF8E-5E45-4A73-A4F6-278152692A86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Application", "DiscoverCostaRica.Geo.Application\DiscoverCostaRica.Geo.Application.csproj", "{73B1EF8E-5E45-4A73-A4F6-278152692A86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Infraestructure", "..\DiscoverCostaRica.Geo.Infraestructure\DiscoverCostaRica.Geo.Infraestructure.csproj", "{7E299F52-1CFB-4BB5-A72C-252F5DDF78E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Infraestructure", "DiscoverCostaRica.Geo.Infraestructure\DiscoverCostaRica.Geo.Infraestructure.csproj", "{7E299F52-1CFB-4BB5-A72C-252F5DDF78E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Application", "..\DiscoverCostaRica.VolcanoService.Application\DiscoverCostaRica.VolcanoService.Application.csproj", "{834822D7-5A39-4A7C-95AD-8AC7F563AD97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Application", "DiscoverCostaRica.VolcanoService.Application\DiscoverCostaRica.VolcanoService.Application.csproj", "{834822D7-5A39-4A7C-95AD-8AC7F563AD97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Domain", "..\DiscoverCostaRica.VolcanoService.Domain\DiscoverCostaRica.VolcanoService.Domain.csproj", "{716E5182-9F46-4747-8D7D-A34BF3B10486}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Domain", "DiscoverCostaRica.VolcanoService.Domain\DiscoverCostaRica.VolcanoService.Domain.csproj", "{716E5182-9F46-4747-8D7D-A34BF3B10486}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Infraestructure", "..\DiscoverCostaRica.VolcanoService.Infraestructure\DiscoverCostaRica.VolcanoService.Infraestructure.csproj", "{B9C31388-154B-4285-BC19-0B8635980ECF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Infraestructure", "DiscoverCostaRica.VolcanoService.Infraestructure\DiscoverCostaRica.VolcanoService.Infraestructure.csproj", "{B9C31388-154B-4285-BC19-0B8635980ECF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,22 +59,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D0B0D3C5-9830-4EE8-9569-DF8292D6591C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0B0D3C5-9830-4EE8-9569-DF8292D6591C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0B0D3C5-9830-4EE8-9569-DF8292D6591C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0B0D3C5-9830-4EE8-9569-DF8292D6591C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D88B9270-D223-4848-8593-F79CFF7C0696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D88B9270-D223-4848-8593-F79CFF7C0696}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D88B9270-D223-4848-8593-F79CFF7C0696}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D88B9270-D223-4848-8593-F79CFF7C0696}.Release|Any CPU.Build.0 = Release|Any CPU
-		{75809C4D-A3C7-41D8-A768-FCC1419DF28F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{75809C4D-A3C7-41D8-A768-FCC1419DF28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{75809C4D-A3C7-41D8-A768-FCC1419DF28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{75809C4D-A3C7-41D8-A768-FCC1419DF28F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C7F4F7E-A259-49A7-A1D5-7BCEA3965C65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C7F4F7E-A259-49A7-A1D5-7BCEA3965C65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C7F4F7E-A259-49A7-A1D5-7BCEA3965C65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C7F4F7E-A259-49A7-A1D5-7BCEA3965C65}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDF3FA60-E781-419E-AE75-9F7DB98E7582}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDF3FA60-E781-419E-AE75-9F7DB98E7582}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDF3FA60-E781-419E-AE75-9F7DB98E7582}.Release|Any CPU.ActiveCfg = Release|Any CPU
