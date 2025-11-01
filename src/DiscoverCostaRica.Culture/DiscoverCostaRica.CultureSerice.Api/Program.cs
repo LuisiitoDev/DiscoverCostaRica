@@ -1,9 +1,10 @@
 using DiscoverCostaRica.Culture.Api.Extensions;
+using DiscoverCostaRica.Culture.Infraestructure.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-
+builder.AddDiscoverCostaRicaContext<CultureContext>();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

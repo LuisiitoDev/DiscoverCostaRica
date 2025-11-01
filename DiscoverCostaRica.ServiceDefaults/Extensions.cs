@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ServiceDiscovery;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -17,6 +19,26 @@ public static class Extensions
 {
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";
+
+    public static IHostApplicationBuilder AddDiscoverCostaRicaContext<Context>(this IHostApplicationBuilder builder, string connectionStringKey = "DiscoverCostaRica")
+        where Context : DbContext
+
+    {
+        builder.Services.AddDbContext<Context>(options =>
+        {
+            options.UseSqlServer(
+                    connectionString: builder.Configuration.GetConnectionString(connectionStringKey)
+                                      ?? throw new InvalidOperationException($"Connection string '{connectionStringKey}' not found."),
+
+            options => options.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null));
+
+        }, ServiceLifetime.Scoped);
+
+        return builder;
+    }
 
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
