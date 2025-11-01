@@ -1,28 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>a5206703-27b4-46b5-bbd0-73ca6e88b7fe</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>a5206703-27b4-46b5-bbd0-73ca6e88b7fe</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.4.2" />
-    <PackageReference Include="AutoMapper" Version="15.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.20" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0-preview.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.4.2" />
+		<PackageReference Include="AutoMapper" Version="15.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.20" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0-preview.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DiscoverCostaRica.Beaches.Application\DiscoverCostaRica.Beaches.Application.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.Beaches.Domain\DiscoverCostaRica.Beaches.Domain.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.Beaches.Infraestructure\DiscoverCostaRica.Beaches.Infraestructure.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
+	  <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
+	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Application\DiscoverCostaRica.Beaches.Application.csproj" />
+	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Domain\DiscoverCostaRica.Beaches.Domain.csproj" />
+	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Infraestructure\DiscoverCostaRica.Beaches.Infraestructure.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Beaches.Domain\DiscoverCostaRica.Beaches.Domain.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
   </ItemGroup>
 
 </Project>

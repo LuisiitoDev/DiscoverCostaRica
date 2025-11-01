@@ -1,10 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DiscoverCostaRica.Culture.Domain.Models;
+using DiscoverCostaRica.Culture.Infraestructure.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Culture.Infraestructure.Context
+namespace DiscoverCostaRica.Culture.Infraestructure.Context;
+
+public class CultureContext(DbContextOptions<CultureContext> options) : DbContext(options), ICultureContext
 {
-    internal class CultureContext
+    public DbSet<DishModel> Dishes { get; set; }
+    public DbSet<TraditionModel> Traditions { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CultureContext).Assembly);
     }
 }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DiscoverCostaRica.Culture.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Culture.Infraestructure.Interfaces
+namespace DiscoverCostaRica.Culture.Infraestructure.Interfaces;
+
+public interface ICultureContext
 {
-    internal interface ICultureContext
-    {
-    }
+    public DbSet<DishModel> Dishes { get; set; }
+    public DbSet<TraditionModel> Traditions { get; set; }
 }
