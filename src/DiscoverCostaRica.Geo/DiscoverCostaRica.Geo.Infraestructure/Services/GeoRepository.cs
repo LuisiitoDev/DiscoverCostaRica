@@ -1,10 +1,12 @@
 ﻿using DiscoverCostaRica.Geo.Domain.Interfaces;
 using DiscoverCostaRica.Geo.Domain.Models;
 using DiscoverCostaRica.Geo.Infraestructure.Interfaces;
+using DiscoverCostaRica.Shared.Attributes;
 using System.Data.Entity;
 
 namespace DiscoverCostaRica.Geo.Infraestructure.Services;
 
+[TransientService]
 public class GeoRepository(IGeoContext _context) : IGeoRepository
 {
     public async Task<List<CantonModel>> GetCantonsByProvince(int provinceId, CancellationToken cancellationToken)

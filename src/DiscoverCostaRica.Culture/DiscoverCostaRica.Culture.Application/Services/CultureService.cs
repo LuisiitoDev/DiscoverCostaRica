@@ -2,11 +2,13 @@
 using DiscoverCostaRica.Culture.Application.Dtos;
 using DiscoverCostaRica.Culture.Application.Interfaces;
 using DiscoverCostaRica.Culture.Domain.Interfaces;
+using DiscoverCostaRica.Shared.Attributes;
 using DiscoverCostaRica.Shared.Responses;
 using Microsoft.AspNetCore.Http;
 
 namespace DiscoverCostaRica.Culture.Application.Services;
 
+[TransientService]
 public class CultureService(ICultureRepository _repository, IMapper _mapper) : ICultureService
 {
     public async Task<Result<List<DtoDish>>> GetDishes(CancellationToken cancellationToken)

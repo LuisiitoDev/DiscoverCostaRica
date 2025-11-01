@@ -2,11 +2,13 @@
 using DiscoverCostaRica.Geo.Application.Dtos;
 using DiscoverCostaRica.Geo.Application.Interfaces;
 using DiscoverCostaRica.Geo.Domain.Interfaces;
+using DiscoverCostaRica.Shared.Attributes;
 using DiscoverCostaRica.Shared.Responses;
 using Microsoft.AspNetCore.Http;
 
 namespace DiscoverCostaRica.Geo.Application.Services;
 
+[TransientService]
 public class GeoService(IGeoRepository _repository, IMapper _mapper) : IGeoService
 {
     public async Task<Result<List<CantonDto>>> GetCantons(int provinceId, CancellationToken cancellationToken)

@@ -1,10 +1,12 @@
-﻿using DiscoverCostaRica.VolcanoService.Domain.Interfaces;
+﻿using DiscoverCostaRica.Shared.Attributes;
+using DiscoverCostaRica.VolcanoService.Domain.Interfaces;
 using DiscoverCostaRica.VolcanoService.Domain.Models;
 using DiscoverCostaRica.VolcanoService.Infraestructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscoverCostaRica.VolcanoService.Infraestructure.Services;
 
+[TransientService]
 public class VolcanoRepository(IVolcanoContext _context) : IVolcanoRepository
 {
     public async Task<List<VolcanoModel>> GetVolcanos(CancellationToken cancellationToken)

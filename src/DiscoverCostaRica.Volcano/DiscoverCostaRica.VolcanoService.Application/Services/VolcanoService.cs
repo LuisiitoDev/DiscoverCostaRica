@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DiscoverCostaRica.Shared.Attributes;
 using DiscoverCostaRica.Shared.Responses;
 using DiscoverCostaRica.VolcanoService.Application.Dtos;
 using DiscoverCostaRica.VolcanoService.Application.Interfaces;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace DiscoverCostaRica.VolcanoService.Application.Services;
 
+[TransientService]
 public class VolcanoService(IVolcanoRepository _repository, IMapper _mapper) : IVolcanoService
 {
     public async Task<Result<VolcanoDto>> GetVolcanoById(int id, CancellationToken cancellationToken)
