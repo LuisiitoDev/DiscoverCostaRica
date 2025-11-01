@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DiscoverCostaRica.Culture.Domain.Models;
 
-namespace DiscoverCostaRica.Culture.Domain.Interfaces
+namespace DiscoverCostaRica.Culture.Domain.Interfaces;
+
+public interface ICultureRepository
 {
-    internal interface ICultureRepository
-    {
-    }
+    Task<List<DishModel>> GetDishes(CancellationToken cancellationToken);
+    Task<List<TraditionModel>> GetTraditions(CancellationToken cancellationToken);
 }

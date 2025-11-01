@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Culture.Domain\DiscoverCostaRica.Culture.Domain.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Culture.Infraestructure\DiscoverCostaRica.Culture.Infraestructure.csproj" />
+  </ItemGroup>
+
 </Project>

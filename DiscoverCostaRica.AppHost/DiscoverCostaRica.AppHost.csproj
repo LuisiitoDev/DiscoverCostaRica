@@ -17,10 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DiscoverCostaRica.Beaches.Api\DiscoverCostaRica.Beaches.Api.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.CultureSerice.Api\DiscoverCostaRica.Culture.Api.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.GeoService.Api\DiscoverCostaRica.Geo.Api.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.VolcanoService.Api\DiscoverCostaRica.VolcanoService.Api.csproj" />
+    <ProjectReference Include="..\src\DiscoverCostaRica.Beaches\DiscoverCostaRica.Beaches.Api\DiscoverCostaRica.Beaches.Api.csproj" />
+    <ProjectReference Include="..\src\DiscoverCostaRica.Culture\DiscoverCostaRica.CultureSerice.Api\DiscoverCostaRica.Culture.Api.csproj" />
+    <ProjectReference Include="..\src\DiscoverCostaRica.Geo\DiscoverCostaRica.GeoService.Api\DiscoverCostaRica.Geo.Api.csproj" />
+    <ProjectReference Include="..\src\DiscoverCostaRica.Volcano\DiscoverCostaRica.VolcanoService.Api\DiscoverCostaRica.VolcanoService.Api.csproj" />
   </ItemGroup>
 
 </Project>
