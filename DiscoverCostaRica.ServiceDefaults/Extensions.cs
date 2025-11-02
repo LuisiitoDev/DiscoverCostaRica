@@ -1,3 +1,4 @@
+using DiscoverCostaRica.ServiceDefaults.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,12 @@ public static class Extensions
 {
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";
+
+    public static IHostApplicationBuilder AddGlobalExeption(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        return builder;
+    }
 
     public static IHostApplicationBuilder AddMappingProfile<TProfile>(this IHostApplicationBuilder builder)
         where TProfile : AutoMapper.Profile

@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IGeoContext, GeoContext>();
 builder.AddMappingProfile<MappingProfile>();
+builder.AddGlobalExeption();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Infraestructure();
@@ -22,4 +23,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapGeoEndpoints();
 app.MapDefaultEndpoints();
+app.UseExceptionHandler();
 await app.RunAsync();

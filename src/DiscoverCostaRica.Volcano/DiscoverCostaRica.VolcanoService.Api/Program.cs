@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IVolcanoContext, VolcanoContext>();
 builder.AddMappingProfile<MappingProfile>();
+builder.AddGlobalExeption();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_VolcanoService_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_VolcanoService_Infraestructure();
@@ -22,5 +23,5 @@ if (app.Environment.IsDevelopment())
 app.MapVolcanoEndpoints();
 app.MapDefaultEndpoints();
 app.UseHttpsRedirection();
-
+app.UseExceptionHandler();
 await app.RunAsync();
