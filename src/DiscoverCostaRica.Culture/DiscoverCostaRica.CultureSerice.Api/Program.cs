@@ -9,6 +9,8 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<ICultureContext, CultureContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.Services.AddOpenApi();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Application();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Infraestructure();
 
 var app = builder.Build();
 

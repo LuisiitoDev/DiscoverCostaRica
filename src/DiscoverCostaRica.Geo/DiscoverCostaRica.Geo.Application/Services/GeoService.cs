@@ -18,7 +18,7 @@ public class GeoService(IGeoRepository _repository, IMapper _mapper) : IGeoServi
         if (cantons is null || cantons.Count <= 0)
             return new Failure("No cantons found. Please check later for updates.", StatusCodes.Status404NotFound);
 
-        return new Success(_mapper.Map<List<DistrictDto>>(cantons));
+        return new Success(_mapper.Map<List<CantonDto>>(cantons));
     }
 
     public async Task<Result<List<DistrictDto>>> GetDistricts(int cantonId, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ public class GeoService(IGeoRepository _repository, IMapper _mapper) : IGeoServi
         if (cantons is null || cantons.Count <= 0)
             return new Failure("No districts found. Please check later for updates.", StatusCodes.Status404NotFound);
 
-        return new Success(_mapper.Map<List<CantonDto>>(cantons));
+        return new Success(_mapper.Map<List<DistrictDto>>(cantons));
     }
 
     public async Task<Result<List<ProvinceDto>>> GetProvinces(CancellationToken cancellationToken)

@@ -9,7 +9,8 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IVolcanoContext, VolcanoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.Services.AddOpenApi();
-
+builder.Services.AddGeneratedServices_DiscoverCostaRica_VolcanoService_Application();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_VolcanoService_Infraestructure();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

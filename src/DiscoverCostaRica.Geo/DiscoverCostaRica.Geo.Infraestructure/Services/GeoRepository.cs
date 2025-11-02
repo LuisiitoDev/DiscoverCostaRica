@@ -2,7 +2,7 @@
 using DiscoverCostaRica.Geo.Domain.Models;
 using DiscoverCostaRica.Geo.Infraestructure.Interfaces;
 using DiscoverCostaRica.Shared.Attributes;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiscoverCostaRica.Geo.Infraestructure.Services;
 

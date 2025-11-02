@@ -9,7 +9,8 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IGeoContext, GeoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.Services.AddOpenApi();
-
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Application();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Infraestructure();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

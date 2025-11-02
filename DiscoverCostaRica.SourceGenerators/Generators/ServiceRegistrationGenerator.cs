@@ -8,66 +8,113 @@ using System.Text;
 namespace DiscoverCostaRica.SourceGenerators.Generators;
 
 [Generator(LanguageNames.CSharp)]
-public class MySourceGenerator : IIncrementalGenerator
+public class ServiceRegistrationGenerator : IIncrementalGenerator
 {
+    private const string TransientServiceAttributeName = "TransientServiceAttribute";
+    private const string ScopedServiceAttributeName = "ScopedServiceAttribute";
+    private const string SingletonServiceAttributeName = "SingletonServiceAttribute";
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var classDeclaration = context.SyntaxProvider
+        var classDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: static (node, _) => node is ClassDeclarationSyntax,
-                transform: static (ctx, _) => (ClassDeclarationSyntax)ctx.Node)
-            .Where(static cls => cls.AttributeLists.Count > 0);
+                predicate: static (node, _) => node is ClassDeclarationSyntax cls && cls.AttributeLists.Count > 0,
+                transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
+            .Where(static m => m is not null);
 
-        var compilationAndClasses = context.CompilationProvider.Combine(classDeclaration.Collect());
+        var compilationAndClasses = context.CompilationProvider.Combine(classDeclarations.Collect());
 
         context.RegisterSourceOutput(compilationAndClasses, (spc, source) =>
         {
-            var (compilation, classList) = source;
+            var (compilation, classes) = source;
             var registrations = new List<string>();
 
-            foreach (var classDeclarationSyntax in classList)
+            foreach (var classInfo in classes)
             {
-                var model = compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
-                var classSymbol = model.GetDeclaredSymbol(classDeclarationSyntax) as INamedTypeSymbol;
+                if (classInfo is null) continue;
 
-                if (classSymbol == null) continue;
+                var (classSymbol, attributeName) = classInfo.Value;
 
-                foreach (var attributeData in classSymbol.GetAttributes())
+                var interfaceType = classSymbol.Interfaces.FirstOrDefault()?.ToDisplayString();
+                var implementationType = classSymbol.ToDisplayString();
+
+                var registration = attributeName switch
                 {
-                    var attributeName = attributeData.AttributeClass?.Name;
-                    string registration = attributeName switch
-                    {
-                        "TransientServiceAttribute" => $"services.AddTransient<{classSymbol.Interfaces.FirstOrDefault()?.ToDisplayString() ?? classSymbol.Name},{classSymbol.ToDisplayString()}>();",
-                        "ScopedServiceAttribute" => $"services.AddScoped<{classSymbol.Interfaces.FirstOrDefault()?.ToDisplayString() ?? classSymbol.Name},{classSymbol.ToDisplayString()}>();",
-                        "SingletonServiceAttribute" => $"services.AddSingleton<{classSymbol.Interfaces.FirstOrDefault()?.ToDisplayString() ?? classSymbol.Name},{classSymbol.ToDisplayString()}>();",
-                        _ => null
-                    };
+                    TransientServiceAttributeName =>
+                        interfaceType != null
+                            ? $"services.AddTransient<{interfaceType}, {implementationType}>();"
+                            : $"services.AddTransient<{implementationType}>();",
+                    ScopedServiceAttributeName =>
+                        interfaceType != null
+                            ? $"services.AddScoped<{interfaceType}, {implementationType}>();"
+                            : $"services.AddScoped<{implementationType}>();",
+                    SingletonServiceAttributeName =>
+                        interfaceType != null
+                            ? $"services.AddSingleton<{interfaceType}, {implementationType}>();"
+                            : $"services.AddSingleton<{implementationType}>();",
+                    _ => null
+                };
 
-                    if (registration != null)
-                    {
-                        registrations.Add(registration);
-                    }
+                if (registration != null)
+                {
+                    registrations.Add(registration);
                 }
+            }
 
-                var sourceText = $@"
-                    using Microsoft.Extensions.DependencyInjection;
-
-                    namespace DiscoverCostaRica.Generated
-                    {{
-                        public static class ServiceRegistrationExtensions
-                        {{
-                            public static IServiceCollection AddGeneratedServices(this IServiceCollection services)
-                            {{
-                                // Auto-generated registration code
-                                {string.Join("\n            ", registrations)}
-                                return services;
-                            }}
-                        }}
-                    }}
-                ";
-
-                spc.AddSource("ServiceRegistrationExtensions.g.cs", SourceText.From(sourceText, Encoding.UTF8));
+            if (registrations.Count > 0)
+            {
+                var assemblyName = compilation.AssemblyName ?? "Unknown";
+                var sanitizedName = SanitizeAssemblyName(assemblyName);
+                var sourceText = GenerateExtensionClass(registrations, sanitizedName);
+                spc.AddSource($"ServiceRegistrationExtensions.{sanitizedName}.g.cs", SourceText.From(sourceText, Encoding.UTF8));
             }
         });
+    }
+
+    private static string SanitizeAssemblyName(string assemblyName)
+    {
+        return assemblyName.Replace(".", "_").Replace("-", "_");
+    }
+
+    private static (INamedTypeSymbol ClassSymbol, string AttributeName)? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
+    {
+        var classDeclaration = (ClassDeclarationSyntax)context.Node;
+        var semanticModel = context.SemanticModel;
+
+        if (semanticModel.GetDeclaredSymbol(classDeclaration) is not INamedTypeSymbol classSymbol)
+            return null;
+
+        foreach (var attribute in classSymbol.GetAttributes())
+        {
+            var attributeName = attribute.AttributeClass?.Name;
+
+            if (attributeName == TransientServiceAttributeName ||
+                attributeName == ScopedServiceAttributeName ||
+                attributeName == SingletonServiceAttributeName)
+            {
+                return (classSymbol, attributeName);
+            }
+        }
+
+        return null;
+    }
+
+    private static string GenerateExtensionClass(List<string> registrations, string assemblyName)
+    {
+        return $@"// <auto-generated/>
+            using Microsoft.Extensions.DependencyInjection;
+
+            namespace DiscoverCostaRica.Generated
+            {{
+                public static class ServiceRegistrationExtensions_{assemblyName}
+                {{
+                    public static IServiceCollection AddGeneratedServices_{assemblyName}(this IServiceCollection services)
+                    {{
+                        {string.Join("\n            ", registrations)}
+                        return services;
+                    }}
+                }}
+            }}
+            ";
     }
 }
