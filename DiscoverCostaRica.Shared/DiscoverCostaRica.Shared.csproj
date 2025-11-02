@@ -8,4 +8,7 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Aspire.RabbitMQ.Client" Version="9.5.2" />
+	</ItemGroup>
 </Project>

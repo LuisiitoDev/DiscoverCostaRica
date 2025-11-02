@@ -9,6 +9,7 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IVolcanoContext, VolcanoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
+builder.AddRabbitMq("LoggerMessaging").AddRabbitMqLoggerProvider();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_VolcanoService_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_VolcanoService_Infraestructure();

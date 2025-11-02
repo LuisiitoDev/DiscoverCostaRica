@@ -9,6 +9,7 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<ICultureContext, CultureContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
+builder.AddRabbitMq("LoggerMessaging").AddRabbitMqLoggerProvider();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Infraestructure();

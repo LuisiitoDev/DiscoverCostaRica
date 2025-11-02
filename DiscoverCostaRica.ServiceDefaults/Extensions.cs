@@ -1,8 +1,8 @@
 using DiscoverCostaRica.ServiceDefaults.Middleware;
+using DiscoverCostaRica.Shared.logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -20,6 +20,18 @@ public static class Extensions
 {
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";
+
+    public static IHostApplicationBuilder AddRabbitMqLoggerProvider(this IHostApplicationBuilder builder)
+    {
+        builder.Services.Configure<RabbitMqLoggerOptions>(options => builder.Configuration.GetSection("RabbitMqLogger").Bind(options));
+        builder.Services.AddSingleton<ILoggerProvider, RabbitMqLoggerProvider>();
+        return builder;
+    }
+    public static IHostApplicationBuilder AddRabbitMq(this IHostApplicationBuilder builder, string connection)
+    {
+        builder.AddKeyedRabbitMQClient(name: connection);
+        return builder;
+    }
 
     public static IHostApplicationBuilder AddGlobalExeption(this IHostApplicationBuilder builder)
     {
