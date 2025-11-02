@@ -25,4 +25,6 @@ builder.AddProject<Projects.DiscoverCostaRica_VolcanoService_Api>("discovercosta
        .WaitFor(db)
        .WithReference(rabbitMq);
 
+builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_Function_LogConsumer>("discovercostarica-function-logconsumer");
+
 builder.Build().Run();
