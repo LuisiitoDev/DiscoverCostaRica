@@ -6,13 +6,22 @@ A modern microservices-based application built with .NET that provides informati
 
 - [Overview](#overview)
 - [Architecture](#architecture)
+  - [Complete System Architecture](#complete-system-architecture)
+  - [Clean Architecture per Service](#clean-architecture-per-service)
+  - [Key Architectural Patterns](#key-architectural-patterns)
 - [Services](#services)
 - [Technology Stack](#technology-stack)
 - [Event-Driven Architecture](#event-driven-architecture)
+- [Data Flow & Request Lifecycle](#data-flow--request-lifecycle)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
 - [Development](#development)
+- [API Documentation](#api-documentation)
+- [Health Checks](#health-checks)
+- [Monitoring & Observability](#monitoring--observability)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
 
 ## Overview
 
@@ -20,38 +29,111 @@ Discover Costa Rica is a distributed system designed to showcase various aspects
 
 ## Architecture
 
-The application follows **Clean Architecture** principles with a clear separation of concerns across multiple layers:
+### Complete System Architecture
+
+The Discover Costa Rica application is a distributed microservices system orchestrated by **.NET Aspire**. Here's the complete architecture:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          .NET ASPIRE AppHost                                 │
+│                    (Orchestration & Service Discovery)                       │
+└────────────────────────┬────────────────────────────────────────────────────┘
+                         │
+        ┌────────────────┼────────────────┬─────────────────┬─────────────────┐
+        │                │                │                 │                 │
+        ▼                ▼                ▼                 ▼                 ▼
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────────────┐
+│   Beach      │  │   Volcano    │  │   Culture    │  │     Geo      │  │ Log Consumer   │
+│   Service    │  │   Service    │  │   Service    │  │   Service    │  │   Function     │
+│              │  │              │  │              │  │              │  │  (Azure Func)  │
+│ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │  │                │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └───────┬────────┘
+       │                 │                 │                 │                   │
+       │ EF Core         │ EF Core         │ EF Core         │ EF Core           │
+       ├─────────────────┼─────────────────┼─────────────────┤                   │
+       │                 │                 │                 │                   │
+       ▼                 ▼                 ▼                 ▼                   │
+┌─────────────────────────────────────────────────────────────────┐             │
+│                    SQL Server Database                           │             │
+│               (Shared Database - Single Schema)                  │             │
+│  • Beaches Table    • Volcanoes Table                           │             │
+│  • Culture Table    • Geo Locations Table                       │             │
+└─────────────────────────────────────────────────────────────────┘             │
+       │                 │                 │                 │                   │
+       │                 │                 │                 │                   │
+       │   EventGrid     │   EventGrid     │   EventGrid     │   EventGrid       │
+       │   Logger        │   Logger        │   Logger        │   Logger          │
+       └─────────────────┴─────────────────┴─────────────────┴───────────────────┤
+                                           │                                      │
+                                           ▼                                      │
+                                  ┌──────────────────┐                           │
+                                  │  Azure EventGrid │                           │
+                                  │   Topic/Events   │                           │
+                                  └────────┬─────────┘                           │
+                                           │                                      │
+                                           └──────────────────────────────────────┘
+                                                          │
+                                                          ▼
+                                                ┌───────────────────┐
+                                                │  Azure Cosmos DB  │
+                                                │  (Log Storage)    │
+                                                │  • Application    │
+                                                │    Logs           │
+                                                │  • Telemetry      │
+                                                └───────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                         Cross-Cutting Concerns                              │
+│                                                                             │
+│  • ServiceDefaults: OpenTelemetry, Health Checks, Service Discovery        │
+│  • Shared Library: EventGrid Client, Custom Logging, Response Models       │
+│  • Source Generators: Automatic DI Registration                            │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Clean Architecture per Service
+
+Each microservice follows **Clean Architecture** principles with a clear separation of concerns:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      Presentation Layer                      │
-│                  (API Endpoints - Minimal APIs)              │
+│                      API Layer                               │
+│           (Minimal API Endpoints, Controllers)               │
+│  • Routing • Validation • DTO Mapping • HTTP Handling       │
 └────────────────────┬────────────────────────────────────────┘
                      │
 ┌────────────────────▼────────────────────────────────────────┐
 │                    Application Layer                         │
-│            (Business Logic, DTOs, Services)                  │
+│              (Business Logic, Use Cases)                     │
+│  • Services • DTOs • Interfaces • AutoMapper Profiles       │
 └────────────────────┬────────────────────────────────────────┘
                      │
 ┌────────────────────▼────────────────────────────────────────┐
 │                      Domain Layer                            │
-│              (Entities, Interfaces, Models)                  │
+│            (Entities, Domain Logic, Rules)                   │
+│  • Entities • Domain Models • Business Rules • Interfaces   │
 └────────────────────┬────────────────────────────────────────┘
                      │
 ┌────────────────────▼────────────────────────────────────────┐
 │                  Infrastructure Layer                        │
-│      (Data Access, External Services, Repositories)          │
+│         (Data Access, External Services)                     │
+│  • EF Core DbContext • Repositories • EventGrid Client      │
+│  • Entity Configurations • Database Migrations              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### Key Architectural Patterns
 
-- **Clean Architecture**: Each service is organized into Domain, Application, Infrastructure, and API layers
-- **Microservices**: Independent, loosely-coupled services for different business domains
-- **Event-Driven Architecture**: Services communicate asynchronously via Azure EventGrid
-- **CQRS (Command Query Responsibility Segregation)**: Separation of read and write operations
-- **Dependency Injection**: Built-in .NET DI container for loose coupling
-- **Source Generators**: Custom Roslyn source generators for automatic service registration
+- **Clean Architecture**: Each service is organized into Domain, Application, Infrastructure, and API layers with strict dependency rules (dependencies point inward)
+- **Microservices**: Independent, loosely-coupled services for different business domains (Beaches, Volcanoes, Culture, Geo)
+- **.NET Aspire Orchestration**: Centralized service orchestration, discovery, and configuration management
+- **Event-Driven Architecture**: Services communicate asynchronously via Azure EventGrid for logging and domain events
+- **Shared Database**: All services share a single SQL Server database (different from typical microservices, simplified for this project)
+- **CQRS (Command Query Responsibility Segregation)**: Separation of read and write operations within services
+- **Dependency Injection**: Built-in .NET DI container for loose coupling and testability
+- **Source Generators**: Custom Roslyn source generators for compile-time service registration
+- **Repository Pattern**: Abstraction over data access logic
+- **API Versioning**: Version management for backward compatibility
 
 ## Services
 
@@ -97,6 +179,94 @@ Handles geographical information, regions, and location-based queries.
 
 ### 5. Log Consumer Function (`DiscoverCostaRica.Function.LogConsumer`)
 Azure Function that consumes log events from EventGrid and persists them to Azure Cosmos DB for centralized logging and monitoring.
+
+**Trigger:**
+- EventGrid Trigger: Subscribes to log events from all services
+
+**Output:**
+- Writes structured logs to Azure Cosmos DB for analysis and monitoring
+
+### 6. AppHost Orchestration (`DiscoverCostaRica.AppHost`)
+
+The **AppHost** is the heart of the .NET Aspire orchestration layer that manages all services, dependencies, and infrastructure components.
+
+**Responsibilities:**
+- **Service Discovery**: Automatic registration and discovery of all microservices
+- **Dependency Management**: Orchestrates startup order with `WaitFor()` dependencies
+- **Configuration Distribution**: Centralizes connection strings and configuration
+- **Local Development**: Provides development dashboard at `http://localhost:15888`
+- **Infrastructure Provisioning**: Sets up SQL Server, Cosmos DB, and EventGrid connections
+
+**Managed Resources:**
+```csharp
+// SQL Server with persistent data
+var sql = builder.AddSqlServer("sql").WithLifetime(ContainerLifetime.Persistent);
+var db = sql.AddDatabase("DiscoverCostaRica");
+
+// Azure Cosmos DB for logging
+var cosmos = builder.AddAzureCosmosDB("discovercostarica-db");
+var discoverCostaRicaLogger = cosmos.AddCosmosDatabase("discovercostarica-logger");
+
+// All services with database dependency
+builder.AddProject<Projects.DiscoverCostaRica_Beaches_Api>("beaches-api")
+       .WithReference(db)
+       .WaitFor(db);
+
+// Azure Function with Cosmos DB reference
+builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_Function_LogConsumer>("log-consumer")
+       .WithReference(discoverCostaRicaLogger);
+```
+
+### 7. Service Defaults (`DiscoverCostaRica.ServiceDefaults`)
+
+Shared configuration library that every service references for consistent behavior:
+
+**Provides:**
+- **OpenTelemetry Integration**: Automatic tracing, metrics, and logging
+- **Health Checks**: `/health` and `/alive` endpoints for monitoring
+- **Service Discovery Client**: Enables services to discover each other
+- **Resilience Patterns**: HTTP retry policies and circuit breakers
+- **EventGrid Logger**: Custom logger provider that publishes to EventGrid
+- **Global Exception Handling**: Consistent error responses across all services
+- **Database Context Registration**: Helper methods for EF Core setup
+
+### 8. Shared Library (`DiscoverCostaRica.Shared`)
+
+Common components used across all services:
+
+**Components:**
+- **EventGrid Client**: Reusable client for publishing events to Azure EventGrid
+- **EventGrid Logger**: Custom logger that sends application logs to EventGrid → Cosmos DB
+- **Response Models**: Standardized API response structures
+- **Utility Functions**: Common helper methods
+- **DI Attributes**: `[ScopedService]`, `[SingletonService]`, `[TransientService]` for automatic registration
+
+### 9. Source Generators (`DiscoverCostaRica.SourceGenerators`)
+
+Custom Roslyn source generators that run at compile-time:
+
+**Purpose:**
+- Automatically generates service registration code based on custom attributes
+- Eliminates boilerplate DI registration code
+- Ensures consistency across all services
+- Generates methods like `AddGeneratedServices_DiscoverCostaRica_Beaches_Application()`
+
+**Example:**
+```csharp
+[ScopedService]
+public class BeachService : IBeachService
+{
+    // Implementation
+}
+
+// Generated code at compile-time:
+public static IServiceCollection AddGeneratedServices_DiscoverCostaRica_Beaches_Application(
+    this IServiceCollection services)
+{
+    services.AddScoped<IBeachService, BeachService>();
+    return services;
+}
+```
 
 ## Technology Stack
 
@@ -184,6 +354,89 @@ Each service requires EventGrid configuration in `appsettings.json`:
 }
 ```
 
+## Data Flow & Request Lifecycle
+
+### Typical Request Flow
+
+Here's how a typical API request flows through the architecture:
+
+```
+1. Client Request
+   │
+   ├──→ API Layer (Minimal API Endpoint)
+   │    • Request validation
+   │    • Route matching
+   │    • Authentication/Authorization
+   │
+   ├──→ Application Layer (Service)
+   │    • Business logic execution
+   │    • DTO mapping (AutoMapper)
+   │    • Use case orchestration
+   │
+   ├──→ Domain Layer (Entities & Rules)
+   │    • Domain validation
+   │    • Business rule enforcement
+   │    • Domain events creation
+   │
+   ├──→ Infrastructure Layer (Repository)
+   │    • EF Core DbContext
+   │    • Database query/command
+   │    • Data persistence
+   │
+   └──→ Response
+        • DTO mapping
+        • HTTP response formatting
+        • Status code selection
+
+During Execution:
+   ├──→ EventGrid Logger
+   │    • Log events published to EventGrid
+   │    • Azure Function consumes logs
+   │    • Logs stored in Cosmos DB
+   │
+   └──→ OpenTelemetry
+        • Trace context propagation
+        • Span creation
+        • Metrics collection
+```
+
+### Example: Create Beach Request
+
+```
+POST /api/v1/beaches
+Body: { "name": "Tamarindo", "region": "Guanacaste", ... }
+
+Flow:
+1. BeachesApi/Endpoints receives request
+2. Maps request to CreateBeachCommand DTO
+3. Calls IBeachService.CreateBeachAsync()
+4. Service validates business rules (Domain layer)
+5. Creates Beach entity
+6. Repository saves to SQL Server via EF Core
+7. EventGrid Logger publishes "BeachCreated" log event
+8. Response mapped to BeachDto
+9. Returns 201 Created with location header
+
+Parallel:
+- EventGrid → Log Consumer Function → Cosmos DB (async)
+- OpenTelemetry traces the entire request chain
+- Health checks monitor service availability
+```
+
+### Service Communication Patterns
+
+**Current Implementation:**
+- **Shared Database**: All services read/write to the same SQL Server database
+- **Independent Schemas**: Each service manages its own tables
+- **EventGrid for Logging**: Centralized logging via EventGrid → Cosmos DB
+- **Service Discovery**: Services discover each other via .NET Aspire
+
+**Future Considerations:**
+- Could evolve to **Database per Service** pattern for true isolation
+- Could add **API Gateway** for unified entry point
+- Could implement **Saga pattern** for distributed transactions
+- Could add **Domain Events** via EventGrid for cross-service communication
+
 ## Getting Started
 
 ### Prerequisites
@@ -225,19 +478,46 @@ Each service requires EventGrid configuration in `appsettings.json`:
 
 4. **Run the Application**
    
-   Using .NET Aspire AppHost:
+   Using .NET Aspire AppHost (Recommended):
    ```bash
    cd DiscoverCostaRica.AppHost
    dotnet run
    ```
    
-   This will start all services and dependencies. Access the Aspire dashboard at `http://localhost:15888`
+   This will:
+   - Start all 4 microservices (Beaches, Volcano, Culture, Geo)
+   - Launch SQL Server container (with persistent storage)
+   - Initialize the Azure Function (Log Consumer)
+   - Configure service discovery and dependencies
+   - Open the Aspire Dashboard at `http://localhost:15888`
 
-5. **Access Services**
-   - Beach API: `https://localhost:7001`
-   - Volcano API: `https://localhost:7002`
-   - Culture API: `https://localhost:7003`
-   - Geo API: `https://localhost:7004`
+5. **Access the Aspire Dashboard**
+   
+   Navigate to `http://localhost:15888` to see:
+   - **Resources**: All running services and their status
+   - **Console Logs**: Real-time logs from all services
+   - **Traces**: Distributed traces across services (OpenTelemetry)
+   - **Metrics**: Performance metrics and health status
+   - **Environment Variables**: Configuration for each service
+
+6. **Access Services**
+   
+   Once all services are running (check Aspire Dashboard):
+   - Beach API: `https://localhost:7001` or check dashboard for dynamic port
+   - Volcano API: `https://localhost:7002` or check dashboard for dynamic port
+   - Culture API: `https://localhost:7003` or check dashboard for dynamic port
+   - Geo API: `https://localhost:7004` or check dashboard for dynamic port
+   - Swagger UI: Available at each service's `/swagger` endpoint
+
+### Understanding the Startup Flow
+
+1. **AppHost starts** → Reads `AppHost.cs` configuration
+2. **SQL Server container launches** → Persistent database initialized
+3. **Each microservice starts** → Waits for database to be ready (`WaitFor(db)`)
+4. **Services register** → Auto-discovered via .NET Aspire service discovery
+5. **EventGrid Logger activates** → All logs route to EventGrid → Cosmos DB
+6. **Health checks** → Services report status to Aspire Dashboard
+7. **OpenTelemetry** → Distributed tracing and metrics collection begins
 
 ### Running Individual Services
 
