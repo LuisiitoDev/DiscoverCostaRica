@@ -22,6 +22,9 @@ A modern microservices-based application built with .NET that provides informati
 - [Monitoring & Observability](#monitoring--observability)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
+- [Contributors](#contributors)
+- [License](#license)
+- [Contact](#contact)
 
 ## Overview
 
@@ -731,6 +734,17 @@ The application is designed for Azure deployment:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## Contributors
+
+We appreciate all the contributors who have helped make this project better!
+
+### Core Team
+- **Luis (LuisiitoDev)** - [@LuisiitoDev](https://github.com/LuisiitoDev) - Project Creator & Lead Developer
+
+### How to Contribute
+
+Contributions are welcome! Please see the [Contributing](#contributing) section above for guidelines on how to submit your changes.
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -739,7 +753,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - **Project Maintainer**: Luis (LuisiitoDev)
 - **Repository**: [https://github.com/LuisiitoDev/DiscoverCostaRica](https://github.com/LuisiitoDev/DiscoverCostaRica)
-
----
-
-**Note**: This application uses Azure EventGrid for event-driven communication. RabbitMQ references in the codebase are legacy and should be ignored as the system has been migrated to EventGrid for improved scalability and cloud-native integration.
