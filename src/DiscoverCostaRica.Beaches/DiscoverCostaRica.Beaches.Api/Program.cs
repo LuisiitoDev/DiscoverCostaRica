@@ -10,7 +10,7 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IBeachContext, BeachContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
-builder.AddRabbitMq("LoggerMessaging").AddRabbitMqLoggerProvider();
+builder.AddRabbitMq("LoggerMessaging").AddEventGridLogger();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Beaches_Application();

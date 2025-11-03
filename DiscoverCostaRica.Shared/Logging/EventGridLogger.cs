@@ -1,11 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+﻿using Azure.Messaging.EventGrid;
+using DiscoverCostaRica.Shared.EventGrid;
+using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Text.Json;
 
 namespace DiscoverCostaRica.Shared.Logging;
 
-public class RabbitMqLogger(IModel channel, string queueName, string categoryName) : ILogger
+public class EventGridLogger(IEventGridClient client, string categoryName) : ILogger
 {
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
 
@@ -15,7 +16,7 @@ public class RabbitMqLogger(IModel channel, string queueName, string categoryNam
     {
         if (!IsEnabled(logLevel)) return;
 
-        var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new RabbitMqLoggerEntry
+        var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new LogEntryModel
         {
             Timestamp = DateTime.UtcNow,
             LogLevel = logLevel.ToString(),
@@ -24,10 +25,11 @@ public class RabbitMqLogger(IModel channel, string queueName, string categoryNam
             Exception = exception ?? new Exception("No exception provided")
         }));
 
-        channel.BasicPublish(
-            exchange: "",
-            routingKey: queueName,
-            basicProperties: null,
-            body: body);
+        client.PublishEvent(new EventGridEvent(
+                subject: "Microservice/Error",
+                eventType: "ErroLog",
+                dataVersion: "1.0",
+                data: body
+            ));
     }
 }

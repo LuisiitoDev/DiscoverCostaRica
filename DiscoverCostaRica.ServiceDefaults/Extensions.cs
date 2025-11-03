@@ -1,4 +1,5 @@
 using DiscoverCostaRica.ServiceDefaults.Middleware;
+using DiscoverCostaRica.Shared.EventGrid;
 using DiscoverCostaRica.Shared.logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -21,10 +22,11 @@ public static class Extensions
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";
 
-    public static IHostApplicationBuilder AddRabbitMqLoggerProvider(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddEventGridLogger(this IHostApplicationBuilder builder)
     {
-        builder.Services.Configure<RabbitMqLoggerOptions>(options => builder.Configuration.GetSection("RabbitMqLogger").Bind(options));
-        builder.Services.AddSingleton<ILoggerProvider, RabbitMqLoggerProvider>();
+        builder.Services.Configure<EventGridOptions>(options => builder.Configuration.GetSection("EventGridOptions").Bind(options));
+        builder.Services.AddSingleton<IEventGridClient, EventGridClient>();
+        builder.Services.AddSingleton<ILoggerProvider, EventGridLoggerProvider>();
         return builder;
     }
     public static IHostApplicationBuilder AddRabbitMq(this IHostApplicationBuilder builder, string connection)

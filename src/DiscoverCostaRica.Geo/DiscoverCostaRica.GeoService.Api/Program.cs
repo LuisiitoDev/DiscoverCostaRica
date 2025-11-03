@@ -9,7 +9,7 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IGeoContext, GeoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
-builder.AddRabbitMq("LoggerMessaging").AddRabbitMqLoggerProvider();
+builder.AddRabbitMq("LoggerMessaging").AddEventGridLogger();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Infraestructure();

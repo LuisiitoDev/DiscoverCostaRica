@@ -5,6 +5,9 @@ var rabbitMq = builder.AddRabbitMQ("LoggerMessaging");
 var sql = builder.AddSqlServer("sql").WithLifetime(ContainerLifetime.Persistent);
 var db = sql.AddDatabase("DiscoverCostaRica");
 
+var cosmos = builder.AddAzureCosmosDB("discovercostarica-db");
+var discoverCostaRicaLogger = cosmos.AddCosmosDatabase("discovercostarica-logger");
+
 builder.AddProject<Projects.DiscoverCostaRica_Beaches_Api>("discovercostarica-beaches-api")
        .WithReference(db)
        .WaitFor(db)
@@ -25,6 +28,7 @@ builder.AddProject<Projects.DiscoverCostaRica_VolcanoService_Api>("discovercosta
        .WaitFor(db)
        .WithReference(rabbitMq);
 
-builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_Function_LogConsumer>("discovercostarica-function-logconsumer");
+builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_Function_LogConsumer>("discovercostarica-function-logconsumer")
+       .WithReference(discoverCostaRicaLogger);
 
 builder.Build().Run();
