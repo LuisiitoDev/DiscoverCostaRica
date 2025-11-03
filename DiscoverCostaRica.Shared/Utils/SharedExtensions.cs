@@ -13,6 +13,7 @@ public static class SharedExtensions
                 StatusCodes.Status200OK => Results.Ok(result),
                 StatusCodes.Status404NotFound => Results.NotFound(result),
                 StatusCodes.Status400BadRequest => Results.BadRequest(result),
+                StatusCodes.Status500InternalServerError => Results.InternalServerError(),
                 _ => Results.Problem(result.Message, statusCode: result.StatusCode)
             };
         }

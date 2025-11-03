@@ -8,7 +8,7 @@ public static class EndpointExtensions
 {
     public static IEndpointRouteBuilder MapBeachEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var groups = endpoints.MapGroup("api/v1/beaches");
+        var groups = endpoints.MapGroup("api/beaches").HasApiVersion(1.0);
 
         groups.MapGet("/", BeachHandler.ExecuteAsync)
             .WithName("GetBeaches")
