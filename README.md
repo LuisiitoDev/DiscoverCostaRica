@@ -9,7 +9,6 @@ A modern microservices-based application built with .NET that provides informati
 - [Services](#services)
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
-- [Development](#development)
 - [Contributors](#contributors)
 
 ## Overview
@@ -203,38 +202,6 @@ DiscoverCostaRica/
 ├── DiscoverCostaRica.Function.LogConsumer/ # Azure Function
 └── DiscoverCostaRica.sln
 ```
-
-## Development
-
-### Building
-
-```bash
-dotnet build
-```
-
-### Running Tests
-
-```bash
-dotnet test
-```
-
-### Database Migrations
-
-```bash
-cd src/DiscoverCostaRica.Beaches/DiscoverCostaRica.Beaches.Infrastructure
-dotnet ef migrations add MigrationName
-dotnet ef database update
-```
-
-### API Documentation
-
-Each service exposes Swagger/OpenAPI documentation at `/swagger` endpoint in development mode.
-
-### Health Checks
-
-All services implement:
-- `/health` - Complete health check
-- `/alive` - Basic liveness check
 
 ## Contributors
 
