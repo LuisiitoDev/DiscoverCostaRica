@@ -8,7 +8,7 @@ A modern microservices-based application built with .NET that provides informati
 - [Architecture](#architecture)
 - [Services](#services)
 - [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
 - [Contributors](#contributors)
 
 ## Overview
@@ -143,50 +143,7 @@ Each service follows Clean Architecture with four layers:
 - **AutoMapper** - Object mapping
 - **Docker** - Containerization
 
-## Getting Started
-
-### Prerequisites
-
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [Azure Subscription](https://azure.microsoft.com/) (for EventGrid and Cosmos DB)
-
-### Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/LuisiitoDev/DiscoverCostaRica.git
-   cd DiscoverCostaRica
-   ```
-
-2. **Configure Azure Resources**
-   
-   Create Azure EventGrid Topic and Cosmos DB account.
-
-3. **Update Configuration**
-   
-   Add connection strings in `appsettings.Development.json`:
-   ```json
-   {
-     "ConnectionStrings": {
-       "DiscoverCostaRica": "Server=localhost;Database=DiscoverCostaRica;..."
-     },
-     "EventGridOptions": {
-       "TopicEndpoint": "your-eventgrid-topic-endpoint",
-       "TopicKey": "your-eventgrid-topic-key"
-     }
-   }
-   ```
-
-4. **Run with .NET Aspire**
-   ```bash
-   cd DiscoverCostaRica.AppHost
-   dotnet run
-   ```
-   
-   Access the Aspire Dashboard at `http://localhost:15888`
-
-### Project Structure
+## Project Structure
 
 ```
 DiscoverCostaRica/
