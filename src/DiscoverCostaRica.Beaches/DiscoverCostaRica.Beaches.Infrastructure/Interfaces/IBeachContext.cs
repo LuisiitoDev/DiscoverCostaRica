@@ -1,7 +1,7 @@
 ﻿using DiscoverCostaRica.Beaches.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Beaches.Infraestructure.Interfaces;
+namespace DiscoverCostaRica.Beaches.Infrastructure.Interfaces;
 
 public interface IBeachContext
 {

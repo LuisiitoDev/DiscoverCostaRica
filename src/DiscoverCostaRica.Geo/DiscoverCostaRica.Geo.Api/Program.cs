@@ -12,7 +12,7 @@ builder.AddGlobalExeption();
 builder.AddEventGridLogger();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Application();
-builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Infraestructure();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Infrastructure();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

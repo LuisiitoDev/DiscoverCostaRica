@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DiscoverCostaRica.Beaches.Infraestructure.EntityTypeConfigurations;
+namespace DiscoverCostaRica.Beaches.Infrastructure.EntityTypeConfigurations;
 
 public class BeachEntityConfiguration : IEntityTypeConfiguration<BeachModel>
 {

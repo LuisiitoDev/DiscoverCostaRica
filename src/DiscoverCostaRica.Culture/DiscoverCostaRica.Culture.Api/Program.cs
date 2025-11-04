@@ -12,7 +12,7 @@ builder.AddGlobalExeption();
 builder.AddEventGridLogger();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Application();
-builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Infraestructure();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Infrastructure();
 
 var app = builder.Build();
 

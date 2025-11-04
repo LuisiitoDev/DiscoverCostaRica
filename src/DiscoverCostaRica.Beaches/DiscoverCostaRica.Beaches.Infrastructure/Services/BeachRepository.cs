@@ -1,6 +1,6 @@
 ﻿using DiscoverCostaRica.Beaches.Domain.Interfaces;
 using DiscoverCostaRica.Beaches.Domain.Models;
-using DiscoverCostaRica.Beaches.Infraestructure.Interfaces;
+using DiscoverCostaRica.Beaches.Infrastructure.Interfaces;
 using DiscoverCostaRica.Shared.Attributes;
 using System.Data.Entity;
 

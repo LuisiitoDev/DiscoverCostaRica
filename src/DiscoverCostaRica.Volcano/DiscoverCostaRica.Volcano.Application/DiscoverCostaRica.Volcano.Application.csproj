@@ -12,9 +12,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
-    <ProjectReference Include="..\..\..\DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
-    <ProjectReference Include="..\DiscoverCostaRica.VolcanoService.Domain\DiscoverCostaRica.VolcanoService.Domain.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.VolcanoService.Infraestructure\DiscoverCostaRica.VolcanoService.Infraestructure.csproj" />
+    <ProjectReference Include="..\..\..\DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\DiscoverCostaRica.Volcano.Domain\DiscoverCostaRica.Volcano.Domain.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Volcano.Infrastructure\DiscoverCostaRica.Volcano.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 ﻿using DiscoverCostaRica.Beaches.Domain.Models;
-using DiscoverCostaRica.Beaches.Infraestructure.Interfaces;
+using DiscoverCostaRica.Beaches.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Beaches.Infraestructure.Context;
+namespace DiscoverCostaRica.Beaches.Infrastructure.Context;
 
 public class BeachContext : DbContext, IBeachContext
 {

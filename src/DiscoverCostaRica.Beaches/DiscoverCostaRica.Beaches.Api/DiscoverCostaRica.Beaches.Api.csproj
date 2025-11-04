@@ -22,7 +22,7 @@
 	  <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
 	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Application\DiscoverCostaRica.Beaches.Application.csproj" />
 	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Domain\DiscoverCostaRica.Beaches.Domain.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Infraestructure\DiscoverCostaRica.Beaches.Infraestructure.csproj" />
+	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Infrastructure\DiscoverCostaRica.Beaches.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>

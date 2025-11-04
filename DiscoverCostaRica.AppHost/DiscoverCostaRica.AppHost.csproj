@@ -22,9 +22,9 @@
   <ItemGroup>
     <ProjectReference Include="..\DiscoverCostaRica.Function.LogConsumer\DiscoverCostaRica.Function.LogConsumer.csproj" />
     <ProjectReference Include="..\src\DiscoverCostaRica.Beaches\DiscoverCostaRica.Beaches.Api\DiscoverCostaRica.Beaches.Api.csproj" />
-    <ProjectReference Include="..\src\DiscoverCostaRica.Culture\DiscoverCostaRica.CultureSerice.Api\DiscoverCostaRica.Culture.Api.csproj" />
-    <ProjectReference Include="..\src\DiscoverCostaRica.Geo\DiscoverCostaRica.GeoService.Api\DiscoverCostaRica.Geo.Api.csproj" />
-    <ProjectReference Include="..\src\DiscoverCostaRica.Volcano\DiscoverCostaRica.VolcanoService.Api\DiscoverCostaRica.VolcanoService.Api.csproj" />
+    <ProjectReference Include="..\src\DiscoverCostaRica.Culture\DiscoverCostaRica.Culture.Api\DiscoverCostaRica.Culture.Api.csproj" />
+    <ProjectReference Include="..\src\DiscoverCostaRica.Geo\DiscoverCostaRica.Geo.Api\DiscoverCostaRica.Geo.Api.csproj" />
+    <ProjectReference Include="..\src\DiscoverCostaRica.Volcano\DiscoverCostaRica.Volcano.Api\DiscoverCostaRica.Volcano.Api.csproj" />
   </ItemGroup>
 
 </Project>

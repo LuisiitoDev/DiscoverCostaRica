@@ -11,8 +11,8 @@ builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
 builder.AddEventGridLogger();
 builder.Services.AddOpenApi();
-builder.Services.AddGeneratedServices_DiscoverCostaRica_VolcanoService_Application();
-builder.Services.AddGeneratedServices_DiscoverCostaRica_VolcanoService_Infraestructure();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Volcano_Application();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Volcano_Infrastructure();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

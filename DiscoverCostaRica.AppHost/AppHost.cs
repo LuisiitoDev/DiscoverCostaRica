@@ -2,7 +2,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 var rabbitMq = builder.AddRabbitMQ("LoggerMessaging");
 
-var sql = builder.AddSqlServer("sql").WithLifetime(ContainerLifetime.Persistent);
+var sql = builder.AddSqlServer("DiscoverCostaRica").WithLifetime(ContainerLifetime.Persistent);
 var db = sql.AddDatabase("DiscoverCostaRica");
 
 var cosmos = builder.AddAzureCosmosDB("discovercostarica-db");
@@ -23,7 +23,7 @@ builder.AddProject<Projects.DiscoverCostaRica_Geo_Api>("discovercostarica-geoser
        .WaitFor(db)
        .WithReference(rabbitMq);
 
-builder.AddProject<Projects.DiscoverCostaRica_VolcanoService_Api>("discovercostarica-volcanoservice-api")
+builder.AddProject<Projects.DiscoverCostaRica_Volcano_Api>("discovercostarica-volcanoservice-api")
        .WithReference(db)
        .WaitFor(db)
        .WithReference(rabbitMq);

@@ -1,3 +1,0 @@
-﻿global using static DiscoverCostaRica.Shared.Utils.SharedExtensions;
-global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_VolcanoService_Application;
-global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_VolcanoService_Infraestructure;

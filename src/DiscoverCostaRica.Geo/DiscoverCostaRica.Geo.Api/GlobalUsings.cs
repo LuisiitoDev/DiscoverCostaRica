@@ -1,3 +1,3 @@
 ﻿global using static DiscoverCostaRica.Shared.Utils.SharedExtensions;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Geo_Application;
-global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Geo_Infraestructure;
+global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Geo_Infrastructure;

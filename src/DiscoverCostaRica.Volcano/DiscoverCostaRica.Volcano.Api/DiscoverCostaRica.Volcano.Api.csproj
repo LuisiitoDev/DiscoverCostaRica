@@ -19,9 +19,9 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
 	  <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.VolcanoService.Application\DiscoverCostaRica.VolcanoService.Application.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.VolcanoService.Domain\DiscoverCostaRica.VolcanoService.Domain.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.VolcanoService.Infraestructure\DiscoverCostaRica.VolcanoService.Infraestructure.csproj" />
+	  <ProjectReference Include="..\DiscoverCostaRica.Volcano.Application\DiscoverCostaRica.Volcano.Application.csproj" />
+	  <ProjectReference Include="..\DiscoverCostaRica.Volcano.Domain\DiscoverCostaRica.Volcano.Domain.csproj" />
+	  <ProjectReference Include="..\DiscoverCostaRica.Volcano.Infrastructure\DiscoverCostaRica.Volcano.Infrastructure.csproj" />
 	</ItemGroup>
 
 

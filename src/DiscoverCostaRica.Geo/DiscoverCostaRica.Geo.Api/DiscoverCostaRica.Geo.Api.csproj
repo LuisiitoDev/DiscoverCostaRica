@@ -21,7 +21,7 @@
     <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Geo.Application\DiscoverCostaRica.Geo.Application.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Geo.Domain\DiscoverCostaRica.Geo.Domain.csproj" />
-    <ProjectReference Include="..\DiscoverCostaRica.Geo.Infraestructure\DiscoverCostaRica.Geo.Infraestructure.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Geo.Infrastructure\DiscoverCostaRica.Geo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

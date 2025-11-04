@@ -19,13 +19,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VolcanoService", "VolcanoSe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CultureService", "CultureService", "{01946A51-E823-453D-832C-855FD4A9C070}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Api", "src\DiscoverCostaRica.Culture\DiscoverCostaRica.CultureSerice.Api\DiscoverCostaRica.Culture.Api.csproj", "{A00E2648-A993-7CD6-50A8-285CE760DA2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Api", "src\DiscoverCostaRica.Culture\DiscoverCostaRica.Culture.Api\DiscoverCostaRica.Culture.Api.csproj", "{A00E2648-A993-7CD6-50A8-285CE760DA2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Api", "src\DiscoverCostaRica.Geo\DiscoverCostaRica.GeoService.Api\DiscoverCostaRica.Geo.Api.csproj", "{FC68E81B-1D46-A895-C403-BC0E020BC492}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Api", "src\DiscoverCostaRica.Geo\DiscoverCostaRica.Geo.Api\DiscoverCostaRica.Geo.Api.csproj", "{FC68E81B-1D46-A895-C403-BC0E020BC492}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Api", "src\DiscoverCostaRica.Volcano\DiscoverCostaRica.VolcanoService.Api\DiscoverCostaRica.VolcanoService.Api.csproj", "{0D82B43F-8ABD-6E85-AA38-94B2DB497A43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Volcano.Api", "src\DiscoverCostaRica.Volcano\DiscoverCostaRica.Volcano.Api\DiscoverCostaRica.Volcano.Api.csproj", "{0D82B43F-8ABD-6E85-AA38-94B2DB497A43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Beaches.Infraestructure", "src\DiscoverCostaRica.Beaches\DiscoverCostaRica.Beaches.Infraestructure\DiscoverCostaRica.Beaches.Infraestructure.csproj", "{8545AA37-4360-4318-9D36-721345636233}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Beaches.Infrastructure", "src\DiscoverCostaRica.Beaches\DiscoverCostaRica.Beaches.Infrastructure\DiscoverCostaRica.Beaches.Infrastructure.csproj", "{8545AA37-4360-4318-9D36-721345636233}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Beaches.Domain", "src\DiscoverCostaRica.Beaches\DiscoverCostaRica.Beaches.Domain\DiscoverCostaRica.Beaches.Domain.csproj", "{7B1F918A-A1DA-49E6-83D8-9011A694F33B}"
 EndProject
@@ -37,19 +37,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Domain", "src\DiscoverCostaRica.Culture\DiscoverCostaRica.Culture.Domain\DiscoverCostaRica.Culture.Domain.csproj", "{3B1F6AA1-4800-452D-825D-C5315DA5E3DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Infraestructure", "src\DiscoverCostaRica.Culture\DiscoverCostaRica.Culture.Infraestructure\DiscoverCostaRica.Culture.Infraestructure.csproj", "{E376070D-07C4-4E54-8FF8-2C91C907FF46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Culture.Infrastructure", "src\DiscoverCostaRica.Culture\DiscoverCostaRica.Culture.Infrastructure\DiscoverCostaRica.Culture.Infrastructure.csproj", "{E376070D-07C4-4E54-8FF8-2C91C907FF46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Domain", "src\DiscoverCostaRica.Geo\DiscoverCostaRica.Geo.Domain\DiscoverCostaRica.Geo.Domain.csproj", "{4954457E-E334-4E49-8F99-BC739E9591ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Application", "src\DiscoverCostaRica.Geo\DiscoverCostaRica.Geo.Application\DiscoverCostaRica.Geo.Application.csproj", "{73B1EF8E-5E45-4A73-A4F6-278152692A86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Infraestructure", "src\DiscoverCostaRica.Geo\DiscoverCostaRica.Geo.Infraestructure\DiscoverCostaRica.Geo.Infraestructure.csproj", "{7E299F52-1CFB-4BB5-A72C-252F5DDF78E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Geo.Infrastructure", "src\DiscoverCostaRica.Geo\DiscoverCostaRica.Geo.Infrastructure\DiscoverCostaRica.Geo.Infrastructure.csproj", "{7E299F52-1CFB-4BB5-A72C-252F5DDF78E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Application", "src\DiscoverCostaRica.Volcano\DiscoverCostaRica.VolcanoService.Application\DiscoverCostaRica.VolcanoService.Application.csproj", "{834822D7-5A39-4A7C-95AD-8AC7F563AD97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Volcano.Application", "src\DiscoverCostaRica.Volcano\DiscoverCostaRica.Volcano.Application\DiscoverCostaRica.Volcano.Application.csproj", "{834822D7-5A39-4A7C-95AD-8AC7F563AD97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Domain", "src\DiscoverCostaRica.Volcano\DiscoverCostaRica.VolcanoService.Domain\DiscoverCostaRica.VolcanoService.Domain.csproj", "{716E5182-9F46-4747-8D7D-A34BF3B10486}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Volcano.Domain", "src\DiscoverCostaRica.Volcano\DiscoverCostaRica.Volcano.Domain\DiscoverCostaRica.Volcano.Domain.csproj", "{716E5182-9F46-4747-8D7D-A34BF3B10486}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.VolcanoService.Infraestructure", "src\DiscoverCostaRica.Volcano\DiscoverCostaRica.VolcanoService.Infraestructure\DiscoverCostaRica.VolcanoService.Infraestructure.csproj", "{B9C31388-154B-4285-BC19-0B8635980ECF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Volcano.Infrastructure", "src\DiscoverCostaRica.Volcano\DiscoverCostaRica.Volcano.Infrastructure\DiscoverCostaRica.Volcano.Infrastructure.csproj", "{B9C31388-154B-4285-BC19-0B8635980ECF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.SourceGenerators", "DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj", "{E4FCA3D4-9D90-44E2-B945-226A57B59A00}"
 EndProject
