@@ -8,7 +8,7 @@ public class BeachEntityConfiguration : IEntityTypeConfiguration<BeachModel>
 {
     public void Configure(EntityTypeBuilder<BeachModel> builder)
     {
-        builder.ToTable("Beach.TB_Beach");
+        builder.ToTable("Beach.Beach");
         builder.HasKey(b => b.Id);
         builder.Property(b => b.Id).ValueGeneratedOnAdd();
         builder.Property(b => b.Name).IsRequired().HasMaxLength(1000);

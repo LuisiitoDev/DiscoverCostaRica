@@ -6,7 +6,7 @@ namespace DiscoverCostaRica.Beaches.Infrastructure.Context;
 
 public class BeachContext : DbContext, IBeachContext
 {
-    protected BeachContext(DbContextOptions<BeachContext> options) : base(options) { }
+    public BeachContext(DbContextOptions<BeachContext> options) : base(options) { }
 
     public DbSet<BeachModel> Beaches { get; set; }
 

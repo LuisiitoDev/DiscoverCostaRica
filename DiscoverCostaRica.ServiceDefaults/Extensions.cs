@@ -66,8 +66,7 @@ public static class Extensions
                             errorNumbersToAdd: null));
 
         }, ServiceLifetime.Scoped);
-
-        builder.Services.AddScoped<TInterfaceContext>(provider => provider.GetRequiredService<Context>());
+        builder.Services.AddScoped<TInterfaceContext, Context>();
 
         return builder;
     }

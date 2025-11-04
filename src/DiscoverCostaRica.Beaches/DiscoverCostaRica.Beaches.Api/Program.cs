@@ -3,6 +3,7 @@ using DiscoverCostaRica.Beaches.Api.Extensions;
 using DiscoverCostaRica.Beaches.Api.Profiles;
 using DiscoverCostaRica.Beaches.Infrastructure.Context;
 using DiscoverCostaRica.Beaches.Infrastructure.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
