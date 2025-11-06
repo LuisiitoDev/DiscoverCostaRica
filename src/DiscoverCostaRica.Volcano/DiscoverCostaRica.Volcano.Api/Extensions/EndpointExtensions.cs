@@ -6,11 +6,11 @@ public static class EndpointExtensions
 {
     public static IEndpointRouteBuilder MapVolcanoEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var groups = endpoints.MapGroup("api/v1/volcano");
+        var groups = endpoints.MapGroup("api/v1/volcanoes");
 
         groups.MapGet("/", VolcanoHandler.GetVolcanos);
-        groups.MapGet($"/Volcano?id={{id}}", VolcanoHandler.GetVolcanoById);
-        groups.MapGet($"/Volcano/Province?id={{id}}", VolcanoHandler.GetVolcanosByProvince);
+        groups.MapGet("/{id}", VolcanoHandler.GetVolcanoById);
+        groups.MapGet("/province/{provinceId}", VolcanoHandler.GetVolcanosByProvince);
 
         return endpoints;
     }

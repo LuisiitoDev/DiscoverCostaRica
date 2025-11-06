@@ -1,6 +1,7 @@
 using DiscoverCostaRica.ServiceDefaults.Middleware;
-using DiscoverCostaRica.Shared.EventGrid;
+using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.logging;
+using DiscoverCostaRica.Shared.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -22,16 +23,15 @@ public static class Extensions
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";
 
-    public static IHostApplicationBuilder AddEventGridLogger(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddFunctionLogger(this IHostApplicationBuilder builder)
     {
-        builder.Services.Configure<EventGridOptions>(options => builder.Configuration.GetSection("EventGridOptions").Bind(options));
-        builder.Services.AddSingleton<IEventGridClient, EventGridClient>();
-        builder.Services.AddSingleton<ILoggerProvider, EventGridLoggerProvider>();
-        return builder;
-    }
-    public static IHostApplicationBuilder AddRabbitMq(this IHostApplicationBuilder builder, string connection)
-    {
-        builder.AddKeyedRabbitMQClient(name: connection);
+        builder.Services.AddHttpClient<ILoggerFunction, LoggerFunction>(client =>
+        {
+            client.BaseAddress = new Uri("http://azureFunction");
+        });
+
+        builder.Services.AddSingleton<ILoggerProvider, DiscoverCostaRicaLoggerProvider>();
+
         return builder;
     }
 

@@ -1,34 +1,46 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var rabbitMq = builder.AddRabbitMQ("LoggerMessaging");
-
-var sql = builder.AddSqlServer("DiscoverCostaRica").WithLifetime(ContainerLifetime.Persistent);
+var sql = builder.AddSqlServer("DiscoverCostaRicaServer").WithLifetime(ContainerLifetime.Persistent);
 var db = sql.AddDatabase("DiscoverCostaRica");
 
-var cosmos = builder.AddAzureCosmosDB("discovercostarica-db");
-var discoverCostaRicaLogger = cosmos.AddCosmosDatabase("discovercostarica-logger");
+var mongo = builder.AddMongoDB("DiscoverCostaRicaMongo").WithLifetime(ContainerLifetime.Persistent);
+var mongoDb = mongo.AddDatabase("logger");
+
+var azureFunction = builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_Functions>("discovercostarica-functions")
+    .WithExternalHttpEndpoints()
+    .WithReference(mongoDb)
+    .WaitFor(mongoDb)
+    .WithDaprSidecar();
 
 builder.AddProject<Projects.DiscoverCostaRica_Beaches_Api>("discovercostarica-beaches-api")
        .WithReference(db)
        .WaitFor(db)
-       .WithReference(rabbitMq);
+       .WithReference(azureFunction)
+       .WaitFor(azureFunction)
+       .WithDaprSidecar();
 
 builder.AddProject<Projects.DiscoverCostaRica_Culture_Api>("discovercostarica-cultureserice-api")
        .WithReference(db)
        .WaitFor(db)
-       .WithReference(rabbitMq);
+       .WithReference(azureFunction)
+       .WaitFor(azureFunction)
+       .WithDaprSidecar();
 
 builder.AddProject<Projects.DiscoverCostaRica_Geo_Api>("discovercostarica-geoservice-api")
        .WithReference(db)
        .WaitFor(db)
-       .WithReference(rabbitMq);
+       .WithReference(azureFunction)
+       .WaitFor(azureFunction)
+       .WithDaprSidecar();
 
 builder.AddProject<Projects.DiscoverCostaRica_Volcano_Api>("discovercostarica-volcanoservice-api")
        .WithReference(db)
        .WaitFor(db)
-       .WithReference(rabbitMq);
+       .WithReference(azureFunction)
+       .WaitFor(azureFunction)
+       .WithDaprSidecar();
 
-builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_Function_LogConsumer>("discovercostarica-function-logconsumer")
-       .WithReference(discoverCostaRicaLogger);
+
+
 
 builder.Build().Run();

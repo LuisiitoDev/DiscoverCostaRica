@@ -9,10 +9,12 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IVolcanoContext, VolcanoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
-builder.AddEventGridLogger();
+builder.AddFunctionLogger();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Volcano_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Volcano_Infrastructure();
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
+builder.Services.AddDaprClient();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,5 +26,4 @@ if (app.Environment.IsDevelopment())
 app.MapVolcanoEndpoints();
 app.MapDefaultEndpoints();
 app.UseHttpsRedirection();
-app.UseExceptionHandler();
 await app.RunAsync();

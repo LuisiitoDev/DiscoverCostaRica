@@ -10,7 +10,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Aspire.RabbitMQ.Client" Version="9.5.2" />
 		<PackageReference Include="AutoMapper" Version="15.1.0" />
+		<PackageReference Include="Dapr.AspNetCore" Version="1.16.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-rc.1.25451.107" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
 		  <PrivateAssets>all</PrivateAssets>

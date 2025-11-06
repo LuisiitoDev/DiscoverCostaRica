@@ -61,6 +61,8 @@
 	<ItemGroup>
 		<PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
 		<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.5.2" />
+		<PackageReference Include="Aspire.RabbitMQ.Client" Version="9.5.2" />
+		<PackageReference Include="Dapr.AspNetCore" Version="1.16.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.14.28" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">

@@ -3,7 +3,6 @@ using DiscoverCostaRica.Beaches.Api.Extensions;
 using DiscoverCostaRica.Beaches.Api.Profiles;
 using DiscoverCostaRica.Beaches.Infrastructure.Context;
 using DiscoverCostaRica.Beaches.Infrastructure.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +10,13 @@ builder.AddServiceDefaults();
 builder.AddDiscoverCostaRicaContext<IBeachContext, BeachContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
-builder.AddEventGridLogger();
+builder.AddFunctionLogger();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Beaches_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Beaches_Infrastructure();
-
+builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
+builder.Services.AddDaprClient();
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1.0);
@@ -34,5 +34,4 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapDefaultEndpoints();
 app.MapBeachEndpoints();
-app.UseExceptionHandler();
 await app.RunAsync();

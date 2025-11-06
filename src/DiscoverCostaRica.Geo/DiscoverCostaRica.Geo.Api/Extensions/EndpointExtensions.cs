@@ -8,9 +8,9 @@ public static class EndpointExtensions
     {
         var groups = endpoints.MapGroup("api/v1/geo");
 
-        groups.MapGet("/Provinces", GeoHandler.GetProvinces);
-        groups.MapGet($"/Canton?provinceId={{provinceId}}", GeoHandler.GetCantonsByProvince);
-        groups.MapGet($"/Districts?provinceId={{provinceId}}", GeoHandler.GetDistrictsByCanton);
+        groups.MapGet("/provinces", GeoHandler.GetProvinces);
+        groups.MapGet("/cantons/{provinceId}", GeoHandler.GetCantonsByProvince);
+        groups.MapGet("/districts/{cantonId}", GeoHandler.GetDistrictsByCanton);
 
         return endpoints;
     }
