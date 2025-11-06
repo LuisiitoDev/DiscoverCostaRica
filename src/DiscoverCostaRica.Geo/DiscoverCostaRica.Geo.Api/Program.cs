@@ -10,6 +10,7 @@ builder.AddDiscoverCostaRicaContext<IGeoContext, GeoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
 builder.AddFunctionLogger();
+builder.AddVersioning();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Infrastructure();
@@ -17,11 +18,8 @@ builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
 builder.Services.AddDaprClient();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.MapOpenApi();
+app.AddScalar();
 
 app.UseHttpsRedirection();
 app.MapGeoEndpoints();

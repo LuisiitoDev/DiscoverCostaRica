@@ -1,7 +1,6 @@
+using Asp.Versioning;
 using DiscoverCostaRica.ServiceDefaults.Middleware;
-using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.logging;
-using DiscoverCostaRica.Shared.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Scalar.AspNetCore;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -23,13 +23,29 @@ public static class Extensions
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";
 
+    public static WebApplication AddScalar(this WebApplication app)
+    {
+        app.MapScalarApiReference("/docs", options =>
+        {
+            options.Title = app.Environment.ApplicationName;
+            options.Theme = ScalarTheme.Kepler;
+            options.DarkMode = true;
+        });
+        return app;
+    }
+
+    public static IHostApplicationBuilder AddVersioning(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.ReportApiVersions = true;
+        });
+        return builder;
+    }
+
     public static IHostApplicationBuilder AddFunctionLogger(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddHttpClient<ILoggerFunction, LoggerFunction>(client =>
-        {
-            client.BaseAddress = new Uri("http://azureFunction");
-        });
-
         builder.Services.AddSingleton<ILoggerProvider, DiscoverCostaRicaLoggerProvider>();
 
         return builder;

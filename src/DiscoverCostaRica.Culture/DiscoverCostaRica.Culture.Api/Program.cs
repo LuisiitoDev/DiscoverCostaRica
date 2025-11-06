@@ -10,19 +10,20 @@ builder.AddDiscoverCostaRicaContext<ICultureContext, CultureContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
 builder.AddFunctionLogger();
+builder.AddVersioning();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Infrastructure();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
 builder.Services.AddDaprClient();
+
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.MapOpenApi();
+app.AddScalar();
 
 app.UseHttpsRedirection();
 app.MapDefaultEndpoints();
 app.MapCultureEndpoints();
+
 await app.RunAsync();
