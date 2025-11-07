@@ -9,7 +9,7 @@ var builder = FunctionsApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.AddMongoDBClient(connectionName: "DiscoverCostaRica");
+builder.AddMongoDBClient(connectionName: "mongodb");
 
 builder.ConfigureFunctionsWebApplication();
 

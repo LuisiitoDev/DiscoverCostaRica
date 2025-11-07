@@ -9,6 +9,7 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 	<ItemGroup>
+	  <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
 	  <PackageReference Include="Aspire.RabbitMQ.Client" Version="9.5.2" />
 	  <PackageReference Include="Azure.Messaging.EventGrid" Version="5.0.0" />
 	  <PackageReference Include="Dapr.AspNetCore" Version="1.16.0" />

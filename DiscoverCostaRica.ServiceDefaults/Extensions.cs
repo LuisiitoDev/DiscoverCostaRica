@@ -71,18 +71,7 @@ public static class Extensions
 
 
     {
-        builder.Services.AddDbContext<Context>(options =>
-        {
-            options.UseSqlServer(
-                    connectionString: builder.Configuration.GetConnectionString(connectionStringKey)
-                                      ?? throw new InvalidOperationException($"Connection string '{connectionStringKey}' not found."),
-
-            options => options.EnableRetryOnFailure(
-                            maxRetryCount: 5,
-                            maxRetryDelay: TimeSpan.FromSeconds(30),
-                            errorNumbersToAdd: null));
-
-        }, ServiceLifetime.Scoped);
+        builder.AddSqlServerDbContext<Context>(connectionName: "DiscoverCostaRica");
         builder.Services.AddScoped<TInterfaceContext, Context>();
 
         return builder;

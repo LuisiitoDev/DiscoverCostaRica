@@ -11,6 +11,7 @@ builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
 builder.AddFunctionLogger();
 builder.AddVersioning();
+builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Beaches_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Beaches_Infrastructure();
