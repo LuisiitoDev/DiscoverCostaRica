@@ -15,7 +15,7 @@ var azureFunction = builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_
     .WaitFor(mongoDb)
     .WithDaprSidecar();
 
-builder.AddProject<Projects.DiscoverCostaRica_Beaches_Api>("discovercostarica-beaches-api")
+var beaches = builder.AddProject<Projects.DiscoverCostaRica_Beaches_Api>("discovercostarica-beaches-api")
        .WithReference(azureSql)
        .WaitFor(azureSql)
        .WithReference(azureFunction)
@@ -43,7 +43,12 @@ builder.AddProject<Projects.DiscoverCostaRica_Volcano_Api>("discovercostarica-vo
        .WaitFor(azureFunction)
        .WithDaprSidecar();
 
+builder.AddYarp("gateway")
+       .WithConfiguration(yarp =>
+       {
+           yarp.AddRoute(beaches);
+       });
 
-
+//var gateway = builder.AddYarp("gateway");
 
 builder.Build().Run();
