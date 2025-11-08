@@ -2,8 +2,8 @@ using Aspire.Hosting.Yarp.Transforms;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var existingSqlServerName = builder.AddParameter("existingSqlServerName");
-var existingSqlServerResourceGroup = builder.AddParameter("existingSqlServerResourceGroup");
+var existingSqlServerName = builder.AddParameter("existingSqlServerName", secret: true);
+var existingSqlServerResourceGroup = builder.AddParameter("existingSqlServerResourceGroup", secret: true);
 
 var azureSql = builder.AddAzureSqlServer("sqlserver")
                       .AsExisting(existingSqlServerName, existingSqlServerResourceGroup)
