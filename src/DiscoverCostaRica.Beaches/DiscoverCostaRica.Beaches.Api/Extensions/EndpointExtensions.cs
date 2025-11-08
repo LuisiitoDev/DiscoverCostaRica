@@ -1,6 +1,7 @@
 ﻿using DiscoverCostaRica.Beaches.Api.Handlers;
 using DiscoverCostaRica.Beaches.Application.Dtos;
 using DiscoverCostaRica.Shared.ApiVersioning;
+using DiscoverCostaRica.Shared.Authentication;
 using DiscoverCostaRica.Shared.Responses;
 
 namespace DiscoverCostaRica.Beaches.Api.Extensions;
@@ -23,7 +24,8 @@ public static class EndpointExtensions
             .ProducesValidationProblem()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status500InternalServerError)
+            .RequireAuthorization(AuthConstants.Policies.BeachesRead);
 
         return endpoints;
     }

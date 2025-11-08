@@ -1,4 +1,5 @@
 ﻿using DiscoverCostaRica.Shared.ApiVersioning;
+using DiscoverCostaRica.Shared.Authentication;
 using DiscoverCostaRica.VolcanoService.Api.Handler;
 
 namespace DiscoverCostaRica.VolcanoService.Api.Extensions;
@@ -12,9 +13,14 @@ public static class EndpointExtensions
                               .WithApiVersionSet(versionSet)
                               .MapToApiVersion(1.0);
 
-        groups.MapGet("/", VolcanoHandler.GetVolcanos);
-        groups.MapGet("/{id}", VolcanoHandler.GetVolcanoById);
-        groups.MapGet("/province/{provinceId}", VolcanoHandler.GetVolcanosByProvince);
+        groups.MapGet("/", VolcanoHandler.GetVolcanos)
+              .RequireAuthorization(AuthConstants.Policies.VolcanoRead);
+
+        groups.MapGet("/{id}", VolcanoHandler.GetVolcanoById)
+              .RequireAuthorization(AuthConstants.Policies.VolcanoRead);
+
+        groups.MapGet("/province/{provinceId}", VolcanoHandler.GetVolcanosByProvince)
+              .RequireAuthorization(AuthConstants.Policies.VolcanoRead);
 
         return endpoints;
     }
