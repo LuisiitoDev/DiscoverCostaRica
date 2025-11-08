@@ -4,18 +4,15 @@ namespace DiscoverCostaRica.Shared.Utils;
 
 public static class SharedExtensions
 {
-    extension<T>(Result<T> result)
+    public static IResult ToResult<T>(this Result<T> result)
     {
-        public IResult ToResult()
+        return result.StatusCode switch
         {
-            return result.StatusCode switch
-            {
-                StatusCodes.Status200OK => Results.Ok(result),
-                StatusCodes.Status404NotFound => Results.NotFound(result),
-                StatusCodes.Status400BadRequest => Results.BadRequest(result),
-                StatusCodes.Status500InternalServerError => Results.InternalServerError(),
-                _ => Results.Problem(result.Message, statusCode: result.StatusCode)
-            };
-        }
+            StatusCodes.Status200OK => Results.Ok(result),
+            StatusCodes.Status404NotFound => Results.NotFound(result),
+            StatusCodes.Status400BadRequest => Results.BadRequest(result),
+            StatusCodes.Status500InternalServerError => Results.InternalServerError(),
+            _ => Results.Problem(result.Message, statusCode: result.StatusCode)
+        };
     }
 }
