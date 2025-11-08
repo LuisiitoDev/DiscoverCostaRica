@@ -1,4 +1,5 @@
 using Aspire.Hosting.Yarp.Transforms;
+using Yarp.ReverseProxy.Transforms;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -58,21 +59,26 @@ builder.AddYarp("gateway")
        .WaitFor(volcano)
        .WithConfiguration(yarp =>
        {
+
            yarp.AddRoute("/api/beaches/{**catch-all}", beaches)
                .WithTransformPathRemovePrefix("/api/beaches")
-               .WithTransformPathPrefix("/api/v1");
+               .WithTransformPathPrefix("/api/v1")
+               .WithTransformRequestHeadersAllowed(["Authorization"]);
 
            yarp.AddRoute("/api/culture/{**catch-all}", culture)
                .WithTransformPathRemovePrefix("/api/culture")
-               .WithTransformPathPrefix("/api/v1");
+               .WithTransformPathPrefix("/api/v1")
+               .WithTransformRequestHeadersAllowed(["Authorization"]);
 
            yarp.AddRoute("/api/geo/{**catch-all}", geo)
                .WithTransformPathRemovePrefix("/api/geo")
-               .WithTransformPathPrefix("/api/v1");
+               .WithTransformPathPrefix("/api/v1")
+               .WithTransformRequestHeadersAllowed(["Authorization"]);
 
            yarp.AddRoute("/api/volcano/{**catch-all}", volcano)
                .WithTransformPathRemovePrefix("/api/volcano")
-               .WithTransformPathPrefix("/api/v1");
+               .WithTransformPathPrefix("/api/v1")
+               .WithTransformRequestHeadersAllowed(["Authorization"]);
        });
 
 builder.Build().Run();
