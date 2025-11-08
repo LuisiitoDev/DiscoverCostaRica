@@ -6,6 +6,7 @@ using DiscoverCostaRica.Culture.Infraestructure.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddEntraIdAuthentication();
 builder.AddDiscoverCostaRicaContext<ICultureContext, CultureContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
@@ -23,6 +24,8 @@ app.MapOpenApi();
 app.AddScalar();
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapDefaultEndpoints();
 app.MapCultureEndpoints();
 

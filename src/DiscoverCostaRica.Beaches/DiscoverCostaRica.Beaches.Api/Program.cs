@@ -6,6 +6,7 @@ using DiscoverCostaRica.Beaches.Infrastructure.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddEntraIdAuthentication();
 builder.AddDiscoverCostaRicaContext<IBeachContext, BeachContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
@@ -23,6 +24,8 @@ var app = builder.Build();
 app.MapOpenApi();
 app.AddScalar();
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapDefaultEndpoints();
 app.MapBeachEndpoints();
 await app.RunAsync();

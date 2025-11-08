@@ -45,23 +45,35 @@ var volcano = builder.AddProject<Projects.DiscoverCostaRica_Volcano_Api>("discov
        .WaitFor(azureFunction)
        .WithDaprSidecar();
 
+// Configure YARP gateway with service-specific routes
+// YARP automatically forwards all request headers including Authorization
 builder.AddYarp("gateway")
+       .WithExternalHttpEndpoints()
+       .WithReference(beaches)
+       .WithReference(culture)
+       .WithReference(geo)
+       .WithReference(volcano)
        .WithConfiguration(yarp =>
        {
-           yarp.AddRoute("/api/{**catch-all}", beaches)
-               .WithTransformPathRemovePrefix("/api")
+           // Beaches service routes: /api/beaches/* -> /v1/*
+           yarp.AddRoute("/api/beaches/{**catch-all}", beaches)
+               .WithTransformPathRemovePrefix("/api/beaches")
                .WithTransformPathPrefix("/v1");
-           yarp.AddRoute("/api/{**catch-all}", culture)
-               .WithTransformPathRemovePrefix("/api")
+
+           // Culture service routes: /api/culture/* -> /v1/*
+           yarp.AddRoute("/api/culture/{**catch-all}", culture)
+               .WithTransformPathRemovePrefix("/api/culture")
                .WithTransformPathPrefix("/v1");
-           yarp.AddRoute("/api/{**catch-all}", geo)
-               .WithTransformPathRemovePrefix("/api")
+
+           // Geo service routes: /api/geo/* -> /v1/*
+           yarp.AddRoute("/api/geo/{**catch-all}", geo)
+               .WithTransformPathRemovePrefix("/api/geo")
                .WithTransformPathPrefix("/v1");
-           yarp.AddRoute("/api/{**catch-all}", volcano)
-               .WithTransformPathRemovePrefix("/api")
+
+           // Volcano service routes: /api/volcano/* -> /v1/*
+           yarp.AddRoute("/api/volcano/{**catch-all}", volcano)
+               .WithTransformPathRemovePrefix("/api/volcano")
                .WithTransformPathPrefix("/v1");
        });
-
-//var gateway = builder.AddYarp("gateway");
 
 builder.Build().Run();
