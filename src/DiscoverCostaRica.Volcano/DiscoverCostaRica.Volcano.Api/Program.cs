@@ -6,6 +6,7 @@ using DiscoverCostaRica.VolcanoService.Infraestructure.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddEntraIdAuthentication();
 builder.AddDiscoverCostaRicaContext<IVolcanoContext, VolcanoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
@@ -21,7 +22,9 @@ var app = builder.Build();
 app.MapOpenApi();
 app.AddScalar();
 
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapVolcanoEndpoints();
 app.MapDefaultEndpoints();
-app.UseHttpsRedirection();
 await app.RunAsync();

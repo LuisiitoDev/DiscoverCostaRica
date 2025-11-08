@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -182,5 +183,68 @@ public static class Extensions
         }
 
         return app;
+    }
+
+    public static IHostApplicationBuilder AddEntraIdAuthentication(this IHostApplicationBuilder builder)
+    {
+        // Read EntraId configuration section
+        var entraIdSection = builder.Configuration.GetSection(DiscoverCostaRica.Shared.Authentication.EntraIdOptions.SectionName);
+        var entraIdOptions = entraIdSection.Get<DiscoverCostaRica.Shared.Authentication.EntraIdOptions>();
+
+        if (entraIdOptions == null || string.IsNullOrWhiteSpace(entraIdOptions.TenantId))
+        {
+            // EntraId not configured - skip authentication setup
+            // Note: Logging will occur when the application starts and the logger is available
+            return builder;
+        }
+
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<DiscoverCostaRica.Shared.Authentication.ICurrentUserService, 
+                                   DiscoverCostaRica.Shared.Authentication.CurrentUserService>();
+
+        // Configure JWT Bearer authentication with Microsoft.Identity.Web
+        builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)
+            .AddMicrosoftIdentityWebApi(jwtOptions =>
+            {
+                jwtOptions.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler>>();
+                        logger.LogError(context.Exception, "Authentication failed: {Message}", context.Exception.Message);
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler>>();
+                        var userId = context.Principal?.FindFirst(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ObjectId)?.Value
+                                    ?? context.Principal?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                        logger.LogInformation("Token validated successfully for user: {UserId}", userId ?? "Unknown");
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler>>();
+                        logger.LogWarning("Authentication challenge issued: {Error}, {ErrorDescription}", 
+                            context.Error, context.ErrorDescription);
+                        return Task.CompletedTask;
+                    }
+                };
+                
+                // Set audience if configured
+                if (!string.IsNullOrWhiteSpace(entraIdOptions.Audience))
+                {
+                    jwtOptions.TokenValidationParameters.ValidAudiences = [entraIdOptions.Audience];
+                }
+            }, identityOptions =>
+            {
+                identityOptions.Instance = entraIdOptions.Instance;
+                identityOptions.TenantId = entraIdOptions.TenantId;
+                identityOptions.ClientId = entraIdOptions.ClientId;
+            });
+
+        builder.Services.AddPolicies();
+
+        return builder;
     }
 }
