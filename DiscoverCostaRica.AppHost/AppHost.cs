@@ -55,25 +55,25 @@ builder.AddYarp("gateway")
        .WithReference(volcano)
        .WithConfiguration(yarp =>
        {
-           // Beaches service routes: /api/beaches/* -> /v1/*
+           // Beaches service routes: /api/beaches/* -> /api/v1/*
            yarp.AddRoute("/api/beaches/{**catch-all}", beaches)
                .WithTransformPathRemovePrefix("/api/beaches")
-               .WithTransformPathPrefix("/v1");
+               .WithTransformPathPrefix("/api/v1");
 
-           // Culture service routes: /api/culture/* -> /v1/*
+           // Culture service routes: /api/culture/* -> /api/v1/*
            yarp.AddRoute("/api/culture/{**catch-all}", culture)
                .WithTransformPathRemovePrefix("/api/culture")
-               .WithTransformPathPrefix("/v1");
+               .WithTransformPathPrefix("/api/v1");
 
-           // Geo service routes: /api/geo/* -> /v1/*
+           // Geo service routes: /api/geo/* -> /api/v1/*
            yarp.AddRoute("/api/geo/{**catch-all}", geo)
                .WithTransformPathRemovePrefix("/api/geo")
-               .WithTransformPathPrefix("/v1");
+               .WithTransformPathPrefix("/api/v1");
 
-           // Volcano service routes: /api/volcano/* -> /v1/*
+           // Volcano service routes: /api/volcano/* -> /api/v1/*
            yarp.AddRoute("/api/volcano/{**catch-all}", volcano)
                .WithTransformPathRemovePrefix("/api/volcano")
-               .WithTransformPathPrefix("/v1");
+               .WithTransformPathPrefix("/api/v1");
        });
 
 builder.Build().Run();

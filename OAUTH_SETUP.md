@@ -153,31 +153,31 @@ Replace `{GATEWAY_URL}` with the YARP gateway endpoint from Aspire dashboard (ty
 
 ```bash
 # Without authentication (should return 401 Unauthorized)
-curl -i https://localhost:7xxx/api/beaches/v1/beaches
+curl -i https://localhost:7xxx/api/beaches/beaches
 
 # With authentication (replace {TOKEN} with your access token)
-curl -i https://localhost:7xxx/api/beaches/v1/beaches \
+curl -i https://localhost:7xxx/api/beaches/beaches \
   -H "Authorization: Bearer {TOKEN}"
 ```
 
 #### Test Volcano Service
 
 ```bash
-curl -i https://localhost:7xxx/api/volcano/v1/volcanoes \
+curl -i https://localhost:7xxx/api/volcano/volcanoes \
   -H "Authorization: Bearer {TOKEN}"
 ```
 
 #### Test Culture Service
 
 ```bash
-curl -i https://localhost:7xxx/api/culture/v1/sites \
+curl -i https://localhost:7xxx/api/culture/traditions/tradition \
   -H "Authorization: Bearer {TOKEN}"
 ```
 
 #### Test Geo Service
 
 ```bash
-curl -i https://localhost:7xxx/api/geo/v1/locations \
+curl -i https://localhost:7xxx/api/geo/geo \
   -H "Authorization: Bearer {TOKEN}"
 ```
 
@@ -195,10 +195,12 @@ The YARP gateway maps external routes to internal service routes:
 
 | External Route | Internal Service | Internal Route |
 |----------------|------------------|----------------|
-| `/api/beaches/*` | Beaches API | `/v1/*` |
-| `/api/volcano/*` | Volcano API | `/v1/*` |
-| `/api/culture/*` | Culture API | `/v1/*` |
-| `/api/geo/*` | Geo API | `/v1/*` |
+| `/api/beaches/*` | Beaches API | `/api/v1/*` |
+| `/api/volcano/*` | Volcano API | `/api/v1/*` |
+| `/api/culture/*` | Culture API | `/api/v1/*` |
+| `/api/geo/*` | Geo API | `/api/v1/*` |
+
+**Example:** A request to `https://gateway/api/beaches/beaches/` is transformed to `https://beaches-api/api/v1/beaches/`
 
 All requests automatically forward the `Authorization` header to backend services.
 
@@ -210,11 +212,11 @@ If you've implemented endpoint-level authorization with policies, test with diff
 ```bash
 # Token should have only *.Read scopes
 # GET requests should succeed
-curl -i https://localhost:7xxx/api/beaches/v1/beaches \
+curl -i https://localhost:7xxx/api/beaches/beaches \
   -H "Authorization: Bearer {READ_ONLY_TOKEN}"
 
 # POST/PUT/DELETE should return 403 Forbidden
-curl -i -X POST https://localhost:7xxx/api/beaches/v1/beaches \
+curl -i -X POST https://localhost:7xxx/api/beaches/beaches \
   -H "Authorization: Bearer {READ_ONLY_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"name":"Test Beach"}'
@@ -224,7 +226,7 @@ curl -i -X POST https://localhost:7xxx/api/beaches/v1/beaches \
 ```bash
 # Token should have *.Write scopes
 # All operations should succeed
-curl -i -X POST https://localhost:7xxx/api/beaches/v1/beaches \
+curl -i -X POST https://localhost:7xxx/api/beaches/beaches \
   -H "Authorization: Bearer {WRITE_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"name":"Test Beach"}'
