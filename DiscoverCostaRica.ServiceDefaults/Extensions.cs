@@ -194,11 +194,7 @@ public static class Extensions
         if (entraIdOptions == null || string.IsNullOrWhiteSpace(entraIdOptions.TenantId))
         {
             // EntraId not configured - skip authentication setup
-            builder.Services.AddSingleton<ILogger>(sp =>
-                sp.GetRequiredService<ILoggerFactory>().CreateLogger("Authentication"));
-            
-            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger>();
-            logger.LogWarning("EntraId authentication is not configured. Skipping authentication setup.");
+            // Note: Logging will occur when the application starts and the logger is available
             return builder;
         }
 
@@ -248,26 +244,48 @@ public static class Extensions
             });
 
         // Configure authorization policies based on scopes
+        // JWT tokens contain space-separated scopes in a single claim value
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.BeachesRead, policy =>
-                policy.RequireClaim(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope, "Beaches.Read"))
+                policy.RequireAssertion(context =>
+                    context.User.Claims
+                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || c.Type == "scp")
+                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("Beaches.Read"))))
             .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.BeachesWrite, policy =>
-                policy.RequireClaim(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope, "Beaches.Write"))
+                policy.RequireAssertion(context =>
+                    context.User.Claims
+                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || c.Type == "scp")
+                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("Beaches.Write"))))
             .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.VolcanoRead, policy =>
-                policy.RequireClaim(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope, "Volcano.Read"))
+                policy.RequireAssertion(context =>
+                    context.User.Claims
+                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || c.Type == "scp")
+                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("Volcano.Read"))))
             .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.VolcanoWrite, policy =>
-                policy.RequireClaim(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope, "Volcano.Write"))
+                policy.RequireAssertion(context =>
+                    context.User.Claims
+                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || c.Type == "scp")
+                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("Volcano.Write"))))
             .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.CultureRead, policy =>
-                policy.RequireClaim(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope, "Culture.Read"))
+                policy.RequireAssertion(context =>
+                    context.User.Claims
+                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || c.Type == "scp")
+                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("Culture.Read"))))
             .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.CultureWrite, policy =>
-                policy.RequireClaim(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope, "Culture.Write"))
+                policy.RequireAssertion(context =>
+                    context.User.Claims
+                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || c.Type == "scp")
+                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("Culture.Write"))))
             .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.GeoRead, policy =>
-                policy.RequireClaim(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope, "Geo.Read"))
+                policy.RequireAssertion(context =>
+                    context.User.Claims
+                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || c.Type == "scp")
+                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("Geo.Read"))))
             .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.GeoWrite, policy =>
-                policy.RequireClaim(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope, "Geo.Write"));
-
-        var logger2 = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger("Authentication");
-        logger2.LogInformation("EntraId authentication configured successfully for tenant: {TenantId}", entraIdOptions.TenantId);
+                policy.RequireAssertion(context =>
+                    context.User.Claims
+                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || c.Type == "scp")
+                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("Geo.Write"))));
 
         return builder;
     }

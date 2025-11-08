@@ -10,27 +10,27 @@ public class EntraIdOptions
     /// <summary>
     /// Azure AD instance (e.g., https://login.microsoftonline.com/)
     /// </summary>
-    public string Instance { get; set; } = string.Empty;
+    public required string Instance { get; set; }
 
     /// <summary>
     /// Azure AD Tenant ID
     /// </summary>
-    public string TenantId { get; set; } = string.Empty;
+    public required string TenantId { get; set; }
 
     /// <summary>
     /// Application (Client) ID
     /// </summary>
-    public string ClientId { get; set; } = string.Empty;
+    public required string ClientId { get; set; }
 
     /// <summary>
     /// API audience identifier
     /// </summary>
-    public string Audience { get; set; } = string.Empty;
+    public required string Audience { get; set; }
 
     /// <summary>
     /// Comma-separated list of required scopes (e.g., "Beaches.Read,Beaches.Write")
     /// </summary>
-    public string Scopes { get; set; } = string.Empty;
+    public required string Scopes { get; set; }
 
     /// <summary>
     /// Gets the authority URL for token validation
