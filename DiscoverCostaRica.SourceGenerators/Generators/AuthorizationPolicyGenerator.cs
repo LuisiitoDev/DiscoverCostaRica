@@ -61,7 +61,7 @@ public class AuthorizationPolicyGenerator : IIncrementalGenerator
         });
     }
 
-    private static string GenerateExensionsClass(string autorizations)
+    private static string GenerateExensionsClass(string authorizations)
     {
         return $@"
             // <auto-genereated/>
@@ -79,7 +79,7 @@ public class AuthorizationPolicyGenerator : IIncrementalGenerator
                 {{
                     public static IServiceCollection AddPolicies(this IServiceCollection services)
                     {{
-                        {autorizations};
+                        {authorizations};
                         return services;
                     }}
                 }}
