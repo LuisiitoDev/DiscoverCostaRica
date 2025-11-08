@@ -1,3 +1,5 @@
+using Aspire.Hosting.Yarp.Transforms;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var existingSqlServerName = builder.AddParameter("existingSqlServerName");
@@ -22,21 +24,21 @@ var beaches = builder.AddProject<Projects.DiscoverCostaRica_Beaches_Api>("discov
        .WaitFor(azureFunction)
        .WithDaprSidecar();
 
-builder.AddProject<Projects.DiscoverCostaRica_Culture_Api>("discovercostarica-cultureserice-api")
+var culture = builder.AddProject<Projects.DiscoverCostaRica_Culture_Api>("discovercostarica-cultureserice-api")
        .WithReference(azureSql)
        .WaitFor(azureSql)
        .WithReference(azureFunction)
        .WaitFor(azureFunction)
        .WithDaprSidecar();
 
-builder.AddProject<Projects.DiscoverCostaRica_Geo_Api>("discovercostarica-geoservice-api")
+var geo = builder.AddProject<Projects.DiscoverCostaRica_Geo_Api>("discovercostarica-geoservice-api")
        .WithReference(azureSql)
        .WaitFor(azureSql)
        .WithReference(azureFunction)
        .WaitFor(azureFunction)
        .WithDaprSidecar();
 
-builder.AddProject<Projects.DiscoverCostaRica_Volcano_Api>("discovercostarica-volcanoservice-api")
+var volcano = builder.AddProject<Projects.DiscoverCostaRica_Volcano_Api>("discovercostarica-volcanoservice-api")
        .WithReference(azureSql)
        .WaitFor(azureSql)
        .WithReference(azureFunction)
@@ -46,7 +48,18 @@ builder.AddProject<Projects.DiscoverCostaRica_Volcano_Api>("discovercostarica-vo
 builder.AddYarp("gateway")
        .WithConfiguration(yarp =>
        {
-           yarp.AddRoute(beaches);
+           yarp.AddRoute("/api/{**catch-all}", beaches)
+               .WithTransformPathRemovePrefix("/api")
+               .WithTransformPathPrefix("/v1");
+           yarp.AddRoute("/api/{**catch-all}", culture)
+               .WithTransformPathRemovePrefix("/api")
+               .WithTransformPathPrefix("/v1");
+           yarp.AddRoute("/api/{**catch-all}", geo)
+               .WithTransformPathRemovePrefix("/api")
+               .WithTransformPathPrefix("/v1");
+           yarp.AddRoute("/api/{**catch-all}", volcano)
+               .WithTransformPathRemovePrefix("/api")
+               .WithTransformPathPrefix("/v1");
        });
 
 //var gateway = builder.AddYarp("gateway");
