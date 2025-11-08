@@ -1,14 +1,11 @@
 namespace DiscoverCostaRica.Shared.Authentication;
 
-/// <summary>
-/// Constants for authentication policies, roles, and claims
-/// </summary>
 public static partial class AuthConstants
 {
     /// <summary>
-    /// Authorization policy names
+    /// Scope value constants
     /// </summary>
-    public static class Policies
+    public static class Scopes
     {
         public const string BeachesRead = "Beaches.Read";
         public const string VolcanoRead = "Volcano.Read";

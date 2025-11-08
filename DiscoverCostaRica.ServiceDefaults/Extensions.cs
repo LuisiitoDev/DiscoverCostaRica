@@ -234,7 +234,7 @@ public static class Extensions
                 // Set audience if configured
                 if (!string.IsNullOrWhiteSpace(entraIdOptions.Audience))
                 {
-                    jwtOptions.TokenValidationParameters.ValidAudiences = new[] { entraIdOptions.Audience };
+                    jwtOptions.TokenValidationParameters.ValidAudiences = [entraIdOptions.Audience];
                 }
             }, identityOptions =>
             {
@@ -243,57 +243,7 @@ public static class Extensions
                 identityOptions.ClientId = entraIdOptions.ClientId;
             });
 
-        // Configure authorization policies based on scopes
-        // JWT tokens contain space-separated scopes in a single claim value
-        builder.Services.AddAuthorizationBuilder()
-            .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.BeachesRead, policy =>
-                policy.RequireAssertion(context =>
-                    context.User.Claims
-                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || 
-                                   c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
-                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(DiscoverCostaRica.Shared.Authentication.AuthConstants.Scopes.BeachesRead))))
-            .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.BeachesWrite, policy =>
-                policy.RequireAssertion(context =>
-                    context.User.Claims
-                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || 
-                                   c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
-                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(DiscoverCostaRica.Shared.Authentication.AuthConstants.Scopes.BeachesWrite))))
-            .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.VolcanoRead, policy =>
-                policy.RequireAssertion(context =>
-                    context.User.Claims
-                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || 
-                                   c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
-                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(DiscoverCostaRica.Shared.Authentication.AuthConstants.Scopes.VolcanoRead))))
-            .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.VolcanoWrite, policy =>
-                policy.RequireAssertion(context =>
-                    context.User.Claims
-                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || 
-                                   c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
-                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(DiscoverCostaRica.Shared.Authentication.AuthConstants.Scopes.VolcanoWrite))))
-            .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.CultureRead, policy =>
-                policy.RequireAssertion(context =>
-                    context.User.Claims
-                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || 
-                                   c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
-                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(DiscoverCostaRica.Shared.Authentication.AuthConstants.Scopes.CultureRead))))
-            .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.CultureWrite, policy =>
-                policy.RequireAssertion(context =>
-                    context.User.Claims
-                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || 
-                                   c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
-                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(DiscoverCostaRica.Shared.Authentication.AuthConstants.Scopes.CultureWrite))))
-            .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.GeoRead, policy =>
-                policy.RequireAssertion(context =>
-                    context.User.Claims
-                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || 
-                                   c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
-                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(DiscoverCostaRica.Shared.Authentication.AuthConstants.Scopes.GeoRead))))
-            .AddPolicy(DiscoverCostaRica.Shared.Authentication.AuthConstants.Policies.GeoWrite, policy =>
-                policy.RequireAssertion(context =>
-                    context.User.Claims
-                        .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope || 
-                                   c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
-                        .Any(c => c.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(DiscoverCostaRica.Shared.Authentication.AuthConstants.Scopes.GeoWrite))));
+        builder.Services.AddPolicies();
 
         return builder;
     }
