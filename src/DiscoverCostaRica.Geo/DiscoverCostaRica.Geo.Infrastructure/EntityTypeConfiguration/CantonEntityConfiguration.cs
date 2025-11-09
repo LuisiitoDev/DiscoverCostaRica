@@ -10,11 +10,14 @@ public class CantonEntityConfiguration : IEntityTypeConfiguration<CantonModel>
     {
         builder.ToTable("Geo.Canton");
 
-        builder.HasKey(c => c.Id);
+        builder.HasKey(c => new { c.Id, c.ProvinceId });
         builder.Property(p => p.Id).ValueGeneratedNever();
         builder.Property(c => c.Name).IsRequired();
 
-        builder.HasMany(c => c.Districts).WithOne(c => c.Canton)
-        .HasForeignKey(c => c.CantonId);
+
+        builder
+            .HasMany(c => c.Districts)
+            .WithOne(c => c.Canton)
+            .HasForeignKey(c => new { c.CantonId, c.CantonProvinceId });
     }
 }

@@ -45,9 +45,7 @@ public class AuthorizationPolicyGenerator : IIncrementalGenerator
                                 .AddPolicy(""{name}"", policy => 
                                     policy.RequireAssertion(context => 
                                         context.User.Claims
-                                            .Where(c =>
-                                                c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Scope ||
-                                                c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ScopeShort)
+                                            .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Roles)
                                            .Any(c => c.Value.Split(' ',StringSplitOptions.RemoveEmptyEntries).Contains(""{scope}""))))");
                     }
                 }

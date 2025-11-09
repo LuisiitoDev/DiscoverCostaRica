@@ -5,5 +5,6 @@ public class DistrictModel
     public int Id { get; set; }
     public required string Name { get; set; }
     public required int CantonId { get; set; }
+    public int CantonProvinceId { get; set; }
     public required CantonModel Canton { get; set; }
 }

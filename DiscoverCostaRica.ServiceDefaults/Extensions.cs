@@ -1,6 +1,7 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using DiscoverCostaRica.ServiceDefaults.Middleware;
 using DiscoverCostaRica.Shared.logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -210,16 +211,19 @@ public static class Extensions
                 {
                     OnAuthenticationFailed = context =>
                     {
-                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler>>();
+                        var logger = context.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<JwtBearerHandler>>();
                         logger.LogError(context.Exception, "Authentication failed: {Message}", context.Exception.Message);
                         return Task.CompletedTask;
                     },
                     OnTokenValidated = context =>
                     {
-                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler>>();
-                        var userId = context.Principal?.FindFirst(DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.ObjectId)?.Value
-                                    ?? context.Principal?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-                        logger.LogInformation("Token validated successfully for user: {UserId}", userId ?? "Unknown");
+                        var logger = context.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<JwtBearerHandler>>();
+                        var roles = string.Join(",", context.Principal?.Claims
+                            .Where(c => c.Type == "roles")
+                            .Select(c => c.Value) ?? Array.Empty<string>());
+                        logger.LogInformation("Token valid. Roles: {Roles}", roles);
                         return Task.CompletedTask;
                     },
                     OnChallenge = context =>
@@ -236,6 +240,10 @@ public static class Extensions
                 {
                     jwtOptions.TokenValidationParameters.ValidAudiences = [entraIdOptions.Audience];
                 }
+
+                // ✅ Aquí le decís que use "roles" del token para la autorización
+                jwtOptions.TokenValidationParameters.RoleClaimType = "roles";
+
             }, identityOptions =>
             {
                 identityOptions.Instance = entraIdOptions.Instance;

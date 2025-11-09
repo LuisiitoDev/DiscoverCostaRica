@@ -10,8 +10,12 @@ public class DistrictEntityConfiguration : IEntityTypeConfiguration<DistrictMode
     {
         builder.ToTable("Geo.District");
 
-        builder.HasKey(d => d.Id);
+        builder.HasKey(d => new { d.Id, d.CantonId, d.CantonProvinceId });
         builder.Property(p => p.Id).ValueGeneratedNever();
         builder.Property(d => d.Name).IsRequired();
+
+        builder.HasOne(d => d.Canton)
+               .WithMany(c => c.Districts)
+               .HasForeignKey(d => new { d.CantonId, d.CantonProvinceId });
     }
 }
