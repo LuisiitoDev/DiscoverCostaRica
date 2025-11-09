@@ -1,6 +1,7 @@
 ﻿using DiscoverCostaRica.Geo.Api.Handler;
 using DiscoverCostaRica.Shared.ApiVersioning;
 using DiscoverCostaRica.Shared.Authentication;
+using DiscoverCostaRica.Shared.Routes;
 
 namespace DiscoverCostaRica.Geo.Api.Extensions;
 
@@ -8,19 +9,11 @@ public static class EndpointExtensions
 {
     public static IEndpointRouteBuilder MapGeoEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var versionSet = endpoints.CreateGlobalVersionSet();
-        var groups = endpoints.MapGroup("/api/v{version:apiVersion}/geo")
-                              .WithApiVersionSet(versionSet)
-                              .MapToApiVersion(1.0);
+        var geo = endpoints.BuildEndpointGroup(1.0, RoutesConstants.Geo.Group);
 
-        groups.MapGet("/provinces", GeoHandler.GetProvinces)
-              .RequireAuthorization(AuthConstants.Policies.GeoRead);
-
-        groups.MapGet("/cantons/{provinceId}", GeoHandler.GetCantonsByProvince)
-              .RequireAuthorization(AuthConstants.Policies.GeoRead);
-
-        groups.MapGet("/districts/{cantonId}", GeoHandler.GetDistrictsByCanton)
-              .RequireAuthorization(AuthConstants.Policies.GeoRead);
+        geo.MapGet(RoutesConstants.Geo.Provinces, GeoHandler.GetProvinces).RequireAuthorization(AuthConstants.Policies.GeoRead);
+        geo.MapGet(RoutesConstants.Geo.Canton, GeoHandler.GetCantonsByProvince).RequireAuthorization(AuthConstants.Policies.GeoRead);
+        geo.MapGet(RoutesConstants.Geo.Districts, GeoHandler.GetDistrictsByCanton).RequireAuthorization(AuthConstants.Policies.GeoRead);
 
         return endpoints;
     }
