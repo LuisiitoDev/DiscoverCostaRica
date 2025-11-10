@@ -1,6 +1,7 @@
 ﻿using DiscoverCostaRica.Culture.Api.Handlers;
 using DiscoverCostaRica.Shared.ApiVersioning;
 using DiscoverCostaRica.Shared.Authentication;
+using DiscoverCostaRica.Shared.Routes;
 
 namespace DiscoverCostaRica.Culture.Api.Extensions;
 
@@ -8,19 +9,10 @@ public static class EndpointExtensions
 {
     public static IEndpointRouteBuilder MapCultureEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var versionSet = endpoints.CreateGlobalVersionSet();
-        var groups = endpoints.MapGroup("api/v{version:apiVersion}/traditions")
-                              .WithApiVersionSet(versionSet)
-                              .MapToApiVersion(1.0);
+        var traditions = endpoints.BuildEndpointGroup(1.0, RoutesConstants.Traditions.Group);
 
-        var traditions = groups.MapGroup("/tradition");
-        traditions.MapGet("/", CultureHandler.TraditionHandler.GetTraditions)
-                  .RequireAuthorization(AuthConstants.Policies.CultureRead);
-
-        var dishes = groups.MapGroup("/dish");
-        dishes.MapGet("/", CultureHandler.DishHandler.GetDishes)
-              .RequireAuthorization(AuthConstants.Policies.CultureRead);
-
+        traditions.MapGet(RoutesConstants.Traditions.Tradition, CultureHandler.TraditionHandler.GetTraditions).RequireAuthorization(AuthConstants.Policies.CultureRead);
+        traditions.MapGet(RoutesConstants.Traditions.Dish, CultureHandler.DishHandler.GetDishes).RequireAuthorization(AuthConstants.Policies.CultureRead);
 
         return endpoints;
     }
