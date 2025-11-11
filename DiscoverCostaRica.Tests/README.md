@@ -129,11 +129,15 @@ public async Task ServiceName_Endpoint_ExpectedBehavior()
 
 ## Authentication Handling
 
-The services use Microsoft Entra ID (formerly Azure AD) for authentication. Tests handle this in several ways:
+The services use Microsoft Entra ID (formerly Azure AD) for authentication in production. For testing, authentication is mocked/bypassed:
 
-- **No Authentication**: If Entra ID is not configured, services run without authentication
-- **401 Unauthorized**: Tests accept this as a valid response when authentication is required
-- **Mock Authentication**: Future enhancement could include mock JWT tokens
+- **Test Configuration**: The `appsettings.Testing.json` file contains empty EntraId configuration
+- **Mock Handler**: `TestAuthenticationHandler` provides test claims without requiring real authentication
+- **Environment Setup**: Tests set the environment to "Testing" to disable Entra ID authentication
+- **Result**: Services skip authentication setup when EntraId TenantId is empty, allowing tests to access endpoints directly
+- **Test Assertions**: Tests expect 200 OK responses instead of allowing 401 Unauthorized
+
+This approach allows tests to validate service functionality without requiring Azure AD configuration or tokens.
 
 ## Service Names
 

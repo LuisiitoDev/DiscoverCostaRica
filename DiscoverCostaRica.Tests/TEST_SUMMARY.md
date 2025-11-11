@@ -112,20 +112,23 @@ Tests validate the .NET Aspire orchestration:
 
 ## Authentication Handling
 
-The application uses Microsoft Entra ID authentication. Tests handle this gracefully:
+The application uses Microsoft Entra ID authentication in production. Tests bypass authentication using a mock configuration:
+
+### Test Authentication Implementation
+
+1. **Empty Configuration**: `appsettings.Testing.json` contains empty EntraId values
+2. **Environment Setup**: Tests set `ASPNETCORE_ENVIRONMENT` to "Testing"
+3. **Service Behavior**: Services check if EntraId TenantId is configured; if empty, authentication is skipped
+4. **Test Handler**: `TestAuthenticationHandler` provides mock authentication with test claims
 
 ```csharp
-// Tests accept multiple valid responses
-Assert.True(
-    response.StatusCode == HttpStatusCode.OK || 
-    response.StatusCode == HttpStatusCode.Unauthorized,
-    $"Expected OK or Unauthorized but got {response.StatusCode}"
-);
+// Tests now expect successful responses
+Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 ```
 
-This approach allows tests to pass in both scenarios:
-- **Development**: No authentication configured → 200 OK
-- **Production**: Authentication required → 401 Unauthorized
+This approach allows tests to validate service functionality without requiring real Azure AD tokens:
+- **Test Environment**: Authentication disabled via empty configuration → 200 OK
+- **Production Environment**: Full Entra ID authentication enabled
 
 ## Key Test Patterns
 
@@ -148,7 +151,7 @@ public async Task ServiceName_HealthEndpoint_ReturnsHealthy()
 }
 ```
 
-### Pattern 2: API Endpoint Test with Auth Handling
+### Pattern 2: API Endpoint Test with Mock Authentication
 
 ```csharp
 [Theory]
@@ -164,11 +167,8 @@ public async Task ServiceName_GetEndpoint_ReturnsSuccessStatusCode(string url)
         .WaitAsync(DefaultTimeout, cancellationToken);
     using var response = await httpClient.GetAsync(url, cancellationToken);
 
-    Assert.True(
-        response.StatusCode == HttpStatusCode.OK || 
-        response.StatusCode == HttpStatusCode.Unauthorized,
-        $"Expected OK or Unauthorized but got {response.StatusCode}"
-    );
+    // Authentication is mocked/bypassed in tests
+    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 }
 ```
 
@@ -190,11 +190,8 @@ public async Task Gateway_RouteToService_RoutesSuccessfully()
         
     using var response = await httpClient.GetAsync("/api/route", cancellationToken);
 
-    Assert.True(
-        response.StatusCode == HttpStatusCode.OK || 
-        response.StatusCode == HttpStatusCode.Unauthorized,
-        $"Expected valid response but got {response.StatusCode}"
-    );
+    // Authentication is mocked/bypassed in tests
+    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 }
 ```
 
@@ -202,11 +199,15 @@ public async Task Gateway_RouteToService_RoutesSuccessfully()
 
 ### DistributedApplicationTestFactory
 
-The factory creates a configured Aspire application for testing:
+The factory creates a configured Aspire application for testing with mock authentication:
 
 ```csharp
 public static async Task<DistributedApplication> CreateAsync(CancellationToken cancellationToken)
 {
+    // Set environment to Testing to disable authentication
+    Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
+    Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Testing");
+    
     var appHost = await DistributedApplicationTestingBuilder
         .CreateAsync<Projects.DiscoverCostaRica_AppHost>(cancellationToken);
 
@@ -221,6 +222,15 @@ public static async Task<DistributedApplication> CreateAsync(CancellationToken c
     {
         clientBuilder.AddStandardResilienceHandler();
     });
+
+    // Add explicit configuration to disable EntraId authentication
+    var testConfig = new Dictionary<string, string?>
+    {
+        ["EntraId:TenantId"] = "",
+        ["EntraId:ClientId"] = "",
+        // ... other EntraId config cleared
+    };
+    appHost.Configuration.AddInMemoryCollection(testConfig);
 
     return await appHost.BuildAsync(cancellationToken);
 }
@@ -294,9 +304,9 @@ Potential improvements to the test suite:
 3. **Chaos Engineering**: Test resilience by introducing failures
 4. **Contract Tests**: Use Pact or similar for contract testing
 5. **Security Tests**: Add security-focused integration tests
-6. **Mock Authentication**: Add mock JWT tokens for full endpoint testing
-7. **Data Validation**: Validate response data structure and content
-8. **Database State**: Add tests that validate database state changes
+6. **Data Validation**: Validate response data structure and content
+7. **Database State**: Add tests that validate database state changes
+8. **Response Content Tests**: Add tests that validate actual API response content and structure
 
 ## Conclusion
 
@@ -307,7 +317,8 @@ This comprehensive test suite provides:
 - ✅ Aspire orchestration validation
 - ✅ Health endpoint validation
 - ✅ API endpoint validation
-- ✅ Authentication-aware testing
+- ✅ Mock authentication support (bypasses Entra ID)
+- ✅ Production-ready test patterns
 - ✅ Production-ready test patterns
 
 The tests ensure that the Discover Costa Rica application works correctly as a distributed system orchestrated by .NET Aspire.
