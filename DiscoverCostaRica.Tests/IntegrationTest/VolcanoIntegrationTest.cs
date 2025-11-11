@@ -59,12 +59,12 @@ public class VolcanoIntegrationTest
         using var response = await httpClient.GetAsync(url, cancellationToken);
 
         // Assert
-        // May return 200 OK, 404 Not Found, or 401 Unauthorized depending on auth/data
+        // Authentication is mocked/bypassed in tests
+        // May return 200 OK or 404 Not Found depending on data
         Assert.True(
             response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.NotFound ||
-            response.StatusCode == HttpStatusCode.Unauthorized,
-            $"Expected OK, NotFound or Unauthorized but got {response.StatusCode}"
+            response.StatusCode == HttpStatusCode.NotFound,
+            $"Expected OK or NotFound but got {response.StatusCode}"
         );
     }
 
@@ -83,12 +83,12 @@ public class VolcanoIntegrationTest
         using var response = await httpClient.GetAsync("/api/v1/volcanoes/province/1", cancellationToken);
 
         // Assert
-        // May return 200 OK, 404 Not Found, or 401 Unauthorized
+        // Authentication is mocked/bypassed in tests
+        // May return 200 OK or 404 Not Found depending on data
         Assert.True(
             response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.NotFound ||
-            response.StatusCode == HttpStatusCode.Unauthorized,
-            $"Expected OK, NotFound or Unauthorized but got {response.StatusCode}"
+            response.StatusCode == HttpStatusCode.NotFound,
+            $"Expected OK or NotFound but got {response.StatusCode}"
         );
     }
 
@@ -107,9 +107,15 @@ public class VolcanoIntegrationTest
         using var response = await httpClient.GetAsync("/api/v1/volcanoes", cancellationToken);
 
         // Assert
+        // If data exists, we should get OK with JSON content
         if (response.StatusCode == HttpStatusCode.OK)
         {
             Assert.Contains("application/json", response.Content.Headers.ContentType?.ToString());
+        }
+        else
+        {
+            // Otherwise, 404 is acceptable if no data exists
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }

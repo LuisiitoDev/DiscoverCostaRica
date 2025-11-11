@@ -41,11 +41,10 @@ public class GatewayIntegrationTest
         using var response = await httpClient.GetAsync(route, cancellationToken);
 
         // Assert
-        // Gateway should route successfully, even if backend requires auth
-        // Valid responses: 200 OK, 401 Unauthorized, 404 Not Found
+        // Gateway should route successfully, authentication is mocked/bypassed
+        // Valid responses: 200 OK or 404 Not Found (if no data)
         Assert.True(
             response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.Unauthorized ||
             response.StatusCode == HttpStatusCode.NotFound,
             $"Expected valid HTTP status for route {route} but got {response.StatusCode}"
         );
@@ -72,11 +71,8 @@ public class GatewayIntegrationTest
 
         // Assert
         // Should get a response from the beaches service through the gateway
-        Assert.True(
-            response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.Unauthorized,
-            $"Expected gateway to route to beaches service but got {response.StatusCode}"
-        );
+        // Authentication is mocked/bypassed in tests
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
@@ -100,9 +96,9 @@ public class GatewayIntegrationTest
 
         // Assert
         // Should get a response from the volcano service through the gateway
+        // Authentication is mocked/bypassed in tests
         Assert.True(
             response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.Unauthorized ||
             response.StatusCode == HttpStatusCode.NotFound,
             $"Expected gateway to route to volcano service but got {response.StatusCode}"
         );
@@ -129,9 +125,9 @@ public class GatewayIntegrationTest
 
         // Assert
         // Should get a response from the culture service through the gateway
+        // Authentication is mocked/bypassed in tests
         Assert.True(
             response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.Unauthorized ||
             response.StatusCode == HttpStatusCode.NotFound,
             $"Expected gateway to route to culture service but got {response.StatusCode}"
         );
@@ -158,9 +154,9 @@ public class GatewayIntegrationTest
 
         // Assert
         // Should get a response from the geo service through the gateway
+        // Authentication is mocked/bypassed in tests
         Assert.True(
             response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.Unauthorized ||
             response.StatusCode == HttpStatusCode.NotFound,
             $"Expected gateway to route to geo service but got {response.StatusCode}"
         );

@@ -59,12 +59,8 @@ public class CultureIntegrationTest
         using var response = await httpClient.GetAsync(url, cancellationToken);
 
         // Assert
-        // May return 200 OK or 401 Unauthorized depending on auth configuration
-        Assert.True(
-            response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.Unauthorized,
-            $"Expected OK or Unauthorized but got {response.StatusCode}"
-        );
+        // Authentication is mocked/bypassed in tests, so we expect 200 OK
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
@@ -82,10 +78,8 @@ public class CultureIntegrationTest
         using var response = await httpClient.GetAsync("/api/v1/traditions/tradition", cancellationToken);
 
         // Assert
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            Assert.Contains("application/json", response.Content.Headers.ContentType?.ToString());
-        }
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("application/json", response.Content.Headers.ContentType?.ToString());
     }
 
     [Fact]
@@ -103,9 +97,7 @@ public class CultureIntegrationTest
         using var response = await httpClient.GetAsync("/api/v1/traditions/dish", cancellationToken);
 
         // Assert
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            Assert.Contains("application/json", response.Content.Headers.ContentType?.ToString());
-        }
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("application/json", response.Content.Headers.ContentType?.ToString());
     }
 }
