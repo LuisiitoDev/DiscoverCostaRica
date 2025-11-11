@@ -9,12 +9,29 @@ namespace DiscoverCostaRica.Tests.Infraestructure;
 internal static class DistributedApplicationTestFactory
 {
     /// <summary>
-    /// Creates the distributed application without authentication.
-    /// EntraId configuration is explicitly cleared to bypass authentication during tests.
+    /// Creates the distributed application with test-specific configuration.
+    /// 
+    /// IMPORTANT: To properly use mock authentication (Option 1 - TestAuthenticationHandler):
+    /// Your API services need to check for Testing environment and use TestAuthenticationHandler
+    /// instead of Entra ID authentication. This can be done by adding this to Program.cs:
+    /// 
+    /// if (builder.Environment.IsEnvironment("Testing"))
+    /// {
+    ///     builder.Services.AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
+    ///         .AddScheme&lt;AuthenticationSchemeOptions, TestAuthenticationHandler&gt;(
+    ///             TestAuthenticationHandler.AuthenticationScheme, _ => { });
+    /// }
+    /// else
+    /// {
+    ///     builder.AddEntraIdAuthentication();
+    /// }
+    /// 
+    /// CURRENT IMPLEMENTATION: Without modifying API code, tests use empty EntraId configuration
+    /// which causes services to skip authentication setup (existing behavior in Extensions.cs).
     /// </summary>
     public static async Task<DistributedApplication> CreateAsync(CancellationToken cancellationToken)
     {
-        // Set environment to Testing to load appsettings.Testing.json
+        // Set environment to Testing
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Testing");
         
@@ -34,14 +51,18 @@ internal static class DistributedApplicationTestFactory
             clientBuilder.AddStandardResilienceHandler();
         });
 
-        // Add explicit configuration to disable EntraId authentication
+        // Configure for testing: Empty EntraId config causes services to skip auth setup
+        // To use proper mock authentication, uncomment this and modify API Program.cs files
         var testConfig = new Dictionary<string, string?>
         {
             ["EntraId:TenantId"] = "",
             ["EntraId:ClientId"] = "",
             ["EntraId:Instance"] = "",
             ["EntraId:Audience"] = "",
-            ["EntraId:Scopes"] = ""
+            ["EntraId:Scopes"] = "",
+            
+            // Marker for services that want to opt-in to test authentication
+            ["Testing:UseTestAuthentication"] = "true"
         };
 
         appHost.Configuration.AddInMemoryCollection(testConfig);
@@ -49,3 +70,4 @@ internal static class DistributedApplicationTestFactory
         return await appHost.BuildAsync(cancellationToken);
     }
 }
+
