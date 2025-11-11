@@ -2,38 +2,11 @@
 
 ## Important: .NET Version Requirement
 
-This project currently targets **.NET 10.0**, which is not yet released. To run the tests, you have two options:
+This project **requires .NET 10.0** as a hard requirement. This is a future-looking architecture decision for this microservices application.
 
-### Option 1: Update to .NET 9.0 (Recommended for immediate testing)
+### Installing .NET 10.0
 
-If you want to run the tests immediately, you can temporarily downgrade to .NET 9.0:
-
-1. Update all `.csproj` files that target `net10.0` to `net9.0`:
-
-```bash
-# Run this from the repository root
-find . -name "*.csproj" -type f -exec sed -i 's/<TargetFramework>net10.0<\/TargetFramework>/<TargetFramework>net9.0<\/TargetFramework>/g' {} +
-```
-
-2. Verify the change:
-```bash
-dotnet --version  # Should show 9.x.x
-```
-
-3. Restore and build:
-```bash
-dotnet restore
-dotnet build
-```
-
-4. Run tests:
-```bash
-dotnet test
-```
-
-### Option 2: Install .NET 10.0 Preview (When available)
-
-Once .NET 10.0 preview is available:
+When .NET 10.0 becomes available:
 
 1. Download from [https://dotnet.microsoft.com/download/dotnet/10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
 2. Install the SDK
@@ -47,10 +20,28 @@ dotnet --version  # Should show 10.x.x
 dotnet test
 ```
 
+### Using .NET Preview Versions
+
+If you want to test with preview versions of .NET 10.0:
+
+1. Install the latest preview SDK from [https://dotnet.microsoft.com/download/dotnet](https://dotnet.microsoft.com/download/dotnet)
+2. Verify installation:
+```bash
+dotnet --version
+dotnet --list-sdks
+```
+
+3. Run tests:
+```bash
+dotnet test
+```
+
+**Note**: .NET 10.0 is the target framework for this project and cannot be changed to .NET 9.0 or earlier versions.
+
 ## Prerequisites
 
 ### Required
-- .NET SDK (9.0 or 10.0)
+- .NET 10.0 SDK (or latest preview)
 - Docker Desktop (for running dependencies)
 - Git
 
@@ -172,7 +163,7 @@ dotnet user-secrets set "ConnectionStrings:mongodb" "your-mongodb-connection"
 
 ### Issue: "The current .NET SDK does not support targeting .NET 10.0"
 
-**Solution**: Follow Option 1 above to downgrade to .NET 9.0, or wait for .NET 10.0 to be released.
+**Solution**: This project requires .NET 10.0 as a hard requirement. You must install .NET 10.0 SDK when it becomes available. Check the [.NET download page](https://dotnet.microsoft.com/download/dotnet) for preview versions or the official release.
 
 ### Issue: Tests timeout
 
@@ -288,7 +279,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '9.0.x'  # or '10.0.x' when available
+        dotnet-version: '10.0.x'  # .NET 10.0 required
     
     - name: Restore dependencies
       run: dotnet restore
@@ -320,7 +311,7 @@ pool:
 steps:
 - task: UseDotNet@2
   inputs:
-    version: '9.x'  # or '10.x' when available
+    version: '10.x'  # .NET 10.0 required
 
 - script: dotnet restore
   displayName: 'Restore packages'
