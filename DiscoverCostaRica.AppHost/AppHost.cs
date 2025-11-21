@@ -1,3 +1,4 @@
+using Aspire.Hosting.Yarp.Transforms;
 using DiscoverCostaRica.AppHost.Constants;
 using DiscoverCostaRica.AppHost.Extensions;
 
@@ -23,13 +24,15 @@ var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Micr
 var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, azureFunction);
 var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, azureFunction);
 
-
-builder.AddProject<Projects.DiscoverCostaRica_Gateway>(Microservices.Gateway)
-       .WithReference(geo).WaitFor(geo)
-       .WithReference(beaches).WaitFor(beaches)
-       .WithReference(culture).WaitFor(culture)
-       .WithReference(volcano).WaitFor(volcano)
-       .WithExternalHttpEndpoints();
+builder.AddYarp(Microservices.Gateway)
+       .WithDeveloperCertificateTrust(true)
+       .WithHttpsEndpoint(port: 8081, targetPort: 8081)
+       .WithHostPort(8081)
+       .WithConfiguration(yarp =>
+       {
+           yarp.AddRoute("/provinces/{**catch-all}", geo)
+               .WithTransformPathPrefix("/api/v1/geo");
+       });
 
 builder.Build().Run();
 
