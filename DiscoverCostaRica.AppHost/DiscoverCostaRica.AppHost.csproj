@@ -21,12 +21,12 @@
 		<PackageReference Include="Aspire.Hosting.Azure.Functions" Version="(9.4-*,9.5]" />
 		<PackageReference Include="Aspire.Hosting.Azure.Sql" Version="9.5.2" />
 		<PackageReference Include="Aspire.Hosting.MongoDB" Version="9.5.2" />
-		<PackageReference Include="Aspire.Hosting.Yarp" Version="9.5.2-preview.1.25522.3" />
 		<PackageReference Include="CommunityToolkit.Aspire.Hosting.Dapr" Version="9.9.0" />
 		<PackageReference Include="KubernetesClient" Version="17.0.14" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\DiscoverCostaRica.Gateway\DiscoverCostaRica.Gateway.csproj" />
 		<ProjectReference Include="..\src\DiscoverCostaRica.Beaches\DiscoverCostaRica.Beaches.Api\DiscoverCostaRica.Beaches.Api.csproj" />
 		<ProjectReference Include="..\src\DiscoverCostaRica.Culture\DiscoverCostaRica.Culture.Api\DiscoverCostaRica.Culture.Api.csproj" />
 		<ProjectReference Include="..\src\DiscoverCostaRica.Functions\DiscoverCostaRica.Functions.csproj" />

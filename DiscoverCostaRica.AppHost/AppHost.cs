@@ -1,5 +1,5 @@
-using Aspire.Hosting.Yarp.Transforms;
-using Yarp.ReverseProxy.Transforms;
+using DiscoverCostaRica.AppHost.Constants;
+using DiscoverCostaRica.AppHost.Extensions;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -18,67 +18,19 @@ var azureFunction = builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_
     .WaitFor(mongoDb)
     .WithDaprSidecar();
 
-var beaches = builder.AddProject<Projects.DiscoverCostaRica_Beaches_Api>("discovercostarica-beaches-api")
-       .WithReference(azureSql)
-       .WaitFor(azureSql)
-       .WithReference(azureFunction)
-       .WaitFor(azureFunction)
-       .WithDaprSidecar();
-
-var culture = builder.AddProject<Projects.DiscoverCostaRica_Culture_Api>("discovercostarica-cultureserice-api")
-       .WithReference(azureSql)
-       .WaitFor(azureSql)
-       .WithReference(azureFunction)
-       .WaitFor(azureFunction)
-       .WithDaprSidecar();
-
-var geo = builder.AddProject<Projects.DiscoverCostaRica_Geo_Api>("discovercostarica-geoservice-api")
-       .WithReference(azureSql)
-       .WaitFor(azureSql)
-       .WithReference(azureFunction)
-       .WaitFor(azureFunction)
-       .WithDaprSidecar();
-
-var volcano = builder.AddProject<Projects.DiscoverCostaRica_Volcano_Api>("discovercostarica-volcanoservice-api")
-       .WithReference(azureSql)
-       .WaitFor(azureSql)
-       .WithReference(azureFunction)
-       .WaitFor(azureFunction)
-       .WithDaprSidecar();
+var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, azureFunction);
+var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, azureFunction);
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, azureFunction);
+var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, azureFunction);
 
 
-builder.AddYarp("gateway")
-       .WithExternalHttpEndpoints()
-       .WithReference(beaches)
-       .WaitFor(beaches)
-       .WithReference(culture)
-       .WaitFor(culture)
-       .WithReference(geo)
-       .WaitFor(geo)
-       .WithReference(volcano)
-       .WaitFor(volcano)
-       .WithConfiguration(yarp =>
-       {
-
-           yarp.AddRoute("/api/beaches/{**catch-all}", beaches)
-               .WithTransformPathRemovePrefix("/api/beaches")
-               .WithTransformPathPrefix("/api/v1")
-               .WithTransformRequestHeadersAllowed(["Authorization"]);
-
-           yarp.AddRoute("/api/culture/{**catch-all}", culture)
-               .WithTransformPathRemovePrefix("/api/culture")
-               .WithTransformPathPrefix("/api/v1")
-               .WithTransformRequestHeadersAllowed(["Authorization"]);
-
-           yarp.AddRoute("/api/geo/{**catch-all}", geo)
-               .WithTransformPathRemovePrefix("/api/geo")
-               .WithTransformPathPrefix("/api/v1")
-               .WithTransformRequestHeadersAllowed(["Authorization"]);
-
-           yarp.AddRoute("/api/volcano/{**catch-all}", volcano)
-               .WithTransformPathRemovePrefix("/api/volcano")
-               .WithTransformPathPrefix("/api/v1")
-               .WithTransformRequestHeadersAllowed(["Authorization"]);
-       });
+builder.AddProject<Projects.DiscoverCostaRica_Gateway>(Microservices.Gateway)
+       .WithReference(geo).WaitFor(geo)
+       .WithReference(beaches).WaitFor(beaches)
+       .WithReference(culture).WaitFor(culture)
+       .WithReference(volcano).WaitFor(volcano)
+       .WithExternalHttpEndpoints();
 
 builder.Build().Run();
+
+
