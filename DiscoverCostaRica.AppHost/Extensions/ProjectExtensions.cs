@@ -1,33 +1,23 @@
-﻿using Aspire.Hosting;
-using Aspire.Hosting.Azure;
+﻿using CommunityToolkit.Aspire.Hosting.Dapr;
 
 namespace DiscoverCostaRica.AppHost.Extensions;
 
 public static class ProjectExtensions
 {
     public static IResourceBuilder<ProjectResource> CreateProject<TProject>(
-        this IDistributedApplicationBuilder builder, 
+        this IDistributedApplicationBuilder builder,
         string name,
         IResourceBuilder<IResourceWithConnectionString> azureSql,
-        IResourceBuilder<IResourceWithServiceDiscovery> azureFunction) where TProject : IProjectMetadata, new()
+        IResourceBuilder<IDaprComponentResource> secretStore,
+        IResourceBuilder<IDaprComponentResource> binding) where TProject : IProjectMetadata, new()
     {
         return builder.AddProject<TProject>(name)
                .WithReference(azureSql)
                .WaitFor(azureSql)
-               .WithReference(azureFunction)
-               .WaitFor(azureFunction)
-               .WithDaprSidecar();
-    }
-
-    public static IResourceBuilder<ProjectResource> CreateFunctionProject<TProject>(
-        this IDistributedApplicationBuilder builder,
-        string name,
-        IResourceBuilder<IResourceWithConnectionString> mongo) where TProject : IProjectMetadata, new()
-    {
-        return builder.AddAzureFunctionsProject<TProject>(name)
-            .WithExternalHttpEndpoints()
-            .WithReference(mongo)
-            .WaitFor(mongo)
-            .WithDaprSidecar();
+               .WithDaprSidecar(options =>
+               {
+                   options.WithReference(secretStore);
+                   options.WithReference(binding);
+               });
     }
 }

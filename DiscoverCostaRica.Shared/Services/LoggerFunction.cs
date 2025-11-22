@@ -10,11 +10,6 @@ public class LoggerFunction(DaprClient client) : ILoggerFunction
 {
     public async Task SendLogger(LogEntryModel log)
     {
-        var request = client.CreateInvokeMethodRequest(
-            appId: "azureFunction",
-            methodName: "api/LogsFunction",
-            data: log);
-
-        await client.InvokeMethodAsync(request);
+        await client.SaveStateAsync("mongo-logs", Guid.CreateVersion7().ToString(), log);
     }
 }

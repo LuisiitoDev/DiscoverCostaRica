@@ -53,6 +53,7 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     {
         try
         {
+            throw new Exception("test");
             var provinces = await repository.GetProvinces(cancellationToken);
 
             if (provinces is null || provinces.Count <= 0)

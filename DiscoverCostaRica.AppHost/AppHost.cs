@@ -1,4 +1,5 @@
 using Aspire.Hosting.Yarp.Transforms;
+using CommunityToolkit.Aspire.Hosting.Dapr;
 using DiscoverCostaRica.AppHost.Constants;
 using DiscoverCostaRica.AppHost.Extensions;
 
@@ -11,13 +12,21 @@ var azureSql = builder.AddAzureSqlServer("sqlserver")
                       .AsExisting(existingSqlServerName, existingSqlServerResourceGroup)
                       .AddDatabase("discovercostarica");
 
-var mongoDb = builder.AddConnectionString("mongodb");
+var secretStore = builder.AddDaprComponent("local-secret-store", "secretstores.local.file", new DaprComponentOptions
+{
+    LocalPath = "../local-secret-store.yaml"
+});
 
-var logggerFunction = builder.CreateFunctionProject<Projects.DiscoverCostaRica_Functions>(Microservices.Function, mongoDb);
-var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, logggerFunction);
-var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, logggerFunction);
-var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, logggerFunction);
-var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, logggerFunction);
+var mongoBiding =builder.AddDaprComponent("mongo-logs", "state.mongodb", new DaprComponentOptions
+{
+    LocalPath = "../mongo-azure-logs.yml"
+});
+
+
+var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, secretStore, mongoBiding);
+var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, secretStore, mongoBiding);
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, secretStore, mongoBiding);
+var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, secretStore, mongoBiding);
 
 builder.AddYarp(Microservices.Gateway)
        .WithDeveloperCertificateTrust(true)
