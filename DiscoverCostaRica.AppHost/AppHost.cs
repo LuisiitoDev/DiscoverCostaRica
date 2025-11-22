@@ -13,16 +13,11 @@ var azureSql = builder.AddAzureSqlServer("sqlserver")
 
 var mongoDb = builder.AddConnectionString("mongodb");
 
-var azureFunction = builder.AddAzureFunctionsProject<Projects.DiscoverCostaRica_Functions>("discovercostarica-functions")
-    .WithExternalHttpEndpoints()
-    .WithReference(mongoDb)
-    .WaitFor(mongoDb)
-    .WithDaprSidecar();
-
-var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, azureFunction);
-var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, azureFunction);
-var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, azureFunction);
-var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, azureFunction);
+var logggerFunction = builder.CreateFunctionProject<Projects.DiscoverCostaRica_Functions>(Microservices.Function, mongoDb);
+var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, logggerFunction);
+var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, logggerFunction);
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, logggerFunction);
+var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, logggerFunction);
 
 builder.AddYarp(Microservices.Gateway)
        .WithDeveloperCertificateTrust(true)

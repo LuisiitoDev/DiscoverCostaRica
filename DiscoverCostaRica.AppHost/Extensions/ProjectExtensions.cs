@@ -1,4 +1,5 @@
-﻿using Aspire.Hosting.Azure;
+﻿using Aspire.Hosting;
+using Aspire.Hosting.Azure;
 
 namespace DiscoverCostaRica.AppHost.Extensions;
 
@@ -16,5 +17,17 @@ public static class ProjectExtensions
                .WithReference(azureFunction)
                .WaitFor(azureFunction)
                .WithDaprSidecar();
+    }
+
+    public static IResourceBuilder<ProjectResource> CreateFunctionProject<TProject>(
+        this IDistributedApplicationBuilder builder,
+        string name,
+        IResourceBuilder<IResourceWithConnectionString> mongo) where TProject : IProjectMetadata, new()
+    {
+        return builder.AddAzureFunctionsProject<TProject>(name)
+            .WithExternalHttpEndpoints()
+            .WithReference(mongo)
+            .WaitFor(mongo)
+            .WithDaprSidecar();
     }
 }
