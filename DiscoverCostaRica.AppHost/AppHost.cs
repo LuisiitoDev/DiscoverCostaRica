@@ -1,5 +1,4 @@
 using Aspire.Hosting.Yarp.Transforms;
-using CommunityToolkit.Aspire.Hosting.Dapr;
 using DiscoverCostaRica.AppHost.Constants;
 using DiscoverCostaRica.AppHost.Extensions;
 
@@ -12,21 +11,12 @@ var azureSql = builder.AddAzureSqlServer("sqlserver")
                       .AsExisting(existingSqlServerName, existingSqlServerResourceGroup)
                       .AddDatabase("discovercostarica");
 
-var secretStore = builder.AddDaprComponent("local-secret-store", "secretstores.local.file", new DaprComponentOptions
-{
-    LocalPath = "../local-secret-store.yaml"
-});
-
-var mongoBiding =builder.AddDaprComponent("mongo-logs", "state.mongodb", new DaprComponentOptions
-{
-    LocalPath = "../mongo-azure-logs.yml"
-});
-
-
-var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, secretStore, mongoBiding);
-var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, secretStore, mongoBiding);
-var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, secretStore, mongoBiding);
-var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, secretStore, mongoBiding);
+var secretStore = builder.CreateDaprComponent(DaprCompoonents.LOCAL_SECRET_STORE, DaprCompoonents.LOCAL_SECRET_STORE_TYPE, "../local-secret-store.yaml");
+var mongo = builder.CreateDaprComponent(DaprCompoonents.MONGO_LOGS, DaprCompoonents.MONGO_LOGS_STATE, "../mongo-azure-logs.yml");
+var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, secretStore, mongo);
+var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, secretStore, mongo);
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, secretStore, mongo);
+var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, secretStore, mongo);
 
 builder.AddYarp(Microservices.Gateway)
        .WithDeveloperCertificateTrust(true)

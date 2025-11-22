@@ -20,4 +20,12 @@ public static class ProjectExtensions
                    options.WithReference(binding);
                });
     }
+
+    public static IResourceBuilder<IDaprComponentResource> CreateDaprComponent(this IDistributedApplicationBuilder builder, string name, string type, string route)
+    {
+        return builder.AddDaprComponent(name, type, new DaprComponentOptions
+        {
+            LocalPath = route
+        });
+    }
 }
