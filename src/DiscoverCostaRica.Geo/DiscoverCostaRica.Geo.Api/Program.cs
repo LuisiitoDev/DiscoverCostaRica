@@ -10,7 +10,7 @@ builder.AddEntraIdAuthentication();
 builder.AddDiscoverCostaRicaContext<IGeoContext, GeoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
-builder.AddFunctionLogger();
+builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Application();

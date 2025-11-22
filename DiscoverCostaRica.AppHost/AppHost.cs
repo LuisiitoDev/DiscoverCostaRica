@@ -38,6 +38,6 @@ builder.AddYarp(Microservices.Gateway)
            yarp.AddRoute("/{**catch-all}", volcano).WithTransformPathPrefix("/api/v1/volcanoes");
        });
 
-builder.Build().Run();
+await builder.Build().RunAsync();
 
 

@@ -10,7 +10,7 @@ builder.AddEntraIdAuthentication();
 builder.AddDiscoverCostaRicaContext<ICultureContext, CultureContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
-builder.AddFunctionLogger();
+builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Application();

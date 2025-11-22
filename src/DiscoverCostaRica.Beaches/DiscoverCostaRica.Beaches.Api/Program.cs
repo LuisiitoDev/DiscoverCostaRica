@@ -10,7 +10,7 @@ builder.AddEntraIdAuthentication();
 builder.AddDiscoverCostaRicaContext<IBeachContext, BeachContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddGlobalExeption();
-builder.AddFunctionLogger();
+builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();

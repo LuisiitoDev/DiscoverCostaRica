@@ -47,7 +47,7 @@ public static class Extensions
         return builder;
     }
 
-    public static IHostApplicationBuilder AddFunctionLogger(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddDiscoverCostaRicaLogger(this IHostApplicationBuilder builder)
     {
         builder.Services.AddSingleton<ILoggerProvider, DiscoverCostaRicaLoggerProvider>();
 
