@@ -18,5 +18,6 @@ public class VolcanoEntityConfiguration : IEntityTypeConfiguration<VolcanoModel>
 
         builder.Property(p => p.ProvinceId).IsRequired();
         builder.Property(p => p.CantonId).IsRequired();
+        builder.Property(p => p.DistrictId).IsRequired(false);
     }
 }
