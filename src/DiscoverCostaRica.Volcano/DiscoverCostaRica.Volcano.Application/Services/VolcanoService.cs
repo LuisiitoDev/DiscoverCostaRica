@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Dapr.Client;
 using DiscoverCostaRica.Shared.Attributes;
+using DiscoverCostaRica.Shared.Constants;
 using DiscoverCostaRica.Shared.Responses;
 using DiscoverCostaRica.VolcanoService.Application.Dtos;
 using DiscoverCostaRica.VolcanoService.Application.Interfaces;
@@ -10,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace DiscoverCostaRica.VolcanoService.Application.Services;
 
 [TransientService]
-public class VolcanoService(IVolcanoRepository repository, IMapper mapper, ILogger<VolcanoService> logger) : IVolcanoService
+public class VolcanoService(IVolcanoRepository repository, IMapper mapper, DaprClient dapr, ILogger<VolcanoService> logger) : IVolcanoService
 {
     public async Task<Result<VolcanoDto>> GetVolcanoById(int id, CancellationToken cancellationToken)
     {
@@ -35,12 +37,41 @@ public class VolcanoService(IVolcanoRepository repository, IMapper mapper, ILogg
     {
         try
         {
-            var volcanos = await repository.GetVolcanos(cancellationToken);
+            var volcanosModel = await repository.GetVolcanos(cancellationToken);
 
-            if (volcanos is null || volcanos.Count <= 0)
+            if (volcanosModel is null || volcanosModel.Count <= 0)
                 return new Failure("Volcanos were not found", StatusCodes.Status404NotFound);
 
-            return new Success(mapper.Map<List<VolcanoDto>>(volcanos));
+            var volcanos = mapper.Map<List<VolcanoDto>>(volcanosModel);
+
+            foreach (var volcano in volcanosModel)
+            {
+                var province = await dapr.InvokeMethodAsync<object>(
+                    HttpMethod.Get,
+                    Microservices.Geo,
+                    $"api/provinces/{volcano.ProvinceId}",
+                    cancellationToken
+                );
+
+                var canton = await dapr.InvokeMethodAsync<object>(
+                    HttpMethod.Get,
+                    Microservices.Geo,
+                    $"api/cantons/{volcano.CantonId}",
+                    cancellationToken
+                );
+
+                if (volcano.DistrictId.HasValue)
+                {
+                    var district = await dapr.InvokeMethodAsync<object>(
+                        HttpMethod.Get,
+                        Microservices.Geo,
+                        $"api/districts/{volcano.DistrictId.Value}",
+                        cancellationToken
+                    );
+                }
+            }
+
+            return new Success(volcanos);
         }
         catch (Exception ex)
         {

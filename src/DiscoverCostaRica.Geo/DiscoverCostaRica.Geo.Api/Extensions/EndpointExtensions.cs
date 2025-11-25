@@ -14,7 +14,9 @@ public static class EndpointExtensions
         geo.MapGet(RoutesConstants.Geo.Provinces, GeoHandler.GetProvinces).RequireAuthorization(AuthConstants.Policies.GeoRead);
         geo.MapGet(RoutesConstants.Geo.Canton, GeoHandler.GetCantonsByProvince).RequireAuthorization(AuthConstants.Policies.GeoRead);
         geo.MapGet(RoutesConstants.Geo.Districts, GeoHandler.GetDistrictsByCanton).RequireAuthorization(AuthConstants.Policies.GeoRead);
-
+        geo.MapGet(RoutesConstants.Geo.ProvinceById, GeoHandler.GetProvinceById).RequireAuthorization(AuthConstants.Policies.GeoRead);
+        geo.MapGet(RoutesConstants.Geo.CantonById, GeoHandler.GetCantonById).RequireAuthorization(AuthConstants.Policies.GeoRead);
+        geo.MapGet(RoutesConstants.Geo.DistrictsById, GeoHandler.GetDistrictById).RequireAuthorization(AuthConstants.Policies.GeoRead);
         return endpoints;
     }
 }
