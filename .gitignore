@@ -100,3 +100,4 @@ DiscoverCostaRica.Functions/service_account_key.json
 /DiscoverCostaRica.Functions/service_account_key.json
 /secrets.json
 .azure
+/k8s/secrets.json
