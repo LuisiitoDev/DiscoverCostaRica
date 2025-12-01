@@ -13,7 +13,7 @@ A modern microservices-based application built with .NET that provides informati
 
 ## Overview
 
-Discover Costa Rica is a distributed system built with **.NET Aspire**, following **Clean Architecture** principles. It uses **Azure EventGrid** for event-driven communication and microservices architecture for scalability.
+Discover Costa Rica is a distributed system built with **.NET Aspire**, following **Clean Architecture** principles. It uses **Dapr** for service communication and state management, **YARP** as an API Gateway, and microservices architecture for scalability.
 
 ## Architecture
 
@@ -27,54 +27,58 @@ The application is orchestrated by .NET Aspire AppHost:
 │                    (Orchestration & Service Discovery)                       │
 └────────────────────────┬────────────────────────────────────────────────────┘
                          │
-        ┌────────────────┼────────────────┬─────────────────┬─────────────────┐
-        │                │                │                 │                 │
-        ▼                ▼                ▼                 ▼                 ▼
-┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────────────┐
-│   Beach      │  │   Volcano    │  │   Culture    │  │     Geo      │  │ Log Consumer   │
-│   Service    │  │   Service    │  │   Service    │  │   Service    │  │   Function     │
-│              │  │              │  │              │  │              │  │  (Azure Func)  │
-│ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │  │                │
-└──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └───────┬────────┘
-       │                 │                 │                 │                   │
-       │ EF Core         │ EF Core         │ EF Core         │ EF Core           │
-       ├─────────────────┼─────────────────┼─────────────────┤                   │
-       │                 │                 │                 │                   │
-       ▼                 ▼                 ▼                 ▼                   │
-┌─────────────────────────────────────────────────────────────────┐             │
-│                    SQL Server Database                           │             │
-│               (Shared Database - Single Schema)                  │             │
-│  • Beaches Table    • Volcanoes Table                           │             │
-│  • Culture Table    • Geo Locations Table                       │             │
-└─────────────────────────────────────────────────────────────────┘             │
-       │                 │                 │                 │                   │
-       │                 │                 │                 │                   │
-       │   EventGrid     │   EventGrid     │   EventGrid     │   EventGrid       │
-       │   Logger        │   Logger        │   Logger        │   Logger          │
-       └─────────────────┴─────────────────┴─────────────────┴───────────────────┤
-                                           │                                      │
-                                           ▼                                      │
-                                  ┌──────────────────┐                           │
-                                  │  Azure EventGrid │                           │
-                                  │   Topic/Events   │                           │
-                                  └────────┬─────────┘                           │
-                                           │                                      │
-                                           └──────────────────────────────────────┘
-                                                          │
-                                                          ▼
-                                                ┌───────────────────┐
-                                                │  Azure Cosmos DB  │
-                                                │  (Log Storage)    │
-                                                │  • Application    │
-                                                │    Logs           │
-                                                │  • Telemetry      │
-                                                └───────────────────┘
+                         ▼
+               ┌──────────────────┐
+               │   YARP Gateway   │
+               │  (API Gateway)   │
+               │   Port: 9081     │
+               └────────┬─────────┘
+                        │
+        ┌───────────────┼───────────────┬────────────────┐
+        │               │               │                │
+        ▼               ▼               ▼                ▼
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│   Beach      │  │   Volcano    │  │   Culture    │  │     Geo      │
+│   Service    │  │   Service    │  │   Service    │  │   Service    │
+│              │  │              │  │              │  │              │
+│ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │
+│   + Dapr     │  │   + Dapr     │  │   + Dapr     │  │   + Dapr     │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │                 │
+       │ EF Core         │ EF Core         │ EF Core         │ EF Core
+       ├─────────────────┼─────────────────┼─────────────────┤
+       │                 │                 │                 │
+       ▼                 ▼                 ▼                 ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Azure SQL Database                            │
+│               (Shared Database - Single Schema)                  │
+│  • Beaches Table    • Volcanoes Table                           │
+│  • Culture Table    • Geo Locations Table                       │
+└─────────────────────────────────────────────────────────────────┘
+       │                 │                 │                 │
+       │   Dapr          │   Dapr          │   Dapr          │   Dapr
+       │   Logger        │   Logger        │   Logger        │   Logger
+       └─────────────────┴─────────────────┴─────────────────┘
+                                  │
+                                  ▼
+                        ┌──────────────────┐
+                        │  Dapr State      │
+                        │  Store           │
+                        └────────┬─────────┘
+                                 │
+                                 ▼
+                       ┌───────────────────┐
+                       │  Azure Cosmos DB  │
+                       │  (MongoDB API)    │
+                       │  • Application    │
+                       │    Logs           │
+                       └───────────────────┘
 
 ┌────────────────────────────────────────────────────────────────────────────┐
 │                         Cross-Cutting Concerns                              │
 │                                                                             │
 │  • ServiceDefaults: OpenTelemetry, Health Checks, Service Discovery        │
-│  • Shared Library: EventGrid Client, Custom Logging, Response Models       │
+│  • Shared Library: Dapr Client, Custom Logging, Response Models            │
 │  • Source Generators: Automatic DI Registration                            │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -110,7 +114,8 @@ Each service follows Clean Architecture with four layers:
 - **Clean Architecture**: Dependency rules pointing inward
 - **Microservices**: Independent services per domain
 - **.NET Aspire**: Orchestration and service discovery
-- **Event-Driven**: Azure EventGrid for logging
+- **Dapr**: Service communication and state management for logging
+- **YARP Gateway**: API Gateway with request routing
 - **Shared Database**: Simplified microservices approach
 
 ## Services
@@ -124,11 +129,12 @@ Each service follows Clean Architecture with four layers:
 
 ### Infrastructure Components
 
-5. **Log Consumer Function** - Azure Function that consumes EventGrid logs and stores them in Cosmos DB
+5. **YARP Gateway** - API Gateway for routing requests to microservices
 6. **AppHost** - .NET Aspire orchestrator managing service discovery and dependencies
 7. **ServiceDefaults** - Shared configuration (OpenTelemetry, health checks, service discovery)
-8. **Shared Library** - EventGrid client, logging, and utilities
+8. **Shared Library** - Dapr client, logging, and utilities
 9. **Source Generators** - Compile-time DI registration
+10. **Tests** - Integration and unit tests
 
 ## Technology Stack
 
@@ -136,9 +142,10 @@ Each service follows Clean Architecture with four layers:
 - **.NET Aspire 9.4** - Cloud-native orchestration
 - **ASP.NET Core Minimal APIs** - Lightweight API endpoints
 - **Entity Framework Core** - ORM for data access
-- **SQL Server** - Primary database
-- **Azure Cosmos DB** - Log storage
-- **Azure EventGrid** - Event messaging
+- **Azure SQL Database** - Primary database
+- **Azure Cosmos DB (MongoDB API)** - Log storage via Dapr state store
+- **Dapr** - Distributed application runtime for service communication
+- **YARP** - Reverse proxy for API Gateway
 - **OpenTelemetry** - Distributed tracing and metrics
 - **AutoMapper** - Object mapping
 - **Docker** - Containerization
@@ -152,11 +159,11 @@ DiscoverCostaRica/
 │   ├── DiscoverCostaRica.Volcano/        # Volcano service
 │   ├── DiscoverCostaRica.Culture/        # Culture service
 │   └── DiscoverCostaRica.Geo/            # Geo service
-├── DiscoverCostaRica.AppHost/            # Aspire orchestration
+├── DiscoverCostaRica.AppHost/            # Aspire orchestration + YARP Gateway
 ├── DiscoverCostaRica.ServiceDefaults/    # Shared service configuration
-├── DiscoverCostaRica.Shared/             # Shared libraries
+├── DiscoverCostaRica.Shared/             # Shared libraries (Dapr, logging, utils)
 ├── DiscoverCostaRica.SourceGenerators/   # Code generators
-├── DiscoverCostaRica.Function.LogConsumer/ # Azure Function
+├── DiscoverCostaRica.Tests/              # Integration and unit tests
 └── DiscoverCostaRica.sln
 ```
 
