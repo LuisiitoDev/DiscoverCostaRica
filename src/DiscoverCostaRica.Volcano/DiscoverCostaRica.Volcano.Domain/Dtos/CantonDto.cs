@@ -1,4 +1,4 @@
-﻿namespace DiscoverCostaRica.Geo.Application.Dtos;
+﻿namespace DiscoverCostaRica.Volcano.Domain.Dtos;
 
 public class CantonDto
 {

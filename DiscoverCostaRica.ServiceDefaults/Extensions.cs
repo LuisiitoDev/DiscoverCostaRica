@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using DiscoverCostaRica.ServiceDefaults.Middleware;
+using DiscoverCostaRica.Shared.Authentication;
 using DiscoverCostaRica.Shared.logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +15,7 @@ using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -34,6 +36,17 @@ public static class Extensions
             options.DarkMode = true;
         });
         return app;
+    }
+
+    private static IHostApplicationBuilder AddJsonOptions(this IHostApplicationBuilder builder)
+    {
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+        return builder;
     }
 
     public static IHostApplicationBuilder AddVersioning(this IHostApplicationBuilder builder)
@@ -82,6 +95,8 @@ public static class Extensions
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         builder.ConfigureOpenTelemetry();
+
+        builder.AddJsonOptions();
 
         builder.AddDefaultHealthChecks();
 
@@ -188,9 +203,8 @@ public static class Extensions
 
     public static IHostApplicationBuilder AddEntraIdAuthentication(this IHostApplicationBuilder builder)
     {
-        // Read EntraId configuration section
-        var entraIdSection = builder.Configuration.GetSection(DiscoverCostaRica.Shared.Authentication.EntraIdOptions.SectionName);
-        var entraIdOptions = entraIdSection.Get<DiscoverCostaRica.Shared.Authentication.EntraIdOptions>();
+        var entraIdSection = builder.Configuration.GetSection(EntraIdOptions.SectionName);
+        var entraIdOptions = entraIdSection.Get<EntraIdOptions>();
 
         if (entraIdOptions == null || string.IsNullOrWhiteSpace(entraIdOptions.TenantId))
         {
@@ -200,14 +214,13 @@ public static class Extensions
         }
 
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddScoped<DiscoverCostaRica.Shared.Authentication.ICurrentUserService, 
-                                   DiscoverCostaRica.Shared.Authentication.CurrentUserService>();
 
         // Configure JWT Bearer authentication with Microsoft.Identity.Web
-        builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(jwtOptions =>
             {
-                jwtOptions.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                jwtOptions.RequireHttpsMetadata = false;
+                jwtOptions.Events = new JwtBearerEvents
                 {
                     OnAuthenticationFailed = context =>
                     {
@@ -229,12 +242,12 @@ public static class Extensions
                     OnChallenge = context =>
                     {
                         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler>>();
-                        logger.LogWarning("Authentication challenge issued: {Error}, {ErrorDescription}", 
+                        logger.LogWarning("Authentication challenge issued: {Error}, {ErrorDescription}",
                             context.Error, context.ErrorDescription);
                         return Task.CompletedTask;
                     }
                 };
-                
+
                 // Set audience if configured
                 if (!string.IsNullOrWhiteSpace(entraIdOptions.Audience))
                 {

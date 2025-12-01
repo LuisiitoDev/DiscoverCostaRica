@@ -13,6 +13,7 @@ var azureSql = builder.AddAzureSqlServer("sqlserver")
 
 var secretStore = builder.CreateDaprComponent(DaprCompoonents.LOCAL_SECRET_STORE, DaprCompoonents.LOCAL_SECRET_STORE_TYPE, "../local-secret-store.yaml");
 var mongo = builder.CreateDaprComponent(DaprCompoonents.MONGO_LOGS, DaprCompoonents.MONGO_LOGS_STATE, "../mongo-azure-logs.yml");
+
 var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, secretStore, mongo);
 var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, secretStore, mongo);
 var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, secretStore, mongo);
@@ -20,8 +21,8 @@ var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Micr
 
 builder.AddYarp(Microservices.Gateway)
        .WithDeveloperCertificateTrust(true)
-       .WithHttpsEndpoint(port: 8081, targetPort: 8081)
-       .WithHostPort(8081)
+       .WithHttpsEndpoint(port: 9081, targetPort: 9081)
+       .WithHostPort(9081)
        .WithConfiguration(yarp =>
        {
            yarp.AddRoute("/provinces/{**catch-all}", geo).WithTransformPathPrefix("/api/v1/geo");

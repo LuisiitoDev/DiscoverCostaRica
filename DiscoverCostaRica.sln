@@ -57,8 +57,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Tests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dapr-components", "dapr-components", "{B53CBDA4-122A-4D20-A99E-8BF033F2E69B}"
 	ProjectSection(SolutionItems) = preProject
+		config.yaml = config.yaml
 		local-secret-store.yaml = local-secret-store.yaml
 		mongo-azure-logs.yml = mongo-azure-logs.yml
+		oauth2.yaml = oauth2.yaml
 		secrets.json = secrets.json
 	EndProjectSection
 EndProject

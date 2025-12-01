@@ -1,0 +1,30 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: oauth2clientcredentials
+spec:
+  type: middleware.http.oauth2clientcredentials
+  version: v1
+  metadata:
+    - name: clientId
+      secretKeyRef:
+          name: clientId
+          key: clientId
+    - name: clientSecret     
+      secretKeyRef:
+          name: clientSecret
+          key: clientSecret
+    - name: scopes
+      secretKeyRef:
+          name: scopes
+          key: scopes
+    - name: tokenURL
+      secretKeyRef:
+          name: tokenURL
+          key: tokenURL
+    - name: headerName
+      value: "Authorization"
+    - name: authStyle
+      value:  "1"
+auth:
+  secretStore: local-secret-store

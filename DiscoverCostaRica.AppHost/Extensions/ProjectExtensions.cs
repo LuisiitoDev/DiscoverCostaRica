@@ -16,6 +16,9 @@ public static class ProjectExtensions
                .WaitFor(azureSql)
                .WithDaprSidecar(options =>
                {
+                   var ops = new DaprSidecarOptions() { Config = "../config.yaml" };
+                   ops.ResourcesPaths.Add("../oauth2.yaml");
+                   options.WithOptions(ops);
                    options.WithReference(secretStore);
                    options.WithReference(binding);
                });
@@ -28,4 +31,5 @@ public static class ProjectExtensions
             LocalPath = route
         });
     }
+
 }

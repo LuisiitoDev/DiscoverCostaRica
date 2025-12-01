@@ -38,7 +38,7 @@ public class GeoRepository(IGeoContext _context) : IGeoRepository
     /// </returns>
     public async Task<CantonModel?> GetCantonById(int provinceId, int cantonId, CancellationToken cancellationToken)
     {
-        return await _context.Cantons.FindAsync([provinceId, cantonId, cancellationToken], cancellationToken: cancellationToken);
+        return await _context.Cantons.FirstOrDefaultAsync(c => c.ProvinceId == provinceId && c.Id == cantonId, cancellationToken);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public class GeoRepository(IGeoContext _context) : IGeoRepository
     /// </returns>
     public async Task<DistrictModel?> GetDistrictById(int cantonId, int districtId, CancellationToken cancellationToken)
     {
-        return await _context.Districts.FindAsync([cantonId, districtId, cancellationToken], cancellationToken: cancellationToken);
+        return await _context.Districts.FirstOrDefaultAsync(d => d.CantonId == cantonId && d.Id == districtId, cancellationToken);
     }
 
     /// <summary>

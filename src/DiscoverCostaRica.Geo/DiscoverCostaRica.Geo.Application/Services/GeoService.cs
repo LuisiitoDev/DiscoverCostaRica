@@ -27,7 +27,7 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     {
         try
         {
-            var province = repository.GetProvinceById(provinceId, cancellationToken);
+            var province = await repository.GetProvinceById(provinceId, cancellationToken);
 
             if (province is null) return new Failure($"No provice was found for {provinceId}", StatusCodes.Status404NotFound);
 
@@ -53,7 +53,7 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     {
         try
         {
-            var canton = repository.GetCantonById(provinceId, cantonId, cancellationToken);
+            var canton = await repository.GetCantonById(provinceId, cantonId, cancellationToken);
 
             if (canton is null) return new Failure($"No canton was found for {cantonId}", StatusCodes.Status404NotFound);
 
@@ -79,7 +79,7 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     {
         try
         {
-            var canton = repository.GetDistrictById(cantonId, districtId, cancellationToken);
+            var canton = await repository.GetDistrictById(cantonId, districtId, cancellationToken);
 
             if (canton is null) return new Failure($"No district was found for {districtId}", StatusCodes.Status404NotFound);
 

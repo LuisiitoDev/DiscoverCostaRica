@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DiscoverCostaRica.VolcanoService.Application.Dtos;
+using DiscoverCostaRica.Volcano.Domain.Dtos;
 using DiscoverCostaRica.VolcanoService.Domain.Models;
 
 namespace DiscoverCostaRica.VolcanoService.Api.Profiles;

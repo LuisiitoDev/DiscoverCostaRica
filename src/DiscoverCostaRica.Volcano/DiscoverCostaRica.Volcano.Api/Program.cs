@@ -22,7 +22,6 @@ var app = builder.Build();
 app.MapOpenApi();
 app.AddScalar();
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapVolcanoEndpoints();

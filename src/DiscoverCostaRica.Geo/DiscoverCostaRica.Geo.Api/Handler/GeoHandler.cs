@@ -15,9 +15,7 @@ public static class GeoHandler
     /// <param name="service">The geographic service instance.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The result containing the province data.</returns>
-    public static async Task<IResult> GetProvinceById(
-        [FromQuery] int provinceId, 
-        [FromServices] IGeoService service, CancellationToken cancellationToken)
+    public static async Task<IResult> GetProvinceById(int provinceId, IGeoService service, CancellationToken cancellationToken)
     {
         var result = await service.GetProvinceById(provinceId, cancellationToken);
         return result.ToResult();
@@ -31,10 +29,7 @@ public static class GeoHandler
     /// <param name="service">The geographic service instance.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The result containing the canton data.</returns>
-    public static async Task<IResult> GetCantonById(
-        [FromQuery] int provinceId, 
-        [FromQuery] int cantonId, 
-        [FromServices] IGeoService service, CancellationToken cancellationToken)
+    public static async Task<IResult> GetCantonById(int provinceId, int cantonId, IGeoService service, CancellationToken cancellationToken)
     {
         var result = await service.GetCantonById(provinceId, cantonId, cancellationToken);
         return result.ToResult();
@@ -48,10 +43,7 @@ public static class GeoHandler
     /// <param name="service">The geographic service instance.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The result containing the district data.</returns>
-    public static async Task<IResult> GetDistrictById(
-       [FromServices] int cantonId,
-       [FromServices] int districtId,
-       [FromServices] IGeoService service, CancellationToken cancellationToken)
+    public static async Task<IResult> GetDistrictById(int cantonId, int districtId, IGeoService service, CancellationToken cancellationToken)
     {
         var result = await service.GetDistrictById(cantonId, districtId, cancellationToken);
         return result.ToResult();
@@ -76,9 +68,7 @@ public static class GeoHandler
     /// <param name="service">The geographic service instance.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The result containing the list of cantons.</returns>
-    public static async Task<IResult> GetCantonsByProvince(
-        [FromQuery] int provinceId, 
-        [FromServices] IGeoService service, CancellationToken cancellationToken)
+    public static async Task<IResult> GetCantonsByProvince(int provinceId, IGeoService service, CancellationToken cancellationToken)
     {
         var result = await service.GetCantons(provinceId, cancellationToken);
         return result.ToResult();
@@ -91,9 +81,7 @@ public static class GeoHandler
     /// <param name="service">The geographic service instance.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The result containing the list of districts.</returns>
-    public static async Task<IResult> GetDistrictsByCanton(
-        [FromQuery] int cantonId, 
-        [FromServices] IGeoService service, CancellationToken cancellationToken)
+    public static async Task<IResult> GetDistrictsByCanton(int cantonId, IGeoService service, CancellationToken cancellationToken)
     {
         var result = await service.GetDistricts(cantonId, cancellationToken);
         return result.ToResult();
