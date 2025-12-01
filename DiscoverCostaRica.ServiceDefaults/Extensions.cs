@@ -205,56 +205,15 @@ public static class Extensions
     {
         var entraIdSection = builder.Configuration.GetSection(EntraIdOptions.SectionName);
         var entraIdOptions = entraIdSection.Get<EntraIdOptions>();
-
-        if (entraIdOptions == null || string.IsNullOrWhiteSpace(entraIdOptions.TenantId))
-        {
-            // EntraId not configured - skip authentication setup
-            // Note: Logging will occur when the application starts and the logger is available
-            return builder;
-        }
-
+        
         builder.Services.AddHttpContextAccessor();
 
-        // Configure JWT Bearer authentication with Microsoft.Identity.Web
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(jwtOptions =>
             {
                 jwtOptions.RequireHttpsMetadata = false;
-                jwtOptions.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        var logger = context.HttpContext.RequestServices
-                            .GetRequiredService<ILogger<JwtBearerHandler>>();
-                        logger.LogError(context.Exception, "Authentication failed: {Message}", context.Exception.Message);
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = context =>
-                    {
-                        var logger = context.HttpContext.RequestServices
-                            .GetRequiredService<ILogger<JwtBearerHandler>>();
-                        var roles = string.Join(",", context.Principal?.Claims
-                            .Where(c => c.Type == "roles")
-                            .Select(c => c.Value) ?? Array.Empty<string>());
-                        logger.LogInformation("Token valid. Roles: {Roles}", roles);
-                        return Task.CompletedTask;
-                    },
-                    OnChallenge = context =>
-                    {
-                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler>>();
-                        logger.LogWarning("Authentication challenge issued: {Error}, {ErrorDescription}",
-                            context.Error, context.ErrorDescription);
-                        return Task.CompletedTask;
-                    }
-                };
-
-                // Set audience if configured
-                if (!string.IsNullOrWhiteSpace(entraIdOptions.Audience))
-                {
-                    jwtOptions.TokenValidationParameters.ValidAudiences = [entraIdOptions.Audience];
-                }
-
-                // ✅ Aquí le decís que use "roles" del token para la autorización
+                jwtOptions.Events = new DiscoverCostaRicaBearerEvents();
+                jwtOptions.TokenValidationParameters.ValidAudiences = [entraIdOptions.Audience];
                 jwtOptions.TokenValidationParameters.RoleClaimType = "roles";
 
             }, identityOptions =>
