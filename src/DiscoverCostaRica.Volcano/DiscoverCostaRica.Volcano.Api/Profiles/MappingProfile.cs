@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DiscoverCostaRica.Volcano.Domain.Dtos;
+using DiscoverCostaRica.Volcano.Application.Dtos;
 using DiscoverCostaRica.VolcanoService.Domain.Models;
 
 namespace DiscoverCostaRica.VolcanoService.Api.Profiles;
@@ -8,6 +8,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<VolcanoModel, VolcanoDto>();
+        CreateMap<VolcanoModel, DtoVolcano>();
     }
 }

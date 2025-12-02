@@ -1,3 +1,4 @@
+using Aspire.Hosting;
 using Aspire.Hosting.Yarp.Transforms;
 using DiscoverCostaRica.AppHost.Constants;
 using DiscoverCostaRica.AppHost.Extensions;
@@ -11,10 +12,55 @@ var azureSql = builder.AddAzureSqlServer("sqlserver")
                       .AsExisting(existingSqlServerName, existingSqlServerResourceGroup)
                       .AddDatabase("discovercostarica");
 
-var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql);
-var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql);
-var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql);
-var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql);
+var applicationAudience = builder.AddParameter("applicationAudience");
+var applicationInstance = builder.AddParameter("applicationInstance");
+var applicationId = builder.AddParameter("applicationId");
+var tenantId = builder.AddParameter("tenantId");
+var clientId = builder.AddParameter("clientId");
+var clientSecret = builder.AddParameter("clientSecret", secret: true);
+var scope = builder.AddParameter("scope");
+
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql)
+          .WithEnvironment("Azure__TenantId", tenantId)
+          .WithEnvironment("Azure__ClientId", clientId)
+          .WithEnvironment("Azure__Scope", scope)
+          .WithEnvironment("Azure__ClientSecret", clientSecret)
+          .WithEnvironment("EntraId__Instance", applicationInstance)
+          .WithEnvironment("EntraId__TenantId", tenantId)
+          .WithEnvironment("EntraId__ClientId", applicationId)
+          .WithEnvironment("EntraId__Audience", applicationAudience);
+
+var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, geo)
+          .WithEnvironment("Azure__TenantId", tenantId)
+          .WithEnvironment("Azure__ClientId", clientId)
+          .WithEnvironment("Azure__Scope", scope)
+          .WithEnvironment("Azure__ClientSecret", clientSecret)
+          .WithEnvironment("EntraId__Instance", applicationInstance)
+          .WithEnvironment("EntraId__TenantId", tenantId)
+          .WithEnvironment("EntraId__ClientId", applicationId)
+          .WithEnvironment("EntraId__Audience", applicationAudience);
+
+var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, geo)
+          .WithEnvironment("Azure__TenantId", tenantId)
+          .WithEnvironment("Azure__ClientId", clientId)
+          .WithEnvironment("Azure__Scope", scope)
+          .WithEnvironment("Azure__ClientSecret", clientSecret)
+          .WithEnvironment("EntraId__Instance", applicationInstance)
+          .WithEnvironment("EntraId__TenantId", tenantId)
+          .WithEnvironment("EntraId__ClientId", applicationId)
+          .WithEnvironment("EntraId__Audience", applicationAudience);
+
+
+var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, geo)
+          .WithEnvironment("Azure__TenantId", tenantId)
+          .WithEnvironment("Azure__ClientId", clientId)
+          .WithEnvironment("Azure__Scope", scope)
+          .WithEnvironment("Azure__ClientSecret", clientSecret)
+          .WithEnvironment("EntraId__Instance", applicationInstance)
+          .WithEnvironment("EntraId__TenantId", tenantId)
+          .WithEnvironment("EntraId__ClientId", applicationId)
+          .WithEnvironment("EntraId__Audience", applicationAudience);
+
 
 builder.AddYarp(Microservices.Gateway)
     .WithDeveloperCertificateTrust(true)

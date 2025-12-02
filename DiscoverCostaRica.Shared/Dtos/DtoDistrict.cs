@@ -1,6 +1,6 @@
-﻿namespace DiscoverCostaRica.Volcano.Domain.Dtos;
+﻿namespace DiscoverCostaRica.Shared.Dtos;
 
-public class DistrictDto
+public record DtoDistrict
 {
     public int Id { get; set; }
     public required string Name { get; set; }

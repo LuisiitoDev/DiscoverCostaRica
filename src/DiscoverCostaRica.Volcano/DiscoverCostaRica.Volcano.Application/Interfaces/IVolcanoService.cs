@@ -1,11 +1,11 @@
 ﻿using DiscoverCostaRica.Shared.Responses;
-using DiscoverCostaRica.Volcano.Domain.Dtos;
+using DiscoverCostaRica.Volcano.Application.Dtos;
 
 namespace DiscoverCostaRica.VolcanoService.Application.Interfaces;
 
 public interface IVolcanoService
 {
-    Task<Result<IEnumerable<VolcanoDto>>> GetVolcanos(CancellationToken cancellationToken);
-    Task<Result<List<VolcanoDto>>> GetVolcanosByProvince(int provinceId, CancellationToken cancellationToken);
-    Task<Result<VolcanoDto>> GetVolcanoById(int id, CancellationToken cancellationToken);
+    Task<Result<IEnumerable<DtoVolcano>>> GetVolcanos(CancellationToken cancellationToken);
+    Task<Result<List<DtoVolcano>>> GetVolcanosByProvince(int provinceId, CancellationToken cancellationToken);
+    Task<Result<DtoVolcano>> GetVolcanoById(int id, CancellationToken cancellationToken);
 }

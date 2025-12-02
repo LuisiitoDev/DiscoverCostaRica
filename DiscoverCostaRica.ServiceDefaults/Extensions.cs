@@ -1,6 +1,8 @@
 ﻿using Asp.Versioning;
 using DiscoverCostaRica.ServiceDefaults.Middleware;
 using DiscoverCostaRica.Shared.Authentication;
+using DiscoverCostaRica.Shared.Constants;
+using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +16,7 @@ using Microsoft.Identity.Web;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Refit;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
@@ -86,8 +89,42 @@ public static class Extensions
 
 
     {
-        builder.AddSqlServerDbContext<Context>(connectionName: "DiscoverCostaRica");
+        builder.AddSqlServerDbContext<Context>(connectionName: "DiscoverCostaRica",
+            _ => { },
+            options =>
+            {
+                options.UseSqlServer(sql =>
+                {
+                    sql.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                });
+            });
+
         builder.Services.AddScoped<TInterfaceContext, Context>();
+
+        return builder;
+    }
+    private static IServiceCollection AddRefitServices(this IServiceCollection services)
+    {
+        services.AddTransient<DiscoverCostaRicaAuthHandler>();
+
+        services.AddRefitClient<IGeoDiscoverCostaRica>()
+            .ConfigureHttpClient(http =>
+            {
+                http.BaseAddress = new Uri($"https://{Microservices.Geo}/api/v1/geo");
+
+            }).AddHttpMessageHandler<DiscoverCostaRicaAuthHandler>()
+            .AddStandardResilienceHandler();
+
+        return services;
+    }
+
+    private static TBuilder AddConfigureEntraId<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    {
+        builder.Services.Configure<DiscoverCostaRicaTokenOptions>(options =>
+            builder.Configuration.GetSection("Azure").Bind(options));
 
         return builder;
     }
@@ -100,6 +137,8 @@ public static class Extensions
 
         builder.AddDefaultHealthChecks();
 
+        builder.AddConfigureEntraId();
+
         builder.Services.AddServiceDiscovery();
 
         builder.Services.ConfigureHttpClientDefaults(http =>
@@ -110,6 +149,8 @@ public static class Extensions
             // Turn on service discovery by default
             http.AddServiceDiscovery();
         });
+
+        builder.Services.AddRefitServices();
 
         // Uncomment the following to restrict the allowed schemes for service discovery.
         // builder.Services.Configure<ServiceDiscoveryOptions>(options =>
@@ -205,7 +246,7 @@ public static class Extensions
     {
         var entraIdSection = builder.Configuration.GetSection(EntraIdOptions.SectionName);
         var entraIdOptions = entraIdSection.Get<EntraIdOptions>();
-        
+
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

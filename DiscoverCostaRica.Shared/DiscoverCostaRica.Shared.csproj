@@ -15,6 +15,7 @@
 	  <PackageReference Include="Dapr.AspNetCore" Version="1.16.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
 	  <PackageReference Include="Microsoft.Identity.Web" Version="4.0.1" />
+	  <PackageReference Include="Refit" Version="9.0.2" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />

@@ -1,9 +1,0 @@
-apiVersion: dapr.io/v1alpha1
-kind: Configuration
-metadata:
-  name: appconfig
-spec:
-  httpPipeline:
-    handlers:
-    - name: oauth2clientcredentials
-      type: middleware.http.oauth2clientcredentials
