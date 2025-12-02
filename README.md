@@ -8,12 +8,13 @@ A modern microservices-based application built with .NET that provides informati
 - [Architecture](#architecture)
 - [Services](#services)
 - [Technology Stack](#technology-stack)
+- [Authentication & Authorization](#authentication--authorization)
 - [Project Structure](#project-structure)
 - [Contributors](#contributors)
 
 ## Overview
 
-Discover Costa Rica is a distributed system built with **.NET Aspire**, following **Clean Architecture** principles. It uses **Dapr** for service communication and state management, **YARP** as an API Gateway, and microservices architecture for scalability.
+Discover Costa Rica is a distributed system built with **.NET Aspire**, following **Clean Architecture** principles. It uses **YARP** (integrated into AppHost) as an API Gateway, **Microsoft Entra ID** for authentication, and microservices architecture for scalability.
 
 ## Architecture
 
@@ -24,25 +25,19 @@ The application is orchestrated by .NET Aspire AppHost:
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                          .NET ASPIRE AppHost                                 │
-│                    (Orchestration & Service Discovery)                       │
+│         (Orchestration, Service Discovery & YARP Gateway)                    │
+│                         Port: 8080 (HTTPS)                                   │
 └────────────────────────┬────────────────────────────────────────────────────┘
                          │
-                         ▼
-               ┌──────────────────┐
-               │   YARP Gateway   │
-               │  (API Gateway)   │
-               │   Port: 9081     │
-               └────────┬─────────┘
-                        │
-        ┌───────────────┼───────────────┬────────────────┐
-        │               │               │                │
-        ▼               ▼               ▼                ▼
+        ┌────────────────┼────────────────┬────────────────┐
+        │                │                │                │
+        ▼                ▼                ▼                ▼
 ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
 │   Beach      │  │   Volcano    │  │   Culture    │  │     Geo      │
 │   Service    │  │   Service    │  │   Service    │  │   Service    │
 │              │  │              │  │              │  │              │
 │ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │
-│   + Dapr     │  │   + Dapr     │  │   + Dapr     │  │   + Dapr     │
+│  + Entra ID  │  │  + Entra ID  │  │  + Entra ID  │  │  + Entra ID  │
 └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
        │                 │                 │                 │
        │ EF Core         │ EF Core         │ EF Core         │ EF Core
@@ -55,31 +50,24 @@ The application is orchestrated by .NET Aspire AppHost:
 │  • Beaches Table    • Volcanoes Table                           │
 │  • Culture Table    • Geo Locations Table                       │
 └─────────────────────────────────────────────────────────────────┘
-       │                 │                 │                 │
-       │   Dapr          │   Dapr          │   Dapr          │   Dapr
-       │   Logger        │   Logger        │   Logger        │   Logger
-       └─────────────────┴─────────────────┴─────────────────┘
+
+       Services also connect directly to MongoDB for logging:
                                   │
                                   ▼
                         ┌──────────────────┐
-                        │  Dapr State      │
-                        │  Store           │
-                        └────────┬─────────┘
-                                 │
-                                 ▼
-                       ┌───────────────────┐
-                       │  Azure Cosmos DB  │
-                       │  (MongoDB API)    │
-                       │  • Application    │
-                       │    Logs           │
-                       └───────────────────┘
+                        │  Azure Cosmos DB │
+                        │  (MongoDB API)   │
+                        │  • Application   │
+                        │    Logging       │
+                        └──────────────────┘
 
 ┌────────────────────────────────────────────────────────────────────────────┐
 │                         Cross-Cutting Concerns                              │
 │                                                                             │
 │  • ServiceDefaults: OpenTelemetry, Health Checks, Service Discovery        │
-│  • Shared Library: Dapr Client, Custom Logging, Response Models            │
+│  • Shared Library: Authentication, Custom Logging, Response Models         │
 │  • Source Generators: Automatic DI Registration                            │
+│  • Microsoft Entra ID: JWT Bearer Token Authentication                     │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -113,10 +101,10 @@ Each service follows Clean Architecture with four layers:
 
 - **Clean Architecture**: Dependency rules pointing inward
 - **Microservices**: Independent services per domain
-- **.NET Aspire**: Orchestration and service discovery
-- **Dapr**: Service communication and state management for logging
-- **YARP Gateway**: API Gateway with request routing
-- **Shared Database**: Simplified microservices approach
+- **.NET Aspire**: Orchestration and service discovery with integrated YARP Gateway
+- **Microsoft Entra ID**: JWT Bearer token authentication and authorization
+- **Shared Database**: Simplified microservices approach with Azure SQL
+- **MongoDB Direct Access**: Services connect directly to MongoDB for logging
 
 ## Services
 
@@ -129,26 +117,45 @@ Each service follows Clean Architecture with four layers:
 
 ### Infrastructure Components
 
-5. **YARP Gateway** - API Gateway for routing requests to microservices
-6. **AppHost** - .NET Aspire orchestrator managing service discovery and dependencies
-7. **ServiceDefaults** - Shared configuration (OpenTelemetry, health checks, service discovery)
-8. **Shared Library** - Dapr client, logging, and utilities
-9. **Source Generators** - Compile-time DI registration
-10. **Tests** - Integration and unit tests
+5. **AppHost with YARP Gateway** - .NET Aspire orchestrator with integrated API Gateway for routing
+6. **ServiceDefaults** - Shared configuration (OpenTelemetry, health checks, service discovery)
+7. **Shared Library** - Authentication, logging, API versioning, and utilities
+8. **Source Generators** - Compile-time DI registration and authorization policies
+9. **Tests** - Integration and unit tests
 
 ## Technology Stack
 
 - **.NET 10.0** - Latest .NET framework
-- **.NET Aspire 9.4** - Cloud-native orchestration
+- **.NET Aspire 9.4/13.0** - Cloud-native orchestration with integrated YARP
 - **ASP.NET Core Minimal APIs** - Lightweight API endpoints
-- **Entity Framework Core** - ORM for data access
-- **Azure SQL Database** - Primary database
-- **Azure Cosmos DB (MongoDB API)** - Log storage via Dapr state store
-- **Dapr** - Distributed application runtime for service communication
-- **YARP** - Reverse proxy for API Gateway
+- **Entity Framework Core 9.0** - ORM for data access
+- **Azure SQL Database** - Primary relational database
+- **Azure Cosmos DB (MongoDB API)** - NoSQL database for application logging (direct connection from services)
+- **Microsoft Entra ID (Azure AD)** - Authentication and authorization with JWT Bearer tokens
+- **YARP (Yet Another Reverse Proxy)** - Integrated API Gateway for request routing
 - **OpenTelemetry** - Distributed tracing and metrics
+- **Asp.Versioning** - API versioning support
 - **AutoMapper** - Object mapping
+- **Refit** - Type-safe REST API client
 - **Docker** - Containerization
+
+## Authentication & Authorization
+
+The application uses **Microsoft Entra ID (formerly Azure AD)** for secure authentication and authorization:
+
+- **JWT Bearer Token Authentication** - All microservices validate JWT tokens issued by Entra ID
+- **Role-Based Access Control (RBAC)** - Custom roles and policies enforce authorization rules
+- **Scope-Based Authorization** - Fine-grained permissions using OAuth 2.0 scopes
+- **Service-to-Service Auth** - Microservices authenticate with each other using Azure credentials
+- **Source Generated Policies** - Authorization policies are automatically generated at compile-time
+
+### Configuration
+
+Each service is configured with Entra ID settings:
+- **Instance**: Azure AD authority URL
+- **TenantId**: Azure AD tenant identifier
+- **ClientId**: Application registration ID
+- **Audience**: Valid token audience for validation
 
 ## Project Structure
 
@@ -161,7 +168,7 @@ DiscoverCostaRica/
 │   └── DiscoverCostaRica.Geo/            # Geo service
 ├── DiscoverCostaRica.AppHost/            # Aspire orchestration + YARP Gateway
 ├── DiscoverCostaRica.ServiceDefaults/    # Shared service configuration
-├── DiscoverCostaRica.Shared/             # Shared libraries (Dapr, logging, utils)
+├── DiscoverCostaRica.Shared/             # Shared libraries (authentication, logging, utils)
 ├── DiscoverCostaRica.SourceGenerators/   # Code generators
 ├── DiscoverCostaRica.Tests/              # Integration and unit tests
 └── DiscoverCostaRica.sln
