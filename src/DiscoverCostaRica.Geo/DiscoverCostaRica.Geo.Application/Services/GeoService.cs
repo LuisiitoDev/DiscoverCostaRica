@@ -25,19 +25,11 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     /// </returns>
     public async Task<Result<ProvinceDto>> GetProvinceById(int provinceId, CancellationToken cancellationToken)
     {
-        try
-        {
-            var province = await repository.GetProvinceById(provinceId, cancellationToken);
+        var province = await repository.GetProvinceById(provinceId, cancellationToken);
 
-            if (province is null) return new Failure($"No provice was found for {provinceId}", StatusCodes.Status404NotFound);
+        if (province is null) return new Failure($"No provice was found for {provinceId}", StatusCodes.Status404NotFound);
 
-            return new Success(mapper.Map<ProvinceDto>(province));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unhandle exception");
-            return new Failure("Unhandle exception", StatusCodes.Status500InternalServerError);
-        }
+        return new Success(mapper.Map<ProvinceDto>(province));
     }
 
     /// <summary>
@@ -51,19 +43,11 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     /// </returns>
     public async Task<Result<CantonDto>> GetCantonById(int provinceId, int cantonId, CancellationToken cancellationToken)
     {
-        try
-        {
-            var canton = await repository.GetCantonById(provinceId, cantonId, cancellationToken);
+        var canton = await repository.GetCantonById(provinceId, cantonId, cancellationToken);
 
-            if (canton is null) return new Failure($"No canton was found for {cantonId}", StatusCodes.Status404NotFound);
+        if (canton is null) return new Failure($"No canton was found for {cantonId}", StatusCodes.Status404NotFound);
 
-            return new Success(mapper.Map<CantonDto>(canton));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unhandle exception");
-            return new Failure("Unhandle exception", StatusCodes.Status500InternalServerError);
-        }
+        return new Success(mapper.Map<CantonDto>(canton));
     }
 
     /// <summary>
@@ -77,19 +61,11 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     /// </returns>
     public async Task<Result<DistrictDto>> GetDistrictById(int cantonId, int districtId, CancellationToken cancellationToken)
     {
-        try
-        {
-            var canton = await repository.GetDistrictById(cantonId, districtId, cancellationToken);
+        var canton = await repository.GetDistrictById(cantonId, districtId, cancellationToken);
 
-            if (canton is null) return new Failure($"No district was found for {districtId}", StatusCodes.Status404NotFound);
+        if (canton is null) return new Failure($"No district was found for {districtId}", StatusCodes.Status404NotFound);
 
-            return new Success(mapper.Map<DistrictDto>(canton));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unhandle exception");
-            return new Failure("Unhandle exception", StatusCodes.Status500InternalServerError);
-        }
+        return new Success(mapper.Map<DistrictDto>(canton));
     }
 
     /// <summary>
@@ -102,20 +78,12 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     /// </returns>
     public async Task<Result<List<CantonDto>>> GetCantons(int provinceId, CancellationToken cancellationToken)
     {
-        try
-        {
-            var cantons = await repository.GetCantonsByProvince(provinceId, cancellationToken);
+        var cantons = await repository.GetCantonsByProvince(provinceId, cancellationToken);
 
-            if (cantons is null || cantons.Count <= 0)
-                return new Failure("No cantons found. Please check later for updates.", StatusCodes.Status404NotFound);
+        if (cantons is null || cantons.Count <= 0)
+            return new Failure("No cantons found. Please check later for updates.", StatusCodes.Status404NotFound);
 
-            return new Success(mapper.Map<List<CantonDto>>(cantons));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unhandle exception");
-            return new Failure("Unhandle exception", StatusCodes.Status500InternalServerError);
-        }
+        return new Success(mapper.Map<List<CantonDto>>(cantons));
     }
 
     /// <summary>
@@ -128,21 +96,12 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     /// </returns>
     public async Task<Result<List<DistrictDto>>> GetDistricts(int cantonId, CancellationToken cancellationToken)
     {
-        try
-        {
-            var districts = await repository.GetDistrictsByCanton(cantonId, cancellationToken);
+        var districts = await repository.GetDistrictsByCanton(cantonId, cancellationToken);
 
-            if (districts is null || districts.Count <= 0)
-                return new Failure("No districts found. Please check later for updates.", StatusCodes.Status404NotFound);
+        if (districts is null || districts.Count <= 0)
+            return new Failure("No districts found. Please check later for updates.", StatusCodes.Status404NotFound);
 
-            return new Success(mapper.Map<List<DistrictDto>>(districts));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unhandle exception");
-            return new Failure("Unhandle exception", StatusCodes.Status500InternalServerError);
-        }
-
+        return new Success(mapper.Map<List<DistrictDto>>(districts));
     }
 
     /// <summary>
@@ -154,19 +113,11 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
     /// </returns>
     public async Task<Result<List<ProvinceDto>>> GetProvinces(CancellationToken cancellationToken)
     {
-        try
-        {
-            var provinces = await repository.GetProvinces(cancellationToken);
+        var provinces = await repository.GetProvinces(cancellationToken);
 
-            if (provinces is null || provinces.Count <= 0)
-                return new Failure("No provinces found. Please check later for updates.", StatusCodes.Status404NotFound);
+        if (provinces is null || provinces.Count <= 0)
+            return new Failure("No provinces found. Please check later for updates.", StatusCodes.Status404NotFound);
 
-            return new Success(mapper.Map<List<ProvinceDto>>(provinces));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unhandle exception");
-            return new Failure("Unhandle exception", StatusCodes.Status500InternalServerError);
-        }
+        return new Success(mapper.Map<List<ProvinceDto>>(provinces));
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
+using MongoDB.Driver;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -138,6 +139,9 @@ public static class Extensions
         builder.AddDefaultHealthChecks();
 
         builder.AddConfigureEntraId();
+
+        builder.Services.AddSingleton<IMongoClient>(mongo => 
+            new MongoClient(builder.Configuration.GetConnectionString("mongodb")));
 
         builder.Services.AddServiceDiscovery();
 

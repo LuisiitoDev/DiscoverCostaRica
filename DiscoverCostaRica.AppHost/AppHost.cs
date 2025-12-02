@@ -1,4 +1,3 @@
-using Aspire.Hosting;
 using Aspire.Hosting.Yarp.Transforms;
 using DiscoverCostaRica.AppHost.Constants;
 using DiscoverCostaRica.AppHost.Extensions;
@@ -11,7 +10,7 @@ var existingSqlServerResourceGroup = builder.AddParameter("existingSqlServerReso
 var azureSql = builder.AddAzureSqlServer("sqlserver")
                       .AsExisting(existingSqlServerName, existingSqlServerResourceGroup)
                       .AddDatabase("discovercostarica");
-
+var mongodb = builder.AddConnectionString("mongodb");
 var applicationAudience = builder.AddParameter("applicationAudience");
 var applicationInstance = builder.AddParameter("applicationInstance");
 var applicationId = builder.AddParameter("applicationId");
@@ -20,7 +19,7 @@ var clientId = builder.AddParameter("clientId");
 var clientSecret = builder.AddParameter("clientSecret", secret: true);
 var scope = builder.AddParameter("scope");
 
-var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql)
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, mongodb)
           .WithEnvironment("Azure__TenantId", tenantId)
           .WithEnvironment("Azure__ClientId", clientId)
           .WithEnvironment("Azure__Scope", scope)
@@ -30,7 +29,7 @@ var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservice
           .WithEnvironment("EntraId__ClientId", applicationId)
           .WithEnvironment("EntraId__Audience", applicationAudience);
 
-var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, geo)
+var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, mongodb, geo)
           .WithEnvironment("Azure__TenantId", tenantId)
           .WithEnvironment("Azure__ClientId", clientId)
           .WithEnvironment("Azure__Scope", scope)
@@ -40,7 +39,7 @@ var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Micr
           .WithEnvironment("EntraId__ClientId", applicationId)
           .WithEnvironment("EntraId__Audience", applicationAudience);
 
-var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, geo)
+var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, mongodb, geo)
           .WithEnvironment("Azure__TenantId", tenantId)
           .WithEnvironment("Azure__ClientId", clientId)
           .WithEnvironment("Azure__Scope", scope)
@@ -51,7 +50,7 @@ var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Micr
           .WithEnvironment("EntraId__Audience", applicationAudience);
 
 
-var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, geo)
+var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, mongodb, geo)
           .WithEnvironment("Azure__TenantId", tenantId)
           .WithEnvironment("Azure__ClientId", clientId)
           .WithEnvironment("Azure__Scope", scope)
