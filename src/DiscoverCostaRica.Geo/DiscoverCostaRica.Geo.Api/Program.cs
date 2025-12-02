@@ -16,7 +16,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Infrastructure();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
-builder.Services.AddDaprClient();
+
+
 var app = builder.Build();
 
 app.MapOpenApi();

@@ -16,7 +16,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Volcano_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Volcano_Infrastructure();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
-builder.Services.AddDaprClient();
+
 var app = builder.Build();
 
 app.MapOpenApi();

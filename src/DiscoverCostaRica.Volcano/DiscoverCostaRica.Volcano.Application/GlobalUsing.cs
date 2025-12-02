@@ -1,1 +1,0 @@
-﻿global using static DiscoverCostaRica.Volcano.Application.Extensions.GeoDaprExtensions;

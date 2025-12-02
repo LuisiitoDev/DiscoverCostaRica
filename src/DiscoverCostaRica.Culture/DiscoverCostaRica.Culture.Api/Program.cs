@@ -16,7 +16,6 @@ builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Culture_Infrastructure();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
-builder.Services.AddDaprClient();
 
 var app = builder.Build();
 

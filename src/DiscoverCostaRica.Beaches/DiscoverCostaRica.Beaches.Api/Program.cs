@@ -17,7 +17,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Beaches_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Beaches_Infrastructure();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
-builder.Services.AddDaprClient();
 
 var app = builder.Build();
 
