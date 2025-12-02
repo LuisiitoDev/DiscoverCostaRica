@@ -14,7 +14,7 @@ A modern microservices-based application built with .NET that provides informati
 
 ## Overview
 
-Discover Costa Rica is a distributed system built with **.NET Aspire**, following **Clean Architecture** principles. It uses **YARP** (integrated into AppHost) as an API Gateway, **Microsoft Entra ID** for authentication, **Dapr Client** for service-to-service communication, and microservices architecture for scalability.
+Discover Costa Rica is a distributed system built with **.NET Aspire**, following **Clean Architecture** principles. It uses **YARP** (integrated into AppHost) as an API Gateway, **Microsoft Entra ID** for authentication, and microservices architecture for scalability.
 
 ## Architecture
 
@@ -37,8 +37,7 @@ The application is orchestrated by .NET Aspire AppHost:
 │   Service    │  │   Service    │  │   Service    │  │   Service    │
 │              │  │              │  │              │  │              │
 │ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │  │ Minimal APIs │
-│ Entra ID +   │  │ Entra ID +   │  │ Entra ID +   │  │ Entra ID +   │
-│ Dapr Client  │  │ Dapr Client  │  │ Dapr Client  │  │ Dapr Client  │
+│  + Entra ID  │  │  + Entra ID  │  │  + Entra ID  │  │  + Entra ID  │
 └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
        │                 │                 │                 │
        │ EF Core         │ EF Core         │ EF Core         │ EF Core
@@ -66,7 +65,7 @@ The application is orchestrated by .NET Aspire AppHost:
 │                         Cross-Cutting Concerns                              │
 │                                                                             │
 │  • ServiceDefaults: OpenTelemetry, Health Checks, Service Discovery        │
-│  • Shared Library: Authentication, Dapr Client, Custom Logging             │
+│  • Shared Library: Authentication, Custom Logging, Response Models         │
 │  • Source Generators: Automatic DI Registration                            │
 │  • Microsoft Entra ID: JWT Bearer Token Authentication                     │
 └────────────────────────────────────────────────────────────────────────────┘
@@ -104,7 +103,6 @@ Each service follows Clean Architecture with four layers:
 - **Microservices**: Independent services per domain
 - **.NET Aspire**: Orchestration and service discovery with integrated YARP Gateway
 - **Microsoft Entra ID**: JWT Bearer token authentication and authorization
-- **Dapr Client**: Service-to-service communication using HTTP invocation
 - **Shared Database**: Simplified microservices approach with Azure SQL
 - **MongoDB Direct Access**: Services connect directly to MongoDB for logging
 
@@ -121,7 +119,7 @@ Each service follows Clean Architecture with four layers:
 
 5. **AppHost with YARP Gateway** - .NET Aspire orchestrator with integrated API Gateway for routing
 6. **ServiceDefaults** - Shared configuration (OpenTelemetry, health checks, service discovery)
-7. **Shared Library** - Authentication, Dapr Client wrapper, logging, API versioning, and utilities
+7. **Shared Library** - Authentication, logging, API versioning, and utilities
 8. **Source Generators** - Compile-time DI registration and authorization policies
 9. **Tests** - Integration and unit tests
 
@@ -134,7 +132,6 @@ Each service follows Clean Architecture with four layers:
 - **Azure SQL Database** - Primary relational database
 - **Azure Cosmos DB (MongoDB API)** - NoSQL database for application logging (direct connection from services)
 - **Microsoft Entra ID (Azure AD)** - Authentication and authorization with JWT Bearer tokens
-- **Dapr Client** - Service-to-service communication via HTTP method invocation
 - **YARP (Yet Another Reverse Proxy)** - Integrated API Gateway for request routing
 - **OpenTelemetry** - Distributed tracing and metrics
 - **Asp.Versioning** - API versioning support
@@ -171,7 +168,7 @@ DiscoverCostaRica/
 │   └── DiscoverCostaRica.Geo/            # Geo service
 ├── DiscoverCostaRica.AppHost/            # Aspire orchestration + YARP Gateway
 ├── DiscoverCostaRica.ServiceDefaults/    # Shared service configuration
-├── DiscoverCostaRica.Shared/             # Shared libraries (authentication, Dapr client, logging, utils)
+├── DiscoverCostaRica.Shared/             # Shared libraries (authentication, logging, utils)
 ├── DiscoverCostaRica.SourceGenerators/   # Code generators
 ├── DiscoverCostaRica.Tests/              # Integration and unit tests
 └── DiscoverCostaRica.sln
