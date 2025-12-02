@@ -14,7 +14,7 @@ A modern microservices-based application built with .NET that provides informati
 
 ## Overview
 
-Discover Costa Rica is a distributed system built with **.NET Aspire**, following **Clean Architecture** principles. It uses **YARP** (integrated into AppHost) as an API Gateway, **Microsoft Entra ID** for authentication, **Dapr Client** for service-to-service communication, **RabbitMQ** for messaging, and microservices architecture for scalability.
+Discover Costa Rica is a distributed system built with **.NET Aspire**, following **Clean Architecture** principles. It uses **YARP** (integrated into AppHost) as an API Gateway, **Microsoft Entra ID** for authentication, **Dapr Client** for service-to-service communication, and microservices architecture for scalability.
 
 ## Architecture
 
@@ -51,19 +51,15 @@ The application is orchestrated by .NET Aspire AppHost:
 │  • Beaches Table    • Volcanoes Table                           │
 │  • Culture Table    • Geo Locations Table                       │
 └─────────────────────────────────────────────────────────────────┘
-                                  │
-                                  ▼
-                        ┌──────────────────┐
-                        │    RabbitMQ      │
-                        │   (Messaging)    │
-                        └──────────────────┘
+
+       Services also connect directly to MongoDB for logging:
                                   │
                                   ▼
                         ┌──────────────────┐
                         │  Azure Cosmos DB │
                         │  (MongoDB API)   │
-                        │  • Logging &     │
-                        │    State         │
+                        │  • Application   │
+                        │    Logging       │
                         └──────────────────┘
 
 ┌────────────────────────────────────────────────────────────────────────────┐
@@ -109,8 +105,8 @@ Each service follows Clean Architecture with four layers:
 - **.NET Aspire**: Orchestration and service discovery with integrated YARP Gateway
 - **Microsoft Entra ID**: JWT Bearer token authentication and authorization
 - **Dapr Client**: Service-to-service communication using HTTP invocation
-- **RabbitMQ**: Message broker for async communication
-- **Shared Database**: Simplified microservices approach
+- **Shared Database**: Simplified microservices approach with Azure SQL
+- **MongoDB Direct Access**: Services connect directly to MongoDB for logging
 
 ## Services
 
@@ -136,10 +132,9 @@ Each service follows Clean Architecture with four layers:
 - **ASP.NET Core Minimal APIs** - Lightweight API endpoints
 - **Entity Framework Core 9.0** - ORM for data access
 - **Azure SQL Database** - Primary relational database
-- **Azure Cosmos DB (MongoDB API)** - NoSQL database for logging and state
+- **Azure Cosmos DB (MongoDB API)** - NoSQL database for application logging (direct connection from services)
 - **Microsoft Entra ID (Azure AD)** - Authentication and authorization with JWT Bearer tokens
 - **Dapr Client** - Service-to-service communication via HTTP method invocation
-- **RabbitMQ** - Message broker for asynchronous communication
 - **YARP (Yet Another Reverse Proxy)** - Integrated API Gateway for request routing
 - **OpenTelemetry** - Distributed tracing and metrics
 - **Asp.Versioning** - API versioning support
