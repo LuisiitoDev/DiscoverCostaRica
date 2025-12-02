@@ -140,7 +140,6 @@ Each service follows Clean Architecture with four layers:
 - **Asp.Versioning** - API versioning support
 - **AutoMapper** - Object mapping
 - **Refit** - Type-safe REST API client
-- **Azure Event Grid** - Event-driven architecture support
 - **Docker** - Containerization
 
 ## Authentication & Authorization
