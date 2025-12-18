@@ -10,55 +10,13 @@ var existingSqlServerResourceGroup = builder.AddParameter("existingSqlServerReso
 var azureSql = builder.AddAzureSqlServer("sqlserver")
                       .AsExisting(existingSqlServerName, existingSqlServerResourceGroup)
                       .AddDatabase("discovercostarica");
+
 var mongodb = builder.AddConnectionString("mongodb");
-var applicationAudience = builder.AddParameter("applicationAudience");
-var applicationInstance = builder.AddParameter("applicationInstance");
-var applicationId = builder.AddParameter("applicationId");
-var tenantId = builder.AddParameter("tenantId");
-var clientId = builder.AddParameter("clientId");
-var clientSecret = builder.AddParameter("clientSecret", secret: true);
-var scope = builder.AddParameter("scope");
 
-var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, mongodb)
-          .WithEnvironment("Azure__TenantId", tenantId)
-          .WithEnvironment("Azure__ClientId", clientId)
-          .WithEnvironment("Azure__Scope", scope)
-          .WithEnvironment("Azure__ClientSecret", clientSecret)
-          .WithEnvironment("EntraId__Instance", applicationInstance)
-          .WithEnvironment("EntraId__TenantId", tenantId)
-          .WithEnvironment("EntraId__ClientId", applicationId)
-          .WithEnvironment("EntraId__Audience", applicationAudience);
-
-var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, mongodb, geo)
-          .WithEnvironment("Azure__TenantId", tenantId)
-          .WithEnvironment("Azure__ClientId", clientId)
-          .WithEnvironment("Azure__Scope", scope)
-          .WithEnvironment("Azure__ClientSecret", clientSecret)
-          .WithEnvironment("EntraId__Instance", applicationInstance)
-          .WithEnvironment("EntraId__TenantId", tenantId)
-          .WithEnvironment("EntraId__ClientId", applicationId)
-          .WithEnvironment("EntraId__Audience", applicationAudience);
-
-var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, mongodb, geo)
-          .WithEnvironment("Azure__TenantId", tenantId)
-          .WithEnvironment("Azure__ClientId", clientId)
-          .WithEnvironment("Azure__Scope", scope)
-          .WithEnvironment("Azure__ClientSecret", clientSecret)
-          .WithEnvironment("EntraId__Instance", applicationInstance)
-          .WithEnvironment("EntraId__TenantId", tenantId)
-          .WithEnvironment("EntraId__ClientId", applicationId)
-          .WithEnvironment("EntraId__Audience", applicationAudience);
-
-
-var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, mongodb, geo)
-          .WithEnvironment("Azure__TenantId", tenantId)
-          .WithEnvironment("Azure__ClientId", clientId)
-          .WithEnvironment("Azure__Scope", scope)
-          .WithEnvironment("Azure__ClientSecret", clientSecret)
-          .WithEnvironment("EntraId__Instance", applicationInstance)
-          .WithEnvironment("EntraId__TenantId", tenantId)
-          .WithEnvironment("EntraId__ClientId", applicationId)
-          .WithEnvironment("EntraId__Audience", applicationAudience);
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, mongodb);
+var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, mongodb, geo);
+var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, mongodb, geo);
+var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, mongodb, geo);
 
 
 builder.AddYarp(Microservices.Gateway)
