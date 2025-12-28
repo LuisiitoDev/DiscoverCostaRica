@@ -9,7 +9,6 @@ builder.AddServiceDefaults();
 builder.AddEntraIdAuthentication();
 builder.AddDiscoverCostaRicaContext<ICultureContext, CultureContext>();
 builder.AddMappingProfile<MappingProfile>();
-builder.AddGlobalExeption();
 builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();
 builder.Services.AddOpenApi();
@@ -22,6 +21,7 @@ var app = builder.Build();
 app.MapOpenApi();
 app.AddScalar();
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

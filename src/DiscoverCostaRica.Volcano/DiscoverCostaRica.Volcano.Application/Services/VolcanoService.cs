@@ -6,7 +6,7 @@ using DiscoverCostaRica.VolcanoService.Application.Interfaces;
 using DiscoverCostaRica.VolcanoService.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace DiscoverCostaRica.VolcanoService.Application.Services;
+namespace DiscoverCostaRica.Volcano.Application.Services;
 
 /// <summary>
 /// Service for volcano-related operations.

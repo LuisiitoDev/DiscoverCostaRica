@@ -15,7 +15,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> _logger) : I
         {
             Status = StatusCodes.Status500InternalServerError,
             Title = "An unexpected error ocurred",
-            Detail = exception.Message
+            Detail = "There was error while we were processing your request, please contact us."
         };
 
         httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;

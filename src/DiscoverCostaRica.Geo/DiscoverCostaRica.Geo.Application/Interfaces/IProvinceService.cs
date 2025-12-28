@@ -3,7 +3,7 @@ using DiscoverCostaRica.Shared.Responses;
 
 namespace DiscoverCostaRica.Geo.Application.Interfaces;
 
-public interface IProviceService
+public interface IProvinceService
 {
     Task<Result<List<ProvinceDto>>> GetProvinces(CancellationToken cancellationToken);
     Task<Result<ProvinceDto>> GetProvinceById(int provinceId, CancellationToken cancellationToken);

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace DiscoverCostaRica.Geo.Application.Services;
 
 [TransientService]
-public class ProvinceService(IGeoRepository repository, IMapper mapper) : IProviceService
+public class ProvinceService(IGeoRepository repository, IMapper mapper) : IProvinceService
 {
     public async Task<Result<ProvinceDto>> GetProvinceById(int provinceId, CancellationToken cancellationToken)
     {

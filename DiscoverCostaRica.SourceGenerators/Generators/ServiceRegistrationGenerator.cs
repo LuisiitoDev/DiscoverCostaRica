@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -13,7 +14,7 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
     private const string TransientServiceAttributeName = "TransientServiceAttribute";
     private const string ScopedServiceAttributeName = "ScopedServiceAttribute";
     private const string SingletonServiceAttributeName = "SingletonServiceAttribute";
-
+    private const string DecoratorServiceAttributeName = "DecoratorServiceAttribute";
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var classDeclarations = context.SyntaxProvider
@@ -52,6 +53,9 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
                         interfaceType != null
                             ? $"services.AddSingleton<{interfaceType}, {implementationType}>();"
                             : $"services.AddSingleton<{implementationType}>();",
+
+                    DecoratorServiceAttributeName => $"services.Decorate<{interfaceType},{implementationType}>();",
+
                     _ => null
                 };
 
@@ -90,7 +94,8 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
 
             if (attributeName == TransientServiceAttributeName ||
                 attributeName == ScopedServiceAttributeName ||
-                attributeName == SingletonServiceAttributeName)
+                attributeName == SingletonServiceAttributeName ||
+                attributeName == DecoratorServiceAttributeName)
             {
                 return (classSymbol, attributeName);
             }
@@ -110,7 +115,7 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
                 {{
                     public static IServiceCollection AddGeneratedServices_{assemblyName}(this IServiceCollection services)
                     {{
-                        {string.Join("\n            ", registrations)}
+                        {string.Join("\n            ", registrations.OrderBy(r => r))}
                         return services;
                     }}
                 }}

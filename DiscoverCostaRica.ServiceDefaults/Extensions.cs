@@ -71,12 +71,6 @@ public static class Extensions
         return builder;
     }
 
-    public static IHostApplicationBuilder AddGlobalExeption(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-        return builder;
-    }
-
     public static IHostApplicationBuilder AddMappingProfile<TProfile>(this IHostApplicationBuilder builder)
         where TProfile : AutoMapper.Profile
     {
@@ -157,6 +151,7 @@ public static class Extensions
         });
 
         builder.Services.AddRefitServices();
+        builder.AddGlobalExeption();
 
         // Uncomment the following to restrict the allowed schemes for service discovery.
         // builder.Services.Configure<ServiceDiscoveryOptions>(options =>
@@ -164,6 +159,13 @@ public static class Extensions
         //     options.AllowedSchemes = ["https"];
         // });
 
+        return builder;
+    }
+
+    public static IHostApplicationBuilder AddGlobalExeption(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
         return builder;
     }
 

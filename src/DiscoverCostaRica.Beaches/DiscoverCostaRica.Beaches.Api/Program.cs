@@ -9,7 +9,6 @@ builder.AddServiceDefaults();
 builder.AddEntraIdAuthentication();
 builder.AddDiscoverCostaRicaContext<IBeachContext, BeachContext>();
 builder.AddMappingProfile<MappingProfile>();
-builder.AddGlobalExeption();
 builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();
 builder.Services.AddOpenApi();
@@ -20,6 +19,7 @@ builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
 app.MapOpenApi();
 app.AddScalar();
 app.UseHttpsRedirection();
