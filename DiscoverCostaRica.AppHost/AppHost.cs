@@ -19,10 +19,8 @@ var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Micr
 var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, mongodb, cache, geo);
 var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, mongodb, cache, geo);
 
-
 builder.AddYarp(Microservices.Gateway)
     .WithDeveloperCertificateTrust(true)
-    //.WithHttpsEndpoint(targetPort: 8080, name: "https")
     .WithConfiguration(yarp =>
     {
         yarp.AddRoute("/provinces/{**catch-all}", geo).WithTransformPathPrefix("/api/v1/geo");
