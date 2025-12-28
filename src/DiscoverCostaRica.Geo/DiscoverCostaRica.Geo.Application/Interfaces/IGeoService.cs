@@ -5,8 +5,6 @@ namespace DiscoverCostaRica.Geo.Application.Interfaces;
 
 public interface IGeoService
 {
-    Task<Result<List<ProvinceDto>>> GetProvinces(CancellationToken cancellationToken);
-    Task<Result<ProvinceDto>> GetProvinceById(int provinceId, CancellationToken cancellationToken);
     Task<Result<List<CantonDto>>> GetCantons(int provinceId, CancellationToken cancellationToken);
     Task<Result<CantonDto>> GetCantonById(int provinceId, int cantonId, CancellationToken cancellationToken);
     Task<Result<List<DistrictDto>>> GetDistricts(int cantonId, CancellationToken cancellationToken);

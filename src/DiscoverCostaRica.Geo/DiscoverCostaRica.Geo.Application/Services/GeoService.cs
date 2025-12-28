@@ -5,7 +5,6 @@ using DiscoverCostaRica.Geo.Domain.Interfaces;
 using DiscoverCostaRica.Shared.Attributes;
 using DiscoverCostaRica.Shared.Responses;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace DiscoverCostaRica.Geo.Application.Services;
 
@@ -13,25 +12,8 @@ namespace DiscoverCostaRica.Geo.Application.Services;
 /// Provides geographic data retrieval services for provinces, cantons, and districts.
 /// </summary>
 [TransientService]
-public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoService> logger) : IGeoService
+public class GeoService(IGeoRepository repository, IMapper mapper) : IGeoService
 {
-    /// <summary>
-    /// Retrieves a province by its identifier.
-    /// </summary>
-    /// <param name="provinceId">The unique identifier of the province.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>
-    /// A <see cref="Result{ProvinceDto}"/> containing the province data if found; otherwise, a failure result.
-    /// </returns>
-    public async Task<Result<ProvinceDto>> GetProvinceById(int provinceId, CancellationToken cancellationToken)
-    {
-        var province = await repository.GetProvinceById(provinceId, cancellationToken);
-
-        if (province is null) return new Failure($"No provice was found for {provinceId}", StatusCodes.Status404NotFound);
-
-        return new Success(mapper.Map<ProvinceDto>(province));
-    }
-
     /// <summary>
     /// Retrieves a canton by its province and canton identifiers.
     /// </summary>
@@ -102,22 +84,5 @@ public class GeoService(IGeoRepository repository, IMapper mapper, ILogger<GeoSe
             return new Failure("No districts found. Please check later for updates.", StatusCodes.Status404NotFound);
 
         return new Success(mapper.Map<List<DistrictDto>>(districts));
-    }
-
-    /// <summary>
-    /// Retrieves all provinces.
-    /// </summary>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>
-    /// A <see cref="Result{List{ProvinceDto}}"/> containing the list of provinces if found; otherwise, a failure result.
-    /// </returns>
-    public async Task<Result<List<ProvinceDto>>> GetProvinces(CancellationToken cancellationToken)
-    {
-        var provinces = await repository.GetProvinces(cancellationToken);
-
-        if (provinces is null || provinces.Count <= 0)
-            return new Failure("No provinces found. Please check later for updates.", StatusCodes.Status404NotFound);
-
-        return new Success(mapper.Map<List<ProvinceDto>>(provinces));
     }
 }

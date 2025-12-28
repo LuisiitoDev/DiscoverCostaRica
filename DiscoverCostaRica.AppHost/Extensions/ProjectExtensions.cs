@@ -37,13 +37,16 @@ public static class ProjectExtensions
     public static IResourceBuilder<ProjectResource> CreateProject<TProject>(this IDistributedApplicationBuilder builder,
         string name,
         IResourceBuilder<IResourceWithConnectionString> azureSql,
-        IResourceBuilder<IResourceWithConnectionString> mongodb) where TProject : IProjectMetadata, new()
+        IResourceBuilder<IResourceWithConnectionString> mongodb,
+        IResourceBuilder<IResourceWithConnectionString> redis) where TProject : IProjectMetadata, new()
     {
         return ResourceParemeterBuilder.SetParameterForProject(builder,builder.AddProject<TProject>(name)
             .WithReference(azureSql)
             .WaitFor(azureSql)
             .WithReference(mongodb)
-            .WaitFor(mongodb));
+            .WaitFor(mongodb)
+            .WithReference(redis)
+            .WaitFor(redis));
     }
 
     public static IResourceBuilder<ProjectResource> CreateProject<TProject>(
@@ -51,6 +54,7 @@ public static class ProjectExtensions
         string name,
         IResourceBuilder<IResourceWithConnectionString> azureSql,
         IResourceBuilder<IResourceWithConnectionString> mongodb,
+        IResourceBuilder<IResourceWithConnectionString> redis,
         IResourceBuilder<ProjectResource> geo) where TProject : IProjectMetadata, new()
     {
         return ResourceParemeterBuilder.SetParameterForProject(
@@ -60,6 +64,8 @@ public static class ProjectExtensions
                 .WaitFor(azureSql)
                 .WithReference(mongodb)
                 .WaitFor(mongodb)
+                .WithReference(redis)
+                .WaitFor(redis)
                 .WithReference(geo)
                 .WaitFor(geo)
         );

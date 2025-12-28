@@ -15,7 +15,7 @@ public static class GeoHandler
     /// <param name="service">The geographic service instance.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The result containing the province data.</returns>
-    public static async Task<IResult> GetProvinceById(int provinceId, IGeoService service, CancellationToken cancellationToken)
+    public static async Task<IResult> GetProvinceById(int provinceId, IProviceService service, CancellationToken cancellationToken)
     {
         var result = await service.GetProvinceById(provinceId, cancellationToken);
         return result.ToResult();
@@ -55,7 +55,7 @@ public static class GeoHandler
     /// <param name="service">The geographic service instance.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The result containing the list of provinces.</returns>
-    public static async Task<IResult> GetProvinces([FromServices] IGeoService service, CancellationToken cancellationToken)
+    public static async Task<IResult> GetProvinces([FromServices] IProviceService service, CancellationToken cancellationToken)
     {
         var result = await service.GetProvinces(cancellationToken);
         return result.ToResult();

@@ -11,17 +11,18 @@ var azureSql = builder.AddAzureSqlServer("sqlserver")
                       .AsExisting(existingSqlServerName, existingSqlServerResourceGroup)
                       .AddDatabase("discovercostarica");
 
+var cache = builder.AddConnectionString("redis");
 var mongodb = builder.AddConnectionString("mongodb");
 
-var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, mongodb);
-var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, mongodb, geo);
-var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, mongodb, geo);
-var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, mongodb, geo);
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, mongodb, cache);
+var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, mongodb, cache, geo);
+var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, mongodb, cache, geo);
+var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, mongodb, cache, geo);
 
 
 builder.AddYarp(Microservices.Gateway)
     .WithDeveloperCertificateTrust(true)
-    .WithHttpsEndpoint(targetPort: 8080, name: "https")
+    //.WithHttpsEndpoint(targetPort: 8080, name: "https")
     .WithConfiguration(yarp =>
     {
         yarp.AddRoute("/provinces/{**catch-all}", geo).WithTransformPathPrefix("/api/v1/geo");

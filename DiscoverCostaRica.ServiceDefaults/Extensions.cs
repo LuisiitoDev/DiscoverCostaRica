@@ -140,6 +140,8 @@ public static class Extensions
 
         builder.AddConfigureEntraId();
 
+        builder.AddRedisClient(connectionName: "redis");
+
         builder.Services.AddSingleton<IMongoClient>(mongo => 
             new MongoClient(builder.Configuration.GetConnectionString("mongodb")));
 
