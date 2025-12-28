@@ -1,6 +1,36 @@
-﻿using Aspire.Hosting.ApplicationModel;
+﻿namespace DiscoverCostaRica.AppHost.Extensions;
 
-namespace DiscoverCostaRica.AppHost.Extensions;
+public static class ResourceParemeterBuilder
+{
+    private static IDictionary<string, IResourceBuilder<ParameterResource>>? _parameters;
+
+    public static IResourceBuilder<ProjectResource> SetParameterForProject(IDistributedApplicationBuilder builder, IResourceBuilder<ProjectResource> project)
+    {
+        if (_parameters is not null) return SetParameters(project);
+
+        var tenant = builder.AddParameter("azuretenant");
+        _parameters = new Dictionary<string, IResourceBuilder<ParameterResource>>()
+        {
+            ["EntraId__Audience"] = builder.AddParameter("azureaudience"),
+            ["EntraId__Instance"] = builder.AddParameter("azureinstance"),
+            ["EntraId__ClientId"] = builder.AddParameter("azureapplication"),
+            ["EntraId__TenantId"] = tenant,
+            ["Azure__TenantId"] = tenant,
+            ["Azure__ClientId"] = builder.AddParameter("azureclient"),
+            ["Azure__ClientSecret"] = builder.AddParameter("azuresecret", secret: true),
+            ["Azure__Scope"] = builder.AddParameter("azurescope"),
+        };
+
+        return SetParameters(project);
+    }
+
+    private static IResourceBuilder<ProjectResource> SetParameters(IResourceBuilder<ProjectResource> resource)
+    {
+        foreach (var parameter in _parameters!)
+            resource.WithEnvironment(parameter.Key, parameter.Value);
+        return resource;
+    }
+}
 
 public static class ProjectExtensions
 {
@@ -9,14 +39,11 @@ public static class ProjectExtensions
         IResourceBuilder<IResourceWithConnectionString> azureSql,
         IResourceBuilder<IResourceWithConnectionString> mongodb) where TProject : IProjectMetadata, new()
     {
-        return BuildWithEntraParameters(
-            builder,
-            builder.AddProject<TProject>(name)
-                .WithReference(azureSql)
-                .WaitFor(azureSql)
-                .WithReference(mongodb)
-                .WaitFor(mongodb)
-        );
+        return ResourceParemeterBuilder.SetParameterForProject(builder,builder.AddProject<TProject>(name)
+            .WithReference(azureSql)
+            .WaitFor(azureSql)
+            .WithReference(mongodb)
+            .WaitFor(mongodb));
     }
 
     public static IResourceBuilder<ProjectResource> CreateProject<TProject>(
@@ -26,7 +53,7 @@ public static class ProjectExtensions
         IResourceBuilder<IResourceWithConnectionString> mongodb,
         IResourceBuilder<ProjectResource> geo) where TProject : IProjectMetadata, new()
     {
-        return BuildWithEntraParameters(
+        return ResourceParemeterBuilder.SetParameterForProject(
             builder,
             builder.AddProject<TProject>(name)
                 .WithReference(azureSql)
@@ -36,26 +63,5 @@ public static class ProjectExtensions
                 .WithReference(geo)
                 .WaitFor(geo)
         );
-    }
-
-    private static IResourceBuilder<ProjectResource> BuildWithEntraParameters(IDistributedApplicationBuilder builder, IResourceBuilder<ProjectResource> project)
-    {
-        var applicationAudience = builder.AddParameter("applicationAudience");
-        var applicationInstance = builder.AddParameter("applicationInstance");
-        var applicationId = builder.AddParameter("applicationId");
-        var tenantId = builder.AddParameter("tenantId");
-        var clientId = builder.AddParameter("clientId");
-        var clientSecret = builder.AddParameter("clientSecret", secret: true);
-        var scope = builder.AddParameter("scope");
-
-        return project
-            .WithEnvironment("Azure__TenantId", tenantId)
-            .WithEnvironment("Azure__ClientId", clientId)
-            .WithEnvironment("Azure__Scope", scope)
-            .WithEnvironment("Azure__ClientSecret", clientSecret)
-            .WithEnvironment("EntraId__Instance", applicationInstance)
-            .WithEnvironment("EntraId__TenantId", tenantId)
-            .WithEnvironment("EntraId__ClientId", applicationId)
-            .WithEnvironment("EntraId__Audience", applicationAudience);
     }
 }
