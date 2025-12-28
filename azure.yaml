@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: discover-costa-rica
+metadata:
+    template: azd-init@1.22.5
+services:
+    discovercostarica-beaches-api:
+        project: src/DiscoverCostaRica.Beaches/DiscoverCostaRica.Beaches.Api
+        host: containerapp
+        language: dotnet
+    discovercostarica-culture-api:
+        project: src/DiscoverCostaRica.Culture/DiscoverCostaRica.Culture.Api
+        host: containerapp
+        language: dotnet
+    discovercostarica-geo-api:
+        project: src/DiscoverCostaRica.Geo/DiscoverCostaRica.Geo.Api
+        host: containerapp
+        language: dotnet
+    discovercostarica-volcano-api:
+        project: src/DiscoverCostaRica.Volcano/DiscoverCostaRica.Volcano.Api
+        host: containerapp
+        language: dotnet
+resources:
+    discovercostarica-beaches-api:
+        type: host.containerapp
+        port: 8080
+    discovercostarica-culture-api:
+        type: host.containerapp
+        port: 8080
+    discovercostarica-geo-api:
+        type: host.containerapp
+        port: 8080
+    discovercostarica-volcano-api:
+        type: host.containerapp
+        port: 8080

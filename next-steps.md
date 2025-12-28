@@ -3,9 +3,11 @@
 ## Table of Contents
 
 1. [Next Steps](#next-steps)
-2. [What was added](#what-was-added)
-3. [Billing](#billing)
-4. [Troubleshooting](#troubleshooting)
+   1. [Provision infrastructure](#provision-infrastructure-and-deploy-application-code)
+   2. [Modify infrastructure](#modify-infrastructure)
+   3. [Getting to production-ready](#getting-to-production-ready)
+2. [Billing](#billing)
+3. [Troubleshooting](#troubleshooting)
 
 ## Next Steps
 
@@ -15,27 +17,15 @@ Run `azd up` to provision your infrastructure and deploy to Azure in one step (o
 
 To troubleshoot any issues, see [troubleshooting](#troubleshooting).
 
-### Configure CI/CD pipeline
+### Modify infrastructure
 
-Run `azd pipeline config -e <environment name>` to configure the deployment pipeline to connect securely to Azure. An environment name is specified here to configure the pipeline with a different environment for isolation purposes. Run `azd env list` and `azd env set` to reselect the default environment after this step.
+To describe the infrastructure and application, `azure.yaml` was added. This file contains all services and resources that describe your application.
 
-- Deploying with `GitHub Actions`: Select `GitHub` when prompted for a provider. If your project lacks the `azure-dev.yml` file, accept the prompt to add it and proceed with pipeline configuration.
+To add new services or resources, run `azd add`. You may also edit the `azure.yaml` file directly if needed.
 
-- Deploying with `Azure DevOps Pipeline`: Select `Azure DevOps` when prompted for a provider. If your project lacks the `azure-dev.yml` file, accept the prompt to add it and proceed with pipeline configuration.
+### Getting to production-ready
 
-## What was added
-
-### Infrastructure configuration
-
-To describe the infrastructure and application, an `azure.yaml` was added with the following directory structure:
-
-```yaml
-- azure.yaml     # azd project configuration
-```
-
-This file contains a single service, which references your project's App Host. When needed, `azd` generates the required infrastructure as code in memory and uses it.
-
-If you would like to see or modify the infrastructure that `azd` uses, run `azd infra gen` to generate it to disk.
+When needed, `azd` generates the required infrastructure as code in memory and uses it. If you would like to see or modify the infrastructure that `azd` uses, run `azd infra gen` to persist it to disk.
 
 If you do this, some additional directories will be created:
 
@@ -43,11 +33,12 @@ If you do this, some additional directories will be created:
 - infra/            # Infrastructure as Code (bicep) files
   - main.bicep      # main deployment module
   - resources.bicep # resources shared across your application's services
+  - modules/        # Library modules
 ```
 
-In addition, for each project resource referenced by your app host, a `containerApp.tmpl.yaml` file will be created in a directory named `manifests` next the project file. This file contains the infrastructure as code for running the project on Azure Container Apps.
+*Note*: Once you have generated your infrastructure to disk, those files are the source of truth for azd. Any changes made to `azure.yaml` (such as through `azd add`) will not be reflected in the infrastructure until you regenerate it with `azd infra gen` again. It will prompt you before overwriting files. You can pass `--force` to force `azd infra gen` to overwrite the files without prompting.
 
-*Note*: Once you have generated your infrastructure to disk, those files are the source of truth for azd. Any changes made to `azure.yaml` or your App Host will not be reflected in the infrastructure until you regenerate it with `azd infra gen` again. It will prompt you before overwriting files. You can pass `--force` to force `azd infra gen` to overwrite the files without prompting.
+Finally, run `azd pipeline config` to configure a CI/CD deployment pipeline.
 
 ## Billing
 
