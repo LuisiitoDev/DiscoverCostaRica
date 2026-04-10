@@ -1,57 +1,57 @@
-# Documento de Arquitectura del Sistema — Discover Costa Rica
+# System Architecture Document — Discover Costa Rica
 
-**Versión:** 1.0  
-**Fecha:** Abril 2026  
-**Estado:** Vigente
-
----
-
-## Tabla de Contenidos
-
-1. [Visión General](#1-visión-general)
-2. [Contexto del Sistema](#2-contexto-del-sistema)
-3. [Decisiones de Arquitectura](#3-decisiones-de-arquitectura)
-4. [Estructura de la Solución](#4-estructura-de-la-solución)
-5. [Microservicios](#5-microservicios)
-6. [Arquitectura Interna — Clean Architecture](#6-arquitectura-interna--clean-architecture)
-7. [Modelo de Datos](#7-modelo-de-datos)
-8. [Comunicación entre Servicios](#8-comunicación-entre-servicios)
-9. [Seguridad y Autenticación](#9-seguridad-y-autenticación)
-10. [Caché y Rendimiento](#10-caché-y-rendimiento)
-11. [Observabilidad](#11-observabilidad)
-12. [Generadores de Código Fuente](#12-generadores-de-código-fuente)
-13. [Infraestructura y Despliegue](#13-infraestructura-y-despliegue)
-14. [Versionamiento de API](#14-versionamiento-de-api)
-15. [Patrones de Respuesta](#15-patrones-de-respuesta)
-16. [Diagrama de Componentes](#16-diagrama-de-componentes)
+**Version:** 1.0  
+**Date:** April 2026  
+**Status:** Current
 
 ---
 
-## 1. Visión General
+## Table of Contents
 
-**Discover Costa Rica** es una plataforma de información turística expuesta como un conjunto de microservicios RESTful. Provee datos sobre:
-
-- **Playas** — listado y detalle de playas del país.
-- **Volcanes** — información geolocalizada de volcanes, enriquecida con datos geográficos.
-- **Cultura** — platos típicos y tradiciones culturales.
-- **Geografía** — jerarquía administrativa Provincia → Cantón → Distrito.
-
-La solución está construida sobre **.NET 10** con **.NET Aspire** como orquestador de desarrollo local y **Azure Container Apps** como destino de producción.
+1. [Overview](#1-overview)
+2. [System Context](#2-system-context)
+3. [Architecture Decisions](#3-architecture-decisions)
+4. [Solution Structure](#4-solution-structure)
+5. [Microservices](#5-microservices)
+6. [Internal Architecture — Clean Architecture](#6-internal-architecture--clean-architecture)
+7. [Data Model](#7-data-model)
+8. [Service-to-Service Communication](#8-service-to-service-communication)
+9. [Security and Authentication](#9-security-and-authentication)
+10. [Cache and Performance](#10-cache-and-performance)
+11. [Observability](#11-observability)
+12. [Source Code Generators](#12-source-code-generators)
+13. [Infrastructure and Deployment](#13-infrastructure-and-deployment)
+14. [API Versioning](#14-api-versioning)
+15. [Response Patterns](#15-response-patterns)
+16. [Component Diagram](#16-component-diagram)
 
 ---
 
-## 2. Contexto del Sistema
+## 1. Overview
+
+**Discover Costa Rica** is a tourism information platform exposed as a set of RESTful microservices. It provides data about:
+
+- **Beaches** — listing and detail of the country's beaches.
+- **Volcanoes** — geolocated volcano information, enriched with geographic data.
+- **Culture** — typical dishes and cultural traditions.
+- **Geography** — administrative hierarchy Province → Canton → District.
+
+The solution is built on **.NET 10** with **.NET Aspire** as the local development orchestrator and **Azure Container Apps** as the production target.
+
+---
+
+## 2. System Context
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                      CLIENTES                           │
-│   (Navegadores, Apps Móviles, Otros Servicios)          │
+│                       CLIENTS                           │
+│   (Browsers, Mobile Apps, Other Services)               │
 └────────────────────────┬────────────────────────────────┘
                          │ HTTPS
                          ▼
 ┌────────────────────────────────────────────────────────┐
 │              YARP API GATEWAY (gateway)                │
-│   Enruta y transforma rutas públicas hacia servicios   │
+│   Routes and transforms public routes to services      │
 └──────┬──────────┬──────────┬──────────┬────────────────┘
        │          │          │          │
        ▼          ▼          ▼          ▼
@@ -66,7 +66,7 @@ La solución está construida sobre **.NET 10** con **.NET Aspire** como orquest
               │                         │
      ┌────────▼────────┐    ┌──────────▼──────────┐
      │  Azure SQL DB   │    │  Redis Cache         │
-     │  (compartida)   │    │  (caché distribuida) │
+     │  (shared)       │    │  (distributed cache) │
      └─────────────────┘    └──────────────────────┘
               │
      ┌────────▼────────┐
@@ -75,76 +75,76 @@ La solución está construida sobre **.NET 10** con **.NET Aspire** como orquest
      └─────────────────┘
 ```
 
-### Actores externos
+### External Actors
 
-| Actor | Descripción |
+| Actor | Description |
 |---|---|
-| Clientes HTTP | Consumidores de la API (apps, navegadores, servicios externos) |
-| Microsoft Entra ID | Proveedor de identidad OAuth2 / OIDC para autenticación y autorización |
-| Azure Developer CLI (`azd`) | Herramienta de despliegue a Azure Container Apps |
+| HTTP Clients | API consumers (apps, browsers, external services) |
+| Microsoft Entra ID | OAuth2 / OIDC identity provider for authentication and authorization |
+| Azure Developer CLI (`azd`) | Deployment tool to Azure Container Apps |
 
 ---
 
-## 3. Decisiones de Arquitectura
+## 3. Architecture Decisions
 
-### ADR-01 — Microservicios con Clean Architecture
+### ADR-01 — Microservices with Clean Architecture
 
-Cada dominio de negocio (Playas, Volcanes, Cultura, Geografía) vive en su propio microservicio independiente. Dentro de cada servicio se aplica **Clean Architecture** con cuatro capas: Domain → Application → Infrastructure → API.
+Each business domain (Beaches, Volcanoes, Culture, Geography) lives in its own independent microservice. Within each service, **Clean Architecture** is applied with four layers: Domain → Application → Infrastructure → API.
 
-**Motivo:** Escalabilidad independiente, despliegue autónomo, fronteras de dominio bien definidas.
+**Rationale:** Independent scalability, autonomous deployment, well-defined domain boundaries.
 
-### ADR-02 — Base de Datos Compartida con Separación por Esquema
+### ADR-02 — Shared Database with Schema Separation
 
-Todos los servicios apuntan a la misma base de datos Azure SQL, pero cada uno opera sobre su propio esquema (`Beach.Beach`, `Volcano.Volcano`, etc.).
+All services point to the same Azure SQL database, but each one operates on its own schema (`Beach.Beach`, `Volcano.Volcano`, etc.).
 
-**Motivo:** Para la escala actual, una BD por servicio agrega complejidad operacional innecesaria. Las tablas geográficas son de solo lectura para los demás servicios, por lo que el acoplamiento es mínimo.
+**Rationale:** At the current scale, a database-per-service adds unnecessary operational complexity. Geographic tables are read-only for other services, so coupling is minimal.
 
-### ADR-03 — .NET Aspire para Orquestación Local
+### ADR-03 — .NET Aspire for Local Orchestration
 
-El proyecto `DiscoverCostaRica.AppHost` actúa como orquestador de desarrollo, inyectando cadenas de conexión, parámetros de configuración y administrando dependencias de arranque.
+The `DiscoverCostaRica.AppHost` project acts as the development orchestrator, injecting connection strings, configuration parameters, and managing startup dependencies.
 
-**Motivo:** Simplifica el arranque del entorno completo en local sin gestionar múltiples procesos manualmente.
+**Rationale:** Simplifies bootstrapping the full environment locally without managing multiple processes manually.
 
-### ADR-04 — Source Generators para Registro de DI
+### ADR-04 — Source Generators for DI Registration
 
-En lugar de registrar servicios manualmente, se usan Roslyn Source Generators que inspeccionan atributos (`[TransientService]`, `[ScopedService]`, `[SingletonService]`, `[DecoratorService]`) y generan el código de registro automáticamente.
+Instead of registering services manually, Roslyn Source Generators are used that inspect attributes (`[TransientService]`, `[ScopedService]`, `[SingletonService]`, `[DecoratorService]`) and automatically generate the registration code.
 
-**Motivo:** Elimina el registro manual repetitivo y previene errores de omisión. El código generado es verificable en compilación.
+**Rationale:** Eliminates repetitive manual registration and prevents omission errors. Generated code is verifiable at compile time.
 
-### ADR-05 — Microsoft Entra ID como Proveedor de Identidad
+### ADR-05 — Microsoft Entra ID as Identity Provider
 
-Toda autenticación se delega a Microsoft Entra ID (Azure AD). Los servicios validan JWT Bearer tokens. Las políticas de autorización se generan también vía Source Generators a partir del atributo `[AuthorizationPolicy]`.
+All authentication is delegated to Microsoft Entra ID (Azure AD). Services validate JWT Bearer tokens. Authorization policies are also generated via Source Generators from the `[AuthorizationPolicy]` attribute.
 
-**Motivo:** Gestión de identidad empresarial sin implementar lógica de autenticación propia.
+**Rationale:** Enterprise identity management without implementing custom authentication logic.
 
-### ADR-06 — YARP como API Gateway
+### ADR-06 — YARP as API Gateway
 
-Se usa **YARP (Yet Another Reverse Proxy)** integrado en Aspire para enrutar peticiones externas a los microservicios, aplicando transformaciones de prefijo de ruta.
+**YARP (Yet Another Reverse Proxy)** integrated in Aspire is used to route external requests to microservices, applying route prefix transformations.
 
-**Motivo:** Punto único de entrada, oculta la topología interna de servicios a los clientes.
+**Rationale:** Single entry point, hides the internal service topology from clients.
 
-### ADR-07 — Redis para Caché Distribuida con Patrón Decorator
+### ADR-07 — Redis for Distributed Cache with Decorator Pattern
 
-El caché se implementa con el **patrón Decorator**: una clase de servicio con caché envuelve al servicio base sin modificar su interfaz.
+Caching is implemented with the **Decorator pattern**: a cache-aware service class wraps the base service without modifying its interface.
 
-**Motivo:** Transparencia para los consumidores, fácil de activar/desactivar, permite invalidación selectiva.
+**Rationale:** Transparency for consumers, easy to enable/disable, allows selective invalidation.
 
 ---
 
-## 4. Estructura de la Solución
+## 4. Solution Structure
 
 ```
 DiscoverCostaRica/
 ├── DiscoverCostaRica.sln
-├── azure.yaml                          ← Configuración Azure Developer CLI
-├── docker-compose.yml                  ← Entorno local sin Aspire
-├── Makefile                            ← Comandos de desarrollo
+├── azure.yaml                          ← Azure Developer CLI configuration
+├── docker-compose.yml                  ← Local environment without Aspire
+├── Makefile                            ← Development commands
 │
-├── DiscoverCostaRica.AppHost/          ← Orquestador .NET Aspire
-├── DiscoverCostaRica.ServiceDefaults/  ← Configuración compartida (OTel, Auth, Redis, EF)
-├── DiscoverCostaRica.Shared/           ← DTOs, interfaces, constantes, atributos
+├── DiscoverCostaRica.AppHost/          ← .NET Aspire orchestrator
+├── DiscoverCostaRica.ServiceDefaults/  ← Shared configuration (OTel, Auth, Redis, EF)
+├── DiscoverCostaRica.Shared/           ← DTOs, interfaces, constants, attributes
 ├── DiscoverCostaRica.SourceGenerators/ ← Roslyn generators (DI + Policies)
-├── DiscoverCostaRica.Tests/            ← Tests de integración (Aspire Testing)
+├── DiscoverCostaRica.Tests/            ← Integration tests (Aspire Testing)
 │
 └── src/
     ├── DiscoverCostaRica.Beaches/
@@ -174,97 +174,97 @@ DiscoverCostaRica/
 
 ---
 
-## 5. Microservicios
+## 5. Microservices
 
 ### 5.1 Beaches API
 
-| Atributo | Valor |
+| Attribute | Value |
 |---|---|
-| Nombre en Aspire | `beachesservice` |
+| Aspire Name | `beachesservice` |
 | Base URL (Gateway) | `/beaches/` |
-| Base URL (Interno) | `/api/v1/beaches/` |
-| Base de Datos | Esquema `Beach` |
-| Política de Acceso Lectura | `Beaches.Read` |
+| Base URL (Internal) | `/api/v1/beaches/` |
+| Database | Schema `Beach` |
+| Read Access Policy | `Beaches.Read` |
 
-**Dominio:** Gestiona información de playas costarricenses. Entidad simple con `Id`, `Name`, `Description`.
+**Domain:** Manages information about Costa Rican beaches. Simple entity with `Id`, `Name`, `Description`.
 
-**Endpoints expuestos:**
+**Exposed endpoints:**
 
-| Método | Ruta | Descripción | Autorización |
+| Method | Route | Description | Authorization |
 |---|---|---|---|
-| GET | `/api/v1/beaches/` | Lista todas las playas | `Beaches.Read` |
+| GET | `/api/v1/beaches/` | List all beaches | `Beaches.Read` |
 
 ### 5.2 Culture API
 
-| Atributo | Valor |
+| Attribute | Value |
 |---|---|
-| Nombre en Aspire | `cultureservice` |
+| Aspire Name | `cultureservice` |
 | Base URL (Gateway) | `/tradition/`, `/dish/` |
-| Base URL (Interno) | `/api/v1/traditions/` |
-| Base de Datos | Esquema `Culture` |
-| Política de Acceso Lectura | `Culture.Read` |
+| Base URL (Internal) | `/api/v1/traditions/` |
+| Database | Schema `Culture` |
+| Read Access Policy | `Culture.Read` |
 
-**Dominio:** Gestiona platos típicos (`DishModel`) y tradiciones culturales (`TraditionModel`).
+**Domain:** Manages typical dishes (`DishModel`) and cultural traditions (`TraditionModel`).
 
-**Endpoints expuestos:**
+**Exposed endpoints:**
 
-| Método | Ruta | Descripción | Autorización |
+| Method | Route | Description | Authorization |
 |---|---|---|---|
-| GET | `/api/v1/traditions/dish` | Lista platos típicos | `Culture.Read` |
-| GET | `/api/v1/traditions/tradition` | Lista tradiciones | `Culture.Read` |
+| GET | `/api/v1/traditions/dish` | List typical dishes | `Culture.Read` |
+| GET | `/api/v1/traditions/tradition` | List traditions | `Culture.Read` |
 
 ### 5.3 Geo API
 
-| Atributo | Valor |
+| Attribute | Value |
 |---|---|
-| Nombre en Aspire | `geoservice` |
+| Aspire Name | `geoservice` |
 | Base URL (Gateway) | `/provinces/`, `/canton/`, `/districts/` |
-| Base URL (Interno) | `/api/v1/geo/` |
-| Base de Datos | Esquema `Geo` |
-| Política de Acceso Lectura | `Geo.Read` |
-| Dependencias | SQL Server |
+| Base URL (Internal) | `/api/v1/geo/` |
+| Database | Schema `Geo` |
+| Read Access Policy | `Geo.Read` |
+| Dependencies | SQL Server |
 
-**Dominio:** Jerarquía administrativa de Costa Rica: 7 Provincias → 82 Cantones → ~488 Distritos. Usa claves compuestas para Cantón (`Id`, `ProvinceId`) y Distrito (`Id`, `CantonId`, `CantonProvinceId`).
+**Domain:** Administrative hierarchy of Costa Rica: 7 Provinces → 82 Cantons → ~488 Districts. Uses composite keys for Canton (`Id`, `ProvinceId`) and District (`Id`, `CantonId`, `CantonProvinceId`).
 
-**Endpoints expuestos:**
+**Exposed endpoints:**
 
-| Método | Ruta | Descripción | Autorización |
+| Method | Route | Description | Authorization |
 |---|---|---|---|
-| GET | `/api/v1/geo/provinces` | Lista provincias | `Geo.Read` |
-| GET | `/api/v1/geo/provinces/{provinceId}` | Provincia por ID | `Geo.Read` |
-| GET | `/api/v1/geo/cantons/{provinceId}` | Cantones de una provincia | `Geo.Read` |
-| GET | `/api/v1/geo/cantons/{provinceId}/{cantonId}` | Cantón por ID | `Geo.Read` |
-| GET | `/api/v1/geo/districts/{cantonId}` | Distritos de un cantón | `Geo.Read` |
-| GET | `/api/v1/geo/districts/{cantonId}/{districtId}` | Distrito por ID | `Geo.Read` |
+| GET | `/api/v1/geo/provinces` | List provinces | `Geo.Read` |
+| GET | `/api/v1/geo/provinces/{provinceId}` | Province by ID | `Geo.Read` |
+| GET | `/api/v1/geo/cantons/{provinceId}` | Cantons of a province | `Geo.Read` |
+| GET | `/api/v1/geo/cantons/{provinceId}/{cantonId}` | Canton by ID | `Geo.Read` |
+| GET | `/api/v1/geo/districts/{cantonId}` | Districts of a canton | `Geo.Read` |
+| GET | `/api/v1/geo/districts/{cantonId}/{districtId}` | District by ID | `Geo.Read` |
 
-> **Nota:** El Geo Service actúa como servicio de soporte para Volcano API, que lo consulta para enriquecer datos de ubicación.
+> **Note:** The Geo Service acts as a support service for the Volcano API, which queries it to enrich location data.
 
 ### 5.4 Volcano API
 
-| Atributo | Valor |
+| Attribute | Value |
 |---|---|
-| Nombre en Aspire | `volcanoservice` |
+| Aspire Name | `volcanoservice` |
 | Base URL (Gateway) | `/volcano/`, `/province/` |
-| Base URL (Interno) | `/api/v1/volcanoes/` |
-| Base de Datos | Esquema `Volcano` |
-| Política de Acceso Lectura | `Volcano.Read` |
-| Dependencias | SQL Server, Redis, Geo API |
+| Base URL (Internal) | `/api/v1/volcanoes/` |
+| Database | Schema `Volcano` |
+| Read Access Policy | `Volcano.Read` |
+| Dependencies | SQL Server, Redis, Geo API |
 
-**Dominio:** Gestiona volcanes con referencia a la jerarquía geográfica (`ProvinceId`, `CantonId`, `DistrictId?`). Los datos de ubicación se enriquecen en tiempo real desde el Geo Service mediante llamadas HTTP concurrentes (`Task.WhenAll`).
+**Domain:** Manages volcanoes with a reference to the geographic hierarchy (`ProvinceId`, `CantonId`, `DistrictId?`). Location data is enriched in real time from the Geo Service via concurrent HTTP calls (`Task.WhenAll`).
 
-**Endpoints expuestos:**
+**Exposed endpoints:**
 
-| Método | Ruta | Descripción | Autorización |
+| Method | Route | Description | Authorization |
 |---|---|---|---|
-| GET | `/api/v1/volcanoes/` | Lista todos los volcanes | `Volcano.Read` |
-| GET | `/api/v1/volcanoes/{id}` | Volcán por ID | `Volcano.Read` |
-| GET | `/api/v1/volcanoes/province/{provinceId}` | Volcanes por provincia | `Volcano.Read` |
+| GET | `/api/v1/volcanoes/` | List all volcanoes | `Volcano.Read` |
+| GET | `/api/v1/volcanoes/{id}` | Volcano by ID | `Volcano.Read` |
+| GET | `/api/v1/volcanoes/province/{provinceId}` | Volcanoes by province | `Volcano.Read` |
 
 ---
 
-## 6. Arquitectura Interna — Clean Architecture
+## 6. Internal Architecture — Clean Architecture
 
-Cada microservicio está dividido en cuatro proyectos siguiendo las reglas de dependencia de Clean Architecture:
+Each microservice is divided into four projects following the Clean Architecture dependency rules:
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -272,40 +272,40 @@ Cada microservicio está dividido en cuatro proyectos siguiendo las reglas de de
 │  Program.cs · EndpointExtensions · Handlers · Profiles │
 │            (Minimal API, AutoMapper, OpenAPI)           │
 └──────────────────────────┬─────────────────────────────┘
-                           │ depende de
+                           │ depends on
 ┌──────────────────────────▼─────────────────────────────┐
 │                 Application Layer                       │
 │         DTOs · Interfaces · Services · Cache            │
-│          (Lógica de negocio, sin dependencias externas) │
+│          (Business logic, no external dependencies)     │
 └──────────────────────────┬─────────────────────────────┘
-                           │ depende de
+                           │ depends on
 ┌──────────────────────────▼─────────────────────────────┐
 │                   Domain Layer                          │
 │              Models · Repository Interfaces             │
-│              (Entidades puras, sin dependencias)        │
+│              (Pure entities, no dependencies)           │
 └─────────────────────────────────────────────────────────┘
-                           ▲ implementado por
+                           ▲ implemented by
 ┌──────────────────────────┴─────────────────────────────┐
 │                Infrastructure Layer                     │
 │   DbContext · EntityConfigurations · Repositories       │
-│   (EF Core, SQL Server, acceso a datos concreto)        │
+│   (EF Core, SQL Server, concrete data access)           │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Flujo de una petición HTTP
+### HTTP Request Flow
 
 ```
 HTTP Request
      │
      ▼
-[API Layer] Handler recibe la petición, la valida superficialmente
-     │  invoca
+[API Layer] Handler receives the request, performs shallow validation
+     │  invokes
      ▼
-[Application Layer] IService → lógica de negocio, mapeo DTO
-     │  si hay caché disponible → CacheService (Decorator)
-     │  si no → Repository
+[Application Layer] IService → business logic, DTO mapping
+     │  if cache available → CacheService (Decorator)
+     │  if not → Repository
      ▼
-[Domain Layer] Entidades puras, reglas de negocio
+[Domain Layer] Pure entities, business rules
      │
      ▼
 [Infrastructure Layer] EF Core → Azure SQL Server
@@ -314,14 +314,14 @@ HTTP Request
 HTTP Response (Result<T> → IResult via ToResult())
 ```
 
-### Patrón Decorator para Caché
+### Decorator Pattern for Cache
 
 ```csharp
-// Source Generator registra:
+// Source Generator registers:
 services.AddTransient<IBeachService, BeachService>();
 services.Decorate<IBeachService, CacheBeachService>();
 
-// CacheBeachService envuelve a BeachService:
+// CacheBeachService wraps BeachService:
 public class CacheBeachService(IBeachService inner, ICacheService cache) : IBeachService
 {
     public async Task<Result<List<DtoBeach>>> GetBeaches(CancellationToken ct)
@@ -337,7 +337,7 @@ public class CacheBeachService(IBeachService inner, ICacheService cache) : IBeac
 
 ---
 
-## 7. Modelo de Datos
+## 7. Data Model
 
 ### 7.1 Beaches
 
@@ -366,7 +366,7 @@ Culture.Tradition
 └── ImageUrl    NVARCHAR
 ```
 
-### 7.3 Geo (Jerarquía Administrativa)
+### 7.3 Geo (Administrative Hierarchy)
 
 ```
 Geo.Province
@@ -374,13 +374,13 @@ Geo.Province
 └── Name  NVARCHAR NOT NULL
    │
    └──< Geo.Canton
-        ├── Id          INT      ┐ PK Compuesta
+        ├── Id          INT      ┐ Composite PK
         ├── ProvinceId  INT      ┘ FK → Province
         ├── Name        NVARCHAR NOT NULL
         │
         └──< Geo.District
              ├── Id              INT  ┐
-             ├── CantonId        INT  │ PK Compuesta
+             ├── CantonId        INT  │ Composite PK
              ├── CantonProvinceId INT ┘ FK → Canton
              └── Name            NVARCHAR NOT NULL
 ```
@@ -390,74 +390,74 @@ Geo.Province
 ```
 Volcano.Volcano
 ├── Id          INT IDENTITY PK
-├── ProvinceId  INT NOT NULL   (referencia lógica a Geo.Province)
-├── CantonId    INT NOT NULL   (referencia lógica a Geo.Canton)
-├── DistrictId  INT NULL       (referencia lógica a Geo.District)
+├── ProvinceId  INT NOT NULL   (logical reference to Geo.Province)
+├── CantonId    INT NOT NULL   (logical reference to Geo.Canton)
+├── DistrictId  INT NULL       (logical reference to Geo.District)
 ├── Name        NVARCHAR NOT NULL
 └── Description NVARCHAR NOT NULL
 ```
 
-> Las referencias entre Volcano y Geo son **lógicas** (sin FK físicas entre esquemas). La resolución se hace en tiempo de consulta mediante llamadas al Geo API.
+> References between Volcano and Geo are **logical** (no physical FKs across schemas). Resolution is done at query time via calls to the Geo API.
 
 ---
 
-## 8. Comunicación entre Servicios
+## 8. Service-to-Service Communication
 
 ### 8.1 Volcano → Geo (via Refit + Service Discovery)
 
-El Volcano Service enriquece los datos de ubicación consultando el Geo Service usando un cliente Refit tipado (`IGeoDiscoverCostaRica`), registrado automáticamente en `ServiceDefaults`.
+The Volcano Service enriches location data by querying the Geo Service using a typed Refit client (`IGeoDiscoverCostaRica`), registered automatically in `ServiceDefaults`.
 
 ```
 Volcano API
     │
-    ├── Para cada volcán: GetProvinceById + GetCantonById + GetDistrictById
-    │   (ejecutados CONCURRENTEMENTE con Task.WhenAll)
+    ├── For each volcano: GetProvinceById + GetCantonById + GetDistrictById
+    │   (executed CONCURRENTLY with Task.WhenAll)
     │
     └── Geo API (/api/v1/geo/...)
 ```
 
-El servicio de descubrimiento (Aspire Service Discovery) resuelve `https://geoservice` a la dirección real del contenedor en tiempo de ejecución.
+The service discovery (Aspire Service Discovery) resolves `https://geoservice` to the real container address at runtime.
 
-### 8.2 Autenticación Servicio-a-Servicio
+### 8.2 Service-to-Service Authentication
 
-Las llamadas entre servicios usan `DiscoverCostaRicaAuthHandler` (un `DelegatingHandler`) que adjunta automáticamente un token Bearer de Entra ID usando `DiscoverCostaRicaTokenAcquisitionService`.
+Calls between services use `DiscoverCostaRicaAuthHandler` (a `DelegatingHandler`) that automatically attaches a Bearer token from Entra ID using `DiscoverCostaRicaTokenAcquisitionService`.
 
 ```csharp
-// Configuración en ServiceDefaults
+// Configuration in ServiceDefaults
 services.AddRefitClient<IGeoDiscoverCostaRica>()
     .ConfigureHttpClient(http => http.BaseAddress = new Uri("https://geoservice/api/v1/geo"))
     .AddHttpMessageHandler<DiscoverCostaRicaAuthHandler>()
-    .AddStandardResilienceHandler();  // ← reintentos, circuit breaker, timeouts
+    .AddStandardResilienceHandler();  // ← retries, circuit breaker, timeouts
 ```
 
-### 8.3 Resiliencia
+### 8.3 Resilience
 
-Todos los clientes HTTP usan `AddStandardResilienceHandler()` de .NET Resilience que configura automáticamente:
-- **Reintentos** con backoff exponencial
-- **Circuit Breaker** para aislar fallos
-- **Timeout** por petición y total
+All HTTP clients use `AddStandardResilienceHandler()` from .NET Resilience, which automatically configures:
+- **Retries** with exponential backoff
+- **Circuit Breaker** to isolate failures
+- **Timeout** per request and total
 
 ---
 
-## 9. Seguridad y Autenticación
+## 9. Security and Authentication
 
-### 9.1 Autenticación
+### 9.1 Authentication
 
-Todos los servicios validan **JWT Bearer tokens** emitidos por **Microsoft Entra ID**. La configuración se centraliza en `ServiceDefaults.AddEntraIdAuthentication()`.
+All services validate **JWT Bearer tokens** issued by **Microsoft Entra ID**. Configuration is centralized in `ServiceDefaults.AddEntraIdAuthentication()`.
 
 ```
-Cliente → [Bearer Token] → Servicio → [Valida con Entra ID JWKS]
+Client → [Bearer Token] → Service → [Validates with Entra ID JWKS]
 ```
 
-Parámetros configurables por entorno (inyectados por Aspire):
-- `EntraId__Audience` — App ID URI del cliente registrado
-- `EntraId__Instance` — Endpoint de la instancia de Entra ID
-- `EntraId__ClientId` — Client ID de la aplicación
-- `EntraId__TenantId` — Tenant ID de Azure
+Configurable parameters per environment (injected by Aspire):
+- `EntraId__Audience` — App ID URI of the registered client
+- `EntraId__Instance` — Entra ID instance endpoint
+- `EntraId__ClientId` — Application Client ID
+- `EntraId__TenantId` — Azure Tenant ID
 
-### 9.2 Autorización — Políticas por Ámbito
+### 9.2 Authorization — Scope-Based Policies
 
-Las políticas se generan automáticamente mediante Source Generators a partir de `DiscoverPolicies.cs`:
+Policies are automatically generated via Source Generators from `DiscoverPolicies.cs`:
 
 ```csharp
 [AuthorizationPolicy("Beaches.Read",  "Beaches.Read")]
@@ -467,28 +467,28 @@ Las políticas se generan automáticamente mediante Source Generators a partir d
 public class DiscoverPolicies { }
 ```
 
-El generator produce `AddPolicies()` que verifica el claim `roles` del token JWT. Las políticas se aplican a los endpoints con `.RequireAuthorization("Beaches.Read")`.
+The generator produces `AddPolicies()` which checks the `roles` claim in the JWT token. Policies are applied to endpoints with `.RequireAuthorization("Beaches.Read")`.
 
 ### 9.3 Roles
 
-| Rol | Descripción |
+| Role | Description |
 |---|---|
-| `Administrator` | Acceso total, incluyendo operaciones destructivas |
-| `Writer` | Puede crear y modificar recursos |
-| `Reader` | Solo lectura |
-| `User` | Usuario autenticado sin permisos especiales |
+| `Administrator` | Full access, including destructive operations |
+| `Writer` | Can create and modify resources |
+| `Reader` | Read-only access |
+| `User` | Authenticated user with no special permissions |
 
-### 9.4 Claims Personalizados
+### 9.4 Custom Claims
 
-`ICurrentUserService` expone el contexto del usuario autenticado (implementado sobre `IHttpContextAccessor`), permitiendo acceder al usuario actual en cualquier capa de la aplicación.
+`ICurrentUserService` exposes the authenticated user context (implemented over `IHttpContextAccessor`), allowing access to the current user from any application layer.
 
 ---
 
-## 10. Caché y Rendimiento
+## 10. Cache and Performance
 
-### 10.1 Redis como Caché Distribuida
+### 10.1 Redis as Distributed Cache
 
-Se usa **Redis** (integrado via `Aspire.StackExchange.Redis`) como caché distribuida. La interfaz `ICacheService` abstrae las operaciones de caché:
+**Redis** (integrated via `Aspire.StackExchange.Redis`) is used as a distributed cache. The `ICacheService` interface abstracts the cache operations:
 
 ```csharp
 public interface ICacheService
@@ -498,54 +498,54 @@ public interface ICacheService
 }
 ```
 
-### 10.2 Claves de Caché
+### 10.2 Cache Keys
 
-| Clave | Dato Cacheado |
+| Key | Cached Data |
 |---|---|
-| `Geo.Provinces` | Lista completa de provincias |
-| `Beach.Beaches` | Lista completa de playas |
-| `Culture.Dishes` | Lista completa de platos |
-| `Culture.Traditions` | Lista completa de tradiciones |
-| `Volcano.Volcanos` | Lista completa de volcanes |
+| `Geo.Provinces` | Full list of provinces |
+| `Beach.Beaches` | Full list of beaches |
+| `Culture.Dishes` | Full list of dishes |
+| `Culture.Traditions` | Full list of traditions |
+| `Volcano.Volcanos` | Full list of volcanoes |
 
-### 10.3 Estrategia de Invalidación
+### 10.3 Invalidation Strategy
 
-Actualmente el caché se invalida por TTL (tiempo de expiración definido en la configuración de Redis). Las operaciones de escritura no invalidan el caché explícitamente en la versión actual.
+Currently the cache is invalidated by TTL (expiration time defined in the Redis configuration). Write operations do not explicitly invalidate the cache in the current version.
 
 ---
 
-## 11. Observabilidad
+## 11. Observability
 
 ### 11.1 OpenTelemetry
 
-Todos los servicios tienen instrumentación OpenTelemetry configurada en `ServiceDefaults`:
+All services have OpenTelemetry instrumentation configured in `ServiceDefaults`:
 
-| Signal | Instrumentación |
+| Signal | Instrumentation |
 |---|---|
-| **Trazas** | ASP.NET Core + HTTP Client (excluye `/health` y `/alive`) |
-| **Métricas** | ASP.NET Core + HTTP Client + Runtime |
-| **Logs** | OpenTelemetry Logging con scopes y mensaje formateado |
+| **Traces** | ASP.NET Core + HTTP Client (excludes `/health` and `/alive`) |
+| **Metrics** | ASP.NET Core + HTTP Client + Runtime |
+| **Logs** | OpenTelemetry Logging with scopes and formatted message |
 
-El exportador se configura vía variable de entorno `OTEL_EXPORTER_OTLP_ENDPOINT` (compatible con Aspire Dashboard y servicios externos).
+The exporter is configured via the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable (compatible with Aspire Dashboard and external services).
 
 ### 11.2 Aspire Dashboard
 
-En entorno de desarrollo, el Aspire Dashboard provee:
-- Visualización de trazas distribuidas
-- Métricas en tiempo real
-- Logs estructurados correlacionados por TraceId
+In the development environment, the Aspire Dashboard provides:
+- Distributed trace visualization
+- Real-time metrics
+- Structured logs correlated by TraceId
 
 ### 11.3 Health Checks
 
-Cada servicio expone (solo en Development):
-- `GET /health` — todos los checks deben pasar para considerar el servicio listo
-- `GET /alive` — solo checks con tag `live`, para liveness probe de Kubernetes/Container Apps
+Each service exposes (Development only):
+- `GET /health` — all checks must pass for the service to be considered ready
+- `GET /alive` — only checks with the `live` tag, for Kubernetes/Container Apps liveness probe
 
-### 11.4 Logging Personalizado (MongoDB)
+### 11.4 Custom Logging (MongoDB)
 
-`DiscoverCostaRicaLoggerProvider` + `DiscoverCostaRicaLogger` proveen un logger que persiste entradas en **MongoDB**, permitiendo consultar logs de aplicación desde la base de datos.
+`DiscoverCostaRicaLoggerProvider` + `DiscoverCostaRicaLogger` provide a logger that persists entries in **MongoDB**, allowing application logs to be queried from the database.
 
-Estructura de una entrada de log (`LogEntryModel`):
+Log entry structure (`LogEntryModel`):
 ```json
 {
   "Timestamp": "2026-04-10T18:00:00Z",
@@ -558,16 +558,16 @@ Estructura de una entrada de log (`LogEntryModel`):
 
 ---
 
-## 12. Generadores de Código Fuente
+## 12. Source Code Generators
 
-La solución usa dos Roslyn IIncrementalGenerator registrados como analizadores:
+The solution uses two Roslyn IIncrementalGenerators registered as analyzers:
 
 ### 12.1 ServiceRegistrationGenerator
 
-Escanea el assembly en busca de clases con los atributos de lifetime y genera:
+Scans the assembly for classes with lifetime attributes and generates:
 
 ```csharp
-// Generado automáticamente en compilación:
+// Automatically generated at compile time:
 public static class ServiceRegistrationExtensions_DiscoverCostaRica_Beaches_Application
 {
     public static IServiceCollection AddGeneratedServices_DiscoverCostaRica_Beaches_Application(
@@ -582,19 +582,19 @@ public static class ServiceRegistrationExtensions_DiscoverCostaRica_Beaches_Appl
 }
 ```
 
-| Atributo | Lifetime | Comportamiento |
+| Attribute | Lifetime | Behavior |
 |---|---|---|
-| `[TransientService]` | Transient | Registra `services.AddTransient<IFoo, Foo>()` |
-| `[ScopedService]` | Scoped | Registra `services.AddScoped<IFoo, Foo>()` |
-| `[SingletonService]` | Singleton | Registra `services.AddSingleton<IFoo, Foo>()` |
-| `[DecoratorService]` | — | Registra con Scrutor `services.Decorate<IFoo, DecoratorFoo>()` |
+| `[TransientService]` | Transient | Registers `services.AddTransient<IFoo, Foo>()` |
+| `[ScopedService]` | Scoped | Registers `services.AddScoped<IFoo, Foo>()` |
+| `[SingletonService]` | Singleton | Registers `services.AddSingleton<IFoo, Foo>()` |
+| `[DecoratorService]` | — | Registers with Scrutor `services.Decorate<IFoo, DecoratorFoo>()` |
 
 ### 12.2 AuthorizationPolicyGenerator
 
-Escanea clases decoradas con `[AuthorizationPolicy(policyName, scope)]` y genera el método `AddPolicies()` para registrar políticas de autorización basadas en claims de ámbito:
+Scans classes decorated with `[AuthorizationPolicy(policyName, scope)]` and generates the `AddPolicies()` method to register scope-based authorization policies:
 
 ```csharp
-// Generado automáticamente:
+// Automatically generated:
 public static IServiceCollection AddPolicies(this IServiceCollection services)
 {
     services.AddAuthorizationBuilder()
@@ -610,55 +610,55 @@ public static IServiceCollection AddPolicies(this IServiceCollection services)
 
 ---
 
-## 13. Infraestructura y Despliegue
+## 13. Infrastructure and Deployment
 
-### 13.1 Azure (Producción)
+### 13.1 Azure (Production)
 
-| Recurso | Servicio Azure |
+| Resource | Azure Service |
 |---|---|
-| Microservicios (×4) | Azure Container Apps |
-| Base de Datos | Azure SQL Server (existente, referenciado como parámetro) |
-| Caché | Azure Cache for Redis (connection string externo) |
-| Logs | Azure Cosmos DB con API MongoDB (connection string externo) |
-| Identidad | Microsoft Entra ID |
-| Orchestración deploy | Azure Developer CLI (`azd`) |
+| Microservices (×4) | Azure Container Apps |
+| Database | Azure SQL Server (existing, referenced as parameter) |
+| Cache | Azure Cache for Redis (external connection string) |
+| Logs | Azure Cosmos DB with MongoDB API (external connection string) |
+| Identity | Microsoft Entra ID |
+| Deploy Orchestration | Azure Developer CLI (`azd`) |
 
-El archivo `azure.yaml` declara los 4 servicios como Container Apps. Los parámetros sensibles (credenciales de Entra ID) se inyectan como parámetros secretos de Aspire en tiempo de despliegue.
+The `azure.yaml` file declares the 4 services as Container Apps. Sensitive parameters (Entra ID credentials) are injected as Aspire secret parameters at deployment time.
 
-### 13.2 Parámetros de Entorno
+### 13.2 Environment Parameters
 
-| Parámetro | Descripción |
+| Parameter | Description |
 |---|---|
 | `EntraId__Audience` | App ID URI |
 | `EntraId__Instance` | `https://login.microsoftonline.com/` |
 | `EntraId__ClientId` | Application (Client) ID |
 | `EntraId__TenantId` | Directory (Tenant) ID |
-| `Azure__TenantId` | Tenant para adquisición de tokens entre servicios |
-| `Azure__ClientId` | Client ID para tokens entre servicios |
-| `Azure__ClientSecret` | Client Secret (secreto) |
-| `Azure__Scope` | Scope para tokens entre servicios |
-| `existingSqlServerName` | Nombre del SQL Server Azure existente |
-| `existingSqlServerResourceGroup` | Resource Group del SQL Server |
+| `Azure__TenantId` | Tenant for service-to-service token acquisition |
+| `Azure__ClientId` | Client ID for service-to-service tokens |
+| `Azure__ClientSecret` | Client Secret (secret) |
+| `Azure__Scope` | Scope for service-to-service tokens |
+| `existingSqlServerName` | Name of the existing Azure SQL Server |
+| `existingSqlServerResourceGroup` | Resource Group of the SQL Server |
 
-### 13.3 Desarrollo Local con .NET Aspire
+### 13.3 Local Development with .NET Aspire
 
 ```bash
 dotnet run --project DiscoverCostaRica.AppHost
-# o
+# or
 make run
 ```
 
-El AppHost levanta todos los servicios con sus dependencias inyectadas automáticamente. El Aspire Dashboard se disponibiliza en `http://localhost:18888`.
+The AppHost starts all services with their dependencies injected automatically. The Aspire Dashboard is available at `http://localhost:18888`.
 
-### 13.4 Desarrollo Local con Docker Compose
+### 13.4 Local Development with Docker Compose
 
 ```bash
 docker compose up
 ```
 
-Levanta los 4 microservicios + SQL Server 2022 + Redis 7 + MongoDB 7, sin necesidad de .NET Aspire.
+Starts the 4 microservices + SQL Server 2022 + Redis 7 + MongoDB 7, without requiring .NET Aspire.
 
-| Servicio | Puerto |
+| Service | Port |
 |---|---|
 | beaches-api | 7000 |
 | culture-api | 7001 |
@@ -670,44 +670,44 @@ Levanta los 4 microservicios + SQL Server 2022 + Redis 7 + MongoDB 7, sin necesi
 
 ---
 
-## 14. Versionamiento de API
+## 14. API Versioning
 
-Las rutas siguen el patrón `/api/v{version}/{resource}` (ejemplo: `/api/v1/beaches/`).
+Routes follow the pattern `/api/v{version}/{resource}` (example: `/api/v1/beaches/`).
 
-La versión se negocia via URL path. La configuración en `ServiceDefaults`:
+The version is negotiated via URL path. Configuration in `ServiceDefaults`:
 
 ```csharp
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1, 0);
     options.AssumeDefaultVersionWhenUnspecified = true;
-    options.ReportApiVersions = true;  // ← devuelve header api-supported-versions
+    options.ReportApiVersions = true;  // ← returns api-supported-versions header
 });
 ```
 
-**Versiones declaradas:** v1.0, v2.0 (v2.0 definida pero no implementada aún).
+**Declared versions:** v1.0, v2.0 (v2.0 defined but not yet implemented).
 
-**Política de deprecación:** Una versión se soporta mínimo 12 meses después de que la versión siguiente sea lanzada en producción.
+**Deprecation policy:** A version is supported for a minimum of 12 months after the next version is released in production.
 
 ---
 
-## 15. Patrones de Respuesta
+## 15. Response Patterns
 
 ### 15.1 Result Pattern
 
-Todas las operaciones de negocio devuelven `Result<T>`, un discriminated union de tres variantes:
+All business operations return `Result<T>`, a discriminated union of three variants:
 
 ```csharp
-// Respuesta genérica
+// Generic response
 record Result(int StatusCode, string? Message);
 
-// Éxito
+// Success
 sealed record Success(object Value, int StatusCode = 200) : Result;
 
 // Error
 sealed record Failure(string Message, int StatusCode = 500) : Result;
 
-// Result tipado — combina las anteriores mediante conversión implícita
+// Typed Result — combines the above via implicit conversion
 sealed record Result<TResult>(int StatusCode, string? Message) : Result
 {
     TResult? Value { get; set; }
@@ -716,29 +716,29 @@ sealed record Result<TResult>(int StatusCode, string? Message) : Result
 }
 ```
 
-### 15.2 Conversión a IResult (HTTP)
+### 15.2 Conversion to IResult (HTTP)
 
-El método de extensión `ToResult()` convierte `Result<T>` al `IResult` de Minimal APIs:
+The `ToResult()` extension method converts `Result<T>` to the Minimal APIs `IResult`:
 
-| StatusCode | Respuesta HTTP |
+| StatusCode | HTTP Response |
 |---|---|
 | 200 | `Results.Ok(result)` |
 | 404 | `Results.NotFound(result)` |
 | 400 | `Results.BadRequest(result)` |
 | 500 | `Results.InternalServerError()` |
-| Otro | `Results.Problem(message, statusCode)` |
+| Other | `Results.Problem(message, statusCode)` |
 
-### 15.3 Manejo Global de Excepciones
+### 15.3 Global Exception Handling
 
-`GlobalExceptionHandler` (registrado en todos los servicios) captura excepciones no manejadas y devuelve un `ProblemDetails` con estado 500, sin exponer detalles internos al cliente.
+`GlobalExceptionHandler` (registered in all services) catches unhandled exceptions and returns a `ProblemDetails` with status 500, without exposing internal details to the client.
 
-### 15.4 Documentación OpenAPI
+### 15.4 OpenAPI Documentation
 
-Cada servicio expone su especificación OpenAPI en `/openapi/v1.json` y una interfaz interactiva **Scalar** en `/docs`.
+Each service exposes its OpenAPI specification at `/openapi/v1.json` and an interactive **Scalar** interface at `/docs`.
 
 ---
 
-## 16. Diagrama de Componentes
+## 16. Component Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -747,22 +747,22 @@ Cada servicio expone su especificación OpenAPI en `/openapi/v1.json` y una inte
 │  Result<T> · Success · Failure · ICacheService · IGeoDiscoverCostaRica   │
 │  [TransientService] · [DecoratorService] · [AuthorizationPolicy]        │
 └─────────────────────────────────────────────────────────────────────────┘
-         ▲ referenciado por todos los proyectos
+         ▲ referenced by all projects
 
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                      DiscoverCostaRica.ServiceDefaults                  │
 │  AddServiceDefaults() · AddEntraIdAuthentication() · AddVersioning()    │
 │  ConfigureOpenTelemetry() · GlobalExceptionHandler                      │
-│  DiscoverCostaRicaAuthHandler (servicio-a-servicio)                     │
+│  DiscoverCostaRicaAuthHandler (service-to-service)                      │
 └─────────────────────────────────────────────────────────────────────────┘
-         ▲ referenciado por todos los servicios API
+         ▲ referenced by all API services
 
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                   DiscoverCostaRica.SourceGenerators                    │
-│  ServiceRegistrationGenerator  →  genera AddGeneratedServices_*()      │
-│  AuthorizationPolicyGenerator  →  genera AddPolicies()                  │
+│  ServiceRegistrationGenerator  →  generates AddGeneratedServices_*()   │
+│  AuthorizationPolicyGenerator  →  generates AddPolicies()               │
 └─────────────────────────────────────────────────────────────────────────┘
-         ▲ Analyzer en Application e Infrastructure layers
+         ▲ Analyzer in Application and Infrastructure layers
 
 ┌──────────────────────────┐  ┌──────────────────────────┐
 │   Beaches Service        │  │   Culture Service         │
@@ -791,7 +791,7 @@ Cada servicio expone su especificación OpenAPI en `/openapi/v1.json` y una inte
 │  ├────────────────────┤  │  │  │ Application        │  │
 │  │ Application        │  │  │  │ (VolcanoService,   │  │
 │  │ (ProvinceService,  │  │  │  │  LocationService → │  │
-│  │  GeoService,       │  │  │  │  llama a Geo API)  │  │
+│  │  GeoService,       │  │  │  │  calls Geo API)    │  │
 │  │  CachedProvince..) │  │  │  ├────────────────────┤  │
 │  ├────────────────────┤  │  │  │ Infrastructure     │  │
 │  │ Infrastructure     │  │  │  │ (VolcanoRepository,│  │
@@ -811,15 +811,15 @@ Cada servicio expone su especificación OpenAPI en `/openapi/v1.json` y una inte
                     │
          ┌──────────▼──────────┐
          │    Redis Cache      │
-         │  (datos frecuentes) │
+         │  (frequent data)    │
          └─────────────────────┘
 ```
 
 ---
 
-## Referencias
+## References
 
-| Recurso | Enlace / Ubicación |
+| Resource | Link / Location |
 |---|---|
 | .NET Aspire | `https://learn.microsoft.com/dotnet/aspire` |
 | YARP Reverse Proxy | `https://microsoft.github.io/reverse-proxy/` |
@@ -828,8 +828,8 @@ Cada servicio expone su especificación OpenAPI en `/openapi/v1.json` y una inte
 | Asp.Versioning | `https://github.com/dotnet/aspnet-api-versioning` |
 | Scalar OpenAPI UI | `https://scalar.com` |
 | Roslyn Source Generators | `DiscoverCostaRica.SourceGenerators/` |
-| Configuración Aspire | `DiscoverCostaRica.AppHost/AppHost.cs` |
-| Defaults compartidos | `DiscoverCostaRica.ServiceDefaults/Extensions.cs` |
-| Rutas de API | `DiscoverCostaRica.Shared/Routes/RoutesConstants.cs` |
-| Políticas de autorización | `DiscoverCostaRica.Shared/Authentication/DiscoverPolicies.cs` |
-| Despliegue Azure | `azure.yaml` |
+| Aspire Configuration | `DiscoverCostaRica.AppHost/AppHost.cs` |
+| Shared Defaults | `DiscoverCostaRica.ServiceDefaults/Extensions.cs` |
+| API Routes | `DiscoverCostaRica.Shared/Routes/RoutesConstants.cs` |
+| Authorization Policies | `DiscoverCostaRica.Shared/Authentication/DiscoverPolicies.cs` |
+| Azure Deployment | `azure.yaml` |
