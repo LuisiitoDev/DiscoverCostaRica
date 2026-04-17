@@ -1,7 +1,7 @@
 using DiscoverCostaRica.VolcanoService.Api.Extensions;
 using DiscoverCostaRica.VolcanoService.Api.Profiles;
-using DiscoverCostaRica.VolcanoService.Infraestructure.Context;
-using DiscoverCostaRica.VolcanoService.Infraestructure.Interfaces;
+using DiscoverCostaRica.VolcanoService.Infrastructure.Context;
+using DiscoverCostaRica.VolcanoService.Infrastructure.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

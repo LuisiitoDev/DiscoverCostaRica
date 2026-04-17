@@ -1,8 +1,8 @@
 ﻿using DiscoverCostaRica.VolcanoService.Domain.Models;
-using DiscoverCostaRica.VolcanoService.Infraestructure.Interfaces;
+using DiscoverCostaRica.VolcanoService.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.VolcanoService.Infraestructure.Context;
+namespace DiscoverCostaRica.VolcanoService.Infrastructure.Context;
 
 public class VolcanoContext(DbContextOptions<VolcanoContext> options) : DbContext(options), IVolcanoContext
 {

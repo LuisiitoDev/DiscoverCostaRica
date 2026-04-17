@@ -1,10 +1,10 @@
 ﻿using DiscoverCostaRica.Geo.Domain.Interfaces;
 using DiscoverCostaRica.Geo.Domain.Models;
-using DiscoverCostaRica.Geo.Infraestructure.Interfaces;
+using DiscoverCostaRica.Geo.Infrastructure.Interfaces;
 using DiscoverCostaRica.Shared.Attributes;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Geo.Infraestructure.Services;
+namespace DiscoverCostaRica.Geo.Infrastructure.Services;
 
 [TransientService]
 /// <summary>

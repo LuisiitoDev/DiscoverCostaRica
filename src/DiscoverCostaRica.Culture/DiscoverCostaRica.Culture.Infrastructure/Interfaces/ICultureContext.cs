@@ -1,7 +1,7 @@
 ﻿using DiscoverCostaRica.Culture.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Culture.Infraestructure.Interfaces;
+namespace DiscoverCostaRica.Culture.Infrastructure.Interfaces;
 
 public interface ICultureContext
 {

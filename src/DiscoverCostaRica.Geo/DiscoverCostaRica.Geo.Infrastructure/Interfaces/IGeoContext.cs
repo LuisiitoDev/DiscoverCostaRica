@@ -1,7 +1,7 @@
 ﻿using DiscoverCostaRica.Geo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Geo.Infraestructure.Interfaces;
+namespace DiscoverCostaRica.Geo.Infrastructure.Interfaces;
 
 public interface IGeoContext
 {

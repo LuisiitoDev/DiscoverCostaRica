@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DiscoverCostaRica.VolcanoService.Infraestructure.EntityTypeConfiguration;
+namespace DiscoverCostaRica.VolcanoService.Infrastructure.EntityTypeConfiguration;
 
 public class VolcanoEntityConfiguration : IEntityTypeConfiguration<VolcanoModel>
 {

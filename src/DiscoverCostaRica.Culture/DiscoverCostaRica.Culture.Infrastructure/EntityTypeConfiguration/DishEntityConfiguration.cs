@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DiscoverCostaRica.Culture.Infraestructure.EntityTypeConfiguration;
+namespace DiscoverCostaRica.Culture.Infrastructure.EntityTypeConfiguration;
 
 internal class DishEntityConfiguration : IEntityTypeConfiguration<DishModel>
 {

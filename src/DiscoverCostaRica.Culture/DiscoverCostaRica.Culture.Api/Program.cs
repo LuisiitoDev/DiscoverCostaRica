@@ -1,7 +1,7 @@
 using DiscoverCostaRica.Culture.Api.Extensions;
 using DiscoverCostaRica.Culture.Api.Profiles;
-using DiscoverCostaRica.Culture.Infraestructure.Context;
-using DiscoverCostaRica.Culture.Infraestructure.Interfaces;
+using DiscoverCostaRica.Culture.Infrastructure.Context;
+using DiscoverCostaRica.Culture.Infrastructure.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

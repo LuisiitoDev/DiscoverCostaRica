@@ -2,7 +2,7 @@
 using Aspire.Hosting;
 using DiscoverCostaRica.Tests.Constants.Services;
 
-namespace DiscoverCostaRica.Tests.Infraestructure;
+namespace DiscoverCostaRica.Tests.Infrastructure;
 
 public class Fixture<TServiceType> : IAsyncLifetime where TServiceType : IBaseServiceType, new()
 {
