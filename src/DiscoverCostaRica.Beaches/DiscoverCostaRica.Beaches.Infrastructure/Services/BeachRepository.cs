@@ -4,7 +4,7 @@ using DiscoverCostaRica.Beaches.Infrastructure.Interfaces;
 using DiscoverCostaRica.Shared.Attributes;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Beaches.Infraestructure.Services;
+namespace DiscoverCostaRica.Beaches.Infrastructure.Services;
 
 [TransientService]
 public class BeachRepository(IBeachContext _context) : IBeachRepository

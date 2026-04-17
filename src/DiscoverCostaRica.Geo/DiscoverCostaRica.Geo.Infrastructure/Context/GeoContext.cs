@@ -1,8 +1,8 @@
 ﻿using DiscoverCostaRica.Geo.Domain.Models;
-using DiscoverCostaRica.Geo.Infraestructure.Interfaces;
+using DiscoverCostaRica.Geo.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Geo.Infraestructure.Context;
+namespace DiscoverCostaRica.Geo.Infrastructure.Context;
 
 public class GeoContext(DbContextOptions<GeoContext> options) : DbContext(options), IGeoContext
 {

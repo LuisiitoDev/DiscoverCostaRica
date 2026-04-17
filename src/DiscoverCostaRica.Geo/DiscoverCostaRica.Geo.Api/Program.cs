@@ -1,7 +1,7 @@
 using DiscoverCostaRica.Geo.Api.Extensions;
 using DiscoverCostaRica.Geo.Api.Profiles;
-using DiscoverCostaRica.Geo.Infraestructure.Context;
-using DiscoverCostaRica.Geo.Infraestructure.Interfaces;
+using DiscoverCostaRica.Geo.Infrastructure.Context;
+using DiscoverCostaRica.Geo.Infrastructure.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

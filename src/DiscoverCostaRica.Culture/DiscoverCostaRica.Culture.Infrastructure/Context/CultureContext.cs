@@ -1,8 +1,8 @@
 ﻿using DiscoverCostaRica.Culture.Domain.Models;
-using DiscoverCostaRica.Culture.Infraestructure.Interfaces;
+using DiscoverCostaRica.Culture.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.Culture.Infraestructure.Context;
+namespace DiscoverCostaRica.Culture.Infrastructure.Context;
 
 public class CultureContext(DbContextOptions<CultureContext> options) : DbContext(options), ICultureContext
 {

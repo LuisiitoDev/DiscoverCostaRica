@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DiscoverCostaRica.Culture.Infraestructure.EntityTypeConfiguration;
+namespace DiscoverCostaRica.Culture.Infrastructure.EntityTypeConfiguration;
 
 public class TraditionEntityConfiguration : IEntityTypeConfiguration<TraditionModel>
 {

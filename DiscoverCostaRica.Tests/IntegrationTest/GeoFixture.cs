@@ -1,5 +1,5 @@
 ﻿using DiscoverCostaRica.Tests.Constants.Services;
-using DiscoverCostaRica.Tests.Infraestructure;
+using DiscoverCostaRica.Tests.Infrastructure;
 
 namespace DiscoverCostaRica.Tests.IntegrationTest;
 

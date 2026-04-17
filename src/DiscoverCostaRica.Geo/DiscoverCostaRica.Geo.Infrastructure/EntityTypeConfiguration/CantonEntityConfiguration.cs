@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DiscoverCostaRica.Geo.Infraestructure.EntityTypeConfiguration;
+namespace DiscoverCostaRica.Geo.Infrastructure.EntityTypeConfiguration;
 
 public class CantonEntityConfiguration : IEntityTypeConfiguration<CantonModel>
 {
