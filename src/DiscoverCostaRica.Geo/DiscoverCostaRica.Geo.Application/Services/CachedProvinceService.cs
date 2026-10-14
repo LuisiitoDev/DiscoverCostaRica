@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace DiscoverCostaRica.Geo.Application.Services;
 
 [DecoratorService]
-public class CachedProviceService(IProvinceService inner, ICacheService cache) : IProvinceService
+public class CachedProvinceService(IProvinceService inner, ICacheService cache) : IProvinceService
 {
     public Task<Result<ProvinceDto>> GetProvinceById(int provinceId, CancellationToken cancellationToken)
     {

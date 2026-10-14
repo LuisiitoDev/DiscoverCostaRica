@@ -5,12 +5,11 @@ using DiscoverCostaRica.Culture.Domain.Interfaces;
 using DiscoverCostaRica.Shared.Attributes;
 using DiscoverCostaRica.Shared.Responses;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace DiscoverCostaRica.Culture.Application.Services;
 
 [TransientService]
-public class CultureService(ICultureRepository repository, IMapper mapper, ILogger<CultureService> logger) : ICultureService
+public class CultureService(ICultureRepository repository, IMapper mapper) : ICultureService
 {
     public async Task<Result<List<DtoDish>>> GetDishes(CancellationToken cancellationToken)
     {

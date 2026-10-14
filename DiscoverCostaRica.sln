@@ -53,7 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Volcano.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.SourceGenerators", "DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj", "{E4FCA3D4-9D90-44E2-B945-226A57B59A00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.Tests", "DiscoverCostaRica.Tests\DiscoverCostaRica.Tests.csproj", "{8A1B7662-7627-4758-8F06-9AAC3E02A38B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverCostaRica.AppHost.Tests", "tests\DiscoverCostaRica.AppHost.Tests\DiscoverCostaRica.AppHost.Tests.csproj", "{8A1B7662-7627-4758-8F06-9AAC3E02A38B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,7 @@
 ﻿using Azure.Core;
 using Azure.Identity;
 
-namespace DiscoverCostaRica.Tests.Infrastructure;
+namespace DiscoverCostaRica.AppHost.Tests.Infrastructure;
 
 public class AzureEntraHandler(string tenantId, string clientId, string clientSecret, string scope) : DelegatingHandler
 {

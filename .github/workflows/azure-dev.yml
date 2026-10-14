@@ -1,3 +1,5 @@
+name: azure-dev
+
 # Run when commits are pushed to main
 on:
   workflow_dispatch:
@@ -15,7 +17,12 @@ permissions:
 
 
 jobs:
-  build:
+  # Deploy only what passed the quality gate.
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: ci
     runs-on: ubuntu-latest
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -37,10 +44,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: | 
-            8.x
-            9.x
-            10.x
+          global-json-file: global.json
 
       - name: Log in with Azure (Federated Credentials)
         run: |

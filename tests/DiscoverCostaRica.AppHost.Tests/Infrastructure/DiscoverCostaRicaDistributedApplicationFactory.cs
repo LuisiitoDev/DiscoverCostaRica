@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace DiscoverCostaRica.Tests.Infrastructure
+namespace DiscoverCostaRica.AppHost.Tests.Infrastructure
 {
     internal class DiscoverCostaRicaDistributedApplicationFactory
     {

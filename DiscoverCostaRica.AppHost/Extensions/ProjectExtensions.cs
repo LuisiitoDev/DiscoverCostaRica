@@ -1,6 +1,6 @@
 ﻿namespace DiscoverCostaRica.AppHost.Extensions;
 
-public static class ResourceParemeterBuilder
+public static class ResourceParameterBuilder
 {
     private static IDictionary<string, IResourceBuilder<ParameterResource>>? _parameters;
 
@@ -40,7 +40,7 @@ public static class ProjectExtensions
         IResourceBuilder<IResourceWithConnectionString> mongodb,
         IResourceBuilder<IResourceWithConnectionString> redis) where TProject : IProjectMetadata, new()
     {
-        return ResourceParemeterBuilder.SetParameterForProject(builder,builder.AddProject<TProject>(name)
+        return ResourceParameterBuilder.SetParameterForProject(builder,builder.AddProject<TProject>(name)
             .WithReference(azureSql)
             .WaitFor(azureSql)
             .WithReference(mongodb)
@@ -57,7 +57,7 @@ public static class ProjectExtensions
         IResourceBuilder<IResourceWithConnectionString> redis,
         IResourceBuilder<ProjectResource> geo) where TProject : IProjectMetadata, new()
     {
-        return ResourceParemeterBuilder.SetParameterForProject(
+        return ResourceParameterBuilder.SetParameterForProject(
             builder,
             builder.AddProject<TProject>(name)
                 .WithReference(azureSql)

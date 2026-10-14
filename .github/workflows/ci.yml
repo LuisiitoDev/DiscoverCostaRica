@@ -1,0 +1,61 @@
+name: ci
+
+# Quality gate (Constitution VII): build, analyzers, unit, architecture,
+# characterization and integration tests. Deploy (azure-dev.yml) depends on it.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET (global.json)
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore DiscoverCostaRica.sln
+
+      - name: Build (warnings as errors)
+        run: dotnet build DiscoverCostaRica.sln --configuration Release --no-restore
+
+      # Testcontainers needs Docker, which ubuntu-latest provides.
+      # Tests that need real Azure resources are tagged Category=RequiresAzure and excluded.
+      - name: Test
+        run: >
+          dotnet test DiscoverCostaRica.sln
+          --configuration Release
+          --no-build
+          --filter "Category!=RequiresAzure"
+          --collect "XPlat Code Coverage"
+          --results-directory ./TestResults
+          --logger "trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults
+          retention-days: 14

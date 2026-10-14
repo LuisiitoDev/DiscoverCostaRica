@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 using DiscoverCostaRica.ServiceDefaults.Middleware;
 using DiscoverCostaRica.Shared.Authentication;
 using DiscoverCostaRica.Shared.Constants;
@@ -151,7 +151,7 @@ public static class Extensions
         });
 
         builder.Services.AddRefitServices();
-        builder.AddGlobalExeption();
+        builder.AddGlobalException();
 
         // Uncomment the following to restrict the allowed schemes for service discovery.
         // builder.Services.Configure<ServiceDiscoveryOptions>(options =>
@@ -162,7 +162,7 @@ public static class Extensions
         return builder;
     }
 
-    public static IHostApplicationBuilder AddGlobalExeption(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddGlobalException(this IHostApplicationBuilder builder)
     {
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddProblemDetails();
@@ -253,7 +253,8 @@ public static class Extensions
     public static IHostApplicationBuilder AddEntraIdAuthentication(this IHostApplicationBuilder builder)
     {
         var entraIdSection = builder.Configuration.GetSection(EntraIdOptions.SectionName);
-        var entraIdOptions = entraIdSection.Get<EntraIdOptions>();
+        var entraIdOptions = entraIdSection.Get<EntraIdOptions>()
+            ?? throw new InvalidOperationException($"Configuration section '{EntraIdOptions.SectionName}' is required.");
 
         builder.Services.AddHttpContextAccessor();
 

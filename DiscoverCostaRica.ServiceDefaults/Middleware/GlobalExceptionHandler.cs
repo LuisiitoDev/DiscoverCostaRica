@@ -9,12 +9,12 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> _logger) : I
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        _logger.LogError(exception, "Unhandled exception ocurred");
+        _logger.LogError(exception, "Unhandled exception occurred");
 
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
-            Title = "An unexpected error ocurred",
+            Title = "An unexpected error occurred",
             Detail = "There was error while we were processing your request, please contact us."
         };
 

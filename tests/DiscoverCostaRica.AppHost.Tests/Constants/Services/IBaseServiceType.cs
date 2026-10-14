@@ -1,4 +1,4 @@
-﻿namespace DiscoverCostaRica.Tests.Constants.Services;
+﻿namespace DiscoverCostaRica.AppHost.Tests.Constants.Services;
 
 public interface IBaseServiceType 
 {

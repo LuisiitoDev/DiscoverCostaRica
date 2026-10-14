@@ -1,6 +1,6 @@
 ﻿using DiscoverCostaRica.AppHost.Constants;
 
-namespace DiscoverCostaRica.Tests.Constants.Services;
+namespace DiscoverCostaRica.AppHost.Tests.Constants.Services;
 
 public struct GeoServiceType : IBaseServiceType
 {
