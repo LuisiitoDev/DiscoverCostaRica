@@ -17,7 +17,7 @@ source of truth: code follows specs, not the other way round.
 | 003 | [Culture catalog](003-culture-catalog/spec.md) | Baseline | As-built |
 | 004 | [Volcano catalog](004-volcano-catalog/spec.md) | Baseline | As-built |
 | 005 | [Platform cross-cutting](005-platform-cross-cutting/spec.md) | Baseline | As-built |
-| 006 | [Clean Architecture migration](006-clean-architecture-migration/spec.md) | Feature | Draft: spec, plan, research, data model, contracts, tasks |
+| 006 | [Clean Architecture migration](006-clean-architecture-migration/spec.md) | Feature | Implemented except US6 (schema move, deferred) |
 
 ## How the baselines were produced (reverse engineering)
 

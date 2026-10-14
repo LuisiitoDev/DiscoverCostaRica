@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-14
 
-**Status**: Draft (ready for `/speckit-plan` review)
+**Status**: Implemented (US1–US5, US7); US6 deferred — see tasks.md
 
 **Input**: "Adapt Discover Costa Rica to Clean Architecture, following Uncle Bob's
 recommendations, without breaking existing consumers, and fix the defects found while
@@ -155,7 +155,7 @@ An operator uses health probes and standard telemetry.
 
 **Acceptance Scenarios**:
 
-1. `/health/live` and `/health/ready` are served in every environment, and readiness checks
+1. `/alive` (liveness) and `/health` (readiness) are served in every environment, and readiness checks
    SQL and Redis (fixes PLT-D6).
 2. Errors go through OpenTelemetry logs. The MongoDB logger and its dependency are removed.
 3. JWT metadata requires HTTPS outside Development (fixes PLT-D10).

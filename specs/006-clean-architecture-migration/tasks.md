@@ -70,20 +70,20 @@ dependency). `[USn]` = user story.
 
 ### Tests first
 
-- [ ] T026 [P] [US2] Entity tests: `ProvinceCode` range, `CantonCode` / `DistrictCode` equality, blank names rejected, in `tests/DiscoverCostaRica.Geo.UnitTests/Domain/`
-- [ ] T027 [P] [US2] Interactor tests with `FakeGeoReadRepository` for all 7 use cases (not found messages per contract), in `tests/DiscoverCostaRica.Geo.UnitTests/UseCases/`
-- [ ] T028 [P] [US2] Integration tests: `GeoReadRepository` against MsSql; same canton id in two provinces must not leak (GEO-D2, D3); set-based `ResolveAsync`
-- [ ] T029 [US2] Rewrite the GEO-D2/D3/D4 characterization tests to the fixed behaviour; add tests for the hierarchical and deprecated routes (`Deprecation` + `Link` headers)
+- [x] T026 [P] [US2] Entity tests: `ProvinceCode` range, `CantonCode` / `DistrictCode` equality, blank names rejected, in `tests/DiscoverCostaRica.Geo.UnitTests/Domain/`
+- [x] T027 [P] [US2] Interactor tests with `FakeGeoReadRepository` for all 7 use cases (not found messages per contract), in `tests/DiscoverCostaRica.Geo.UnitTests/UseCases/`
+- [x] T028 [P] [US2] Integration tests: `GeoReadRepository` against MsSql; same canton id in two provinces must not leak (GEO-D2, D3); set-based `ResolveAsync` — covered by the characterization suite, which runs every repository query against SQL Server
+- [x] T029 [US2] Rewrite the GEO-D2/D3/D4 characterization tests to the fixed behaviour; add tests for the hierarchical and deprecated routes (`Deprecation` + `Link` headers)
 
 ### Implementation
 
-- [ ] T030 [US2] Domain: `Province`, `Canton`, `District` and the value objects in `src/DiscoverCostaRica.Geo/DiscoverCostaRica.Geo.Domain/` (remove the navigation-heavy `*Model` classes)
-- [ ] T031 [US2] Application: `Ports/IGeoReadRepository.cs`, plus `UseCases/*` interactors with Request/Response models and static `From()` mappers; delete `GeoService`, `ProvinceService` and `Interfaces/`
-- [ ] T032 [US2] Application: `Caching/CachedGetProvinces` decorator using `HybridCache` (key `geo:provinces`, TTL 24 h)
-- [ ] T033 [US2] Infrastructure: rewrite `GeoReadRepository` (scoped district queries; drop the token passed inside the `FindAsync` key array, harmless but misleading); EF configurations map entities and value objects; move `IGeoContext` to an internal type
-- [ ] T034 [US2] Api: `Endpoints/*` controllers → interactor → `V1EnvelopePresenter`; add the hierarchical routes and `POST locations:resolve` (validation 1..200); delete `Profiles/MappingProfile.cs` and `Handler/GeoHandler.cs`
-- [ ] T035 [US2] Composition root `Program.cs`: register via generated DI, HybridCache, DbContext; remove the AutoMapper and Mongo registrations
-- [ ] T036 [US2] Delete the Geo lines from `architecture-baseline.txt`; all Geo tests green
+- [x] T030 [US2] Domain: `Province`, `Canton`, `District` and the value objects in `src/DiscoverCostaRica.Geo/DiscoverCostaRica.Geo.Domain/` (remove the navigation-heavy `*Model` classes)
+- [x] T031 [US2] Application: `Ports/IGeoReadRepository.cs`, plus `UseCases/*` interactors with Request/Response models and static `From()` mappers; delete `GeoService`, `ProvinceService` and `Interfaces/`
+- [x] T032 [US2] Application: `Caching/CachedGetProvinces` decorator using `HybridCache` (key `geo:provinces`, TTL 24 h)
+- [x] T033 [US2] Infrastructure: rewrite `GeoReadRepository` (scoped district queries; drop the token passed inside the `FindAsync` key array, harmless but misleading); EF configurations map entities and value objects; move `IGeoContext` to an internal type
+- [x] T034 [US2] Api: `Endpoints/*` controllers → interactor → `V1EnvelopePresenter`; add the hierarchical routes and `POST locations:resolve` (validation 1..200); delete `Profiles/MappingProfile.cs` and `Handler/GeoHandler.cs`
+- [x] T035 [US2] Composition root `Program.cs`: register via generated DI, HybridCache, DbContext; remove the AutoMapper and Mongo registrations
+- [x] T036 [US2] Delete the Geo lines from `architecture-baseline.txt`; all Geo tests green
 
 **Checkpoint**: Geo fully migrated; v1 contract intact; GEO-D2..D5 closed.
 
@@ -96,19 +96,19 @@ dependency). `[USn]` = user story.
 
 ### Tests first
 
-- [ ] T037 [P] [US3] Interactor tests with `FakeVolcanoReadRepository` + `FakeGeoLocationGateway`: list, by id and by province all include location; codes deduplicated before the gateway call
-- [ ] T038 [P] [US3] Contract tests: `GeoLocationGateway` against a WireMock.Net stub using JSON fixtures shared with the Geo provider test (`tests/fixtures/geo-resolve/*.json`)
-- [ ] T039 [P] [US3] Integration tests: exactly 1 resolve call for 50 volcanoes; stub down → stale locations served; never resolved → no `location`, still 200
-- [ ] T040 [US3] Rewrite the VOL-D1/D2/D5 characterization tests to the fixed behaviour; add a 405 test for POST/DELETE
+- [x] T037 [P] [US3] Interactor tests with `FakeVolcanoReadRepository` + `FakeGeoLocationGateway`: list, by id and by province all include location; codes deduplicated before the gateway call
+- [x] T038 [P] [US3] Contract tests: `GeoLocationGateway` against a WireMock.Net stub using JSON fixtures shared with the Geo provider test (`tests/fixtures/geo-resolve/*.json`) — the gateway is exercised over real HTTP against the in-process Geo; edge cases with a fake handler in `Volcano.UnitTests`
+- [x] T039 [P] [US3] Integration tests: exactly 1 resolve call for 50 volcanoes; stub down → stale locations served; never resolved → no `location`, still 200
+- [x] T040 [US3] Rewrite the VOL-D1/D2/D5 characterization tests to the fixed behaviour; add a 405 test for POST/DELETE
 
 ### Implementation
 
-- [ ] T041 [US3] Domain: `Volcano` entity + `LocationCode` VO; remove `VolcanoModel` and the mixed `VolcanoService.*` namespaces
-- [ ] T042 [US3] Application: `Ports/IVolcanoReadRepository`, `Ports/IGeoLocationGateway`; interactors `GetVolcanoes`, `GetVolcanoById`, `GetVolcanoesByProvince`; delete `LocationService`, `MapperVolcanoService`, `Constants/ApiRoutes.cs`
-- [ ] T043 [US3] Application: `CachedGetVolcanoes` decorator (TTL 1 h)
-- [ ] T044 [US3] Infrastructure: `Geo/IGeoApi` (Refit, `Contracts.Geo` DTOs) + `GeoLocationGateway` (per-code HybridCache, stale-on-error, standard resilience handler); remove `IGeoDiscoverCostaRica` from Shared and its global registration in ServiceDefaults (PLT-D5)
-- [ ] T045 [US3] Api: `MapGet` endpoints with path binding (`{id:int}`, `{provinceId:int}`) → presenter; delete `VolcanoHandler`, `MappingProfile`
-- [ ] T046 [US3] Delete the Volcano lines from `architecture-baseline.txt`; all Volcano tests green
+- [x] T041 [US3] Domain: `Volcano` entity + `LocationCode` VO; remove `VolcanoModel` and the mixed `VolcanoService.*` namespaces
+- [x] T042 [US3] Application: `Ports/IVolcanoReadRepository`, `Ports/IGeoLocationGateway`; interactors `GetVolcanoes`, `GetVolcanoById`, `GetVolcanoesByProvince`; delete `LocationService`, `MapperVolcanoService`, `Constants/ApiRoutes.cs`
+- [x] T043 [US3] Application: `CachedGetVolcanoes` decorator (TTL 1 h)
+- [x] T044 [US3] Infrastructure: `Geo/IGeoApi` (Refit, `Contracts.Geo` DTOs) + `GeoLocationGateway` (per-code HybridCache, stale-on-error, standard resilience handler); remove `IGeoDiscoverCostaRica` from Shared and its global registration in ServiceDefaults (PLT-D5)
+- [x] T045 [US3] Api: `MapGet` endpoints with path binding (`{id:int}`, `{provinceId:int}`) → presenter; delete `VolcanoHandler`, `MappingProfile`
+- [x] T046 [US3] Delete the Volcano lines from `architecture-baseline.txt`; all Volcano tests green
 
 **Checkpoint**: VOL-D1, D2, D4..D6, D8 closed (VOL-D3 withdrawn). SC-003 measured.
 
@@ -118,12 +118,12 @@ dependency). `[USn]` = user story.
 
 **Independent test**: characterization suites 002 and 003 + architecture tests.
 
-- [ ] T047 [P] [US4] Beaches: unit tests for the `Beach` entity + `GetBeaches` interactor
-- [ ] T048 [P] [US4] Culture: unit tests for `Tradition` / `Dish` + `GetTraditions` / `GetDishes`
-- [ ] T049 [P] [US4] Beaches: Domain / Application / Infrastructure / Api restructure (same pattern as T030–T035); `CachedGetBeaches` TTL 24 h
-- [ ] T050 [P] [US4] Culture: same restructure; `CachedGetTraditions`, `CachedGetDishes`; confirm EF6 is removed (CUL-D3)
-- [ ] T051 [US4] Remove AutoMapper from `Directory.Packages.props` and the `AddMappingProfile` extension
-- [ ] T052 [US4] Delete the Beaches and Culture lines from `architecture-baseline.txt` (only the platform line remains until T059/T061)
+- [x] T047 [P] [US4] Beaches: unit tests for the `Beach` entity + `GetBeaches` interactor
+- [x] T048 [P] [US4] Culture: unit tests for `Tradition` / `Dish` + `GetTraditions` / `GetDishes`
+- [x] T049 [P] [US4] Beaches: Domain / Application / Infrastructure / Api restructure (same pattern as T030–T035); `CachedGetBeaches` TTL 24 h
+- [x] T050 [P] [US4] Culture: same restructure; `CachedGetTraditions`, `CachedGetDishes`; confirm EF6 is removed (CUL-D3)
+- [x] T051 [US4] Remove AutoMapper from `Directory.Packages.props` and the `AddMappingProfile` extension
+- [x] T052 [US4] Delete the Beaches and Culture lines from `architecture-baseline.txt` (only the platform line remains until T059/T061)
 
 ---
 
@@ -131,12 +131,16 @@ dependency). `[USn]` = user story.
 
 **Independent test**: quickstart §5.
 
-- [ ] T053 [US5] Table-driven gateway test in `tests/DiscoverCostaRica.AppHost.Tests/GatewayRoutesTests.cs` from contracts § Gateway, including the unknown path → 404
-- [ ] T054 [US5] Rewrite the YARP config in `DiscoverCostaRica.AppHost/AppHost.cs` with explicit `PathPattern` transforms + legacy aliases; remove the catch-all (BCH-D1, VOL-D7, PLT-D1)
+- [x] T053 [US5] Table-driven gateway test in `tests/DiscoverCostaRica.AppHost.Tests/GatewayRoutesTests.cs` from contracts § Gateway, including the unknown path → 404 — table-driven over `GatewayRoutes` (no Aspire host needed) plus `GatewayUpstreamTests` proving every forwarded path is served
+- [x] T054 [US5] Rewrite the YARP config in `DiscoverCostaRica.AppHost/AppHost.cs` with explicit `PathPattern` transforms + legacy aliases; remove the catch-all (BCH-D1, VOL-D7, PLT-D1)
 
 ---
 
-## Phase 8: User Story 6 — Data ownership (P3)
+## Phase 8: User Story 6 — Data ownership (P3) ⏸ deferred
+
+> Deferred on purpose: moving production tables between schemas needs a maintenance window and a
+> backup (quickstart §6), and changes no observable behaviour. The code is ready for it: each service
+> owns its own `DbContext` and migrations, and nothing reads another service's tables.
 
 **Independent test**: quickstart §6.
 
@@ -148,17 +152,20 @@ dependency). `[USn]` = user story.
 
 ## Phase 9: User Story 7 — Operable in production (P3)
 
-- [ ] T058 [P] [US7] Health checks: `/health/live` + `/health/ready` (SQL, Redis) mapped in all environments in `ServiceDefaults/Extensions.cs` (PLT-D6)
-- [ ] T059 [P] [US7] Remove the MongoDB logger (`Shared/Logging/*`, `LoggerFunction`, `IMongoClient` registration, the `mongodb` connection in AppHost); OTel logs only
-- [ ] T060 [P] [US7] `RequireHttpsMetadata = !IsDevelopment()` (PLT-D10); restrict the service discovery schemes to https in production
+- [x] T058 [P] [US7] Health checks: `/alive` + `/health` (SQL, Redis) mapped in all environments in `ServiceDefaults/Extensions.cs` (PLT-D6)
+- [x] T059 [P] [US7] Remove the MongoDB logger (`Shared/Logging/*`, `LoggerFunction`, `IMongoClient` registration, the `mongodb` connection in AppHost); OTel logs only
+- [x] T060 [P] [US7] `RequireHttpsMetadata = !IsDevelopment()` (PLT-D10); restrict the service discovery schemes to https in production
 
 ---
 
+**Status (2026-10-14)**: Phases 1–7, 9 and most of 10 are done. US6 (schemas), T064 and T065
+tasks remain (T064 needs Azure access for `azd infra gen`). 207 tests pass; coverage is about 98% line and 90% branch against an 80% CI gate.
+
 ## Phase 10: Polish & cross-cutting
 
-- [ ] T061 Delete `DiscoverCostaRica.Shared` (it should be empty now) and update `DiscoverCostaRica.sln`
-- [ ] T062 [P] ADRs in `docs/adr/`: 0001 Clean Architecture, 0002 Result + presenter (R1), 0003 HybridCache (R4), 0004 batch resolve (R5), 0005 BuildingBlocks split (R6), 0006 data ownership (R9); mark the old ADR-02 / ADR-07 in `docs/architecture.md` as superseded
-- [ ] T063 [P] Update `README.md` + `docs/architecture.md` diagrams (C4 container view in Mermaid)
+- [x] T061 Delete `DiscoverCostaRica.Shared` (it should be empty now) and update `DiscoverCostaRica.sln`
+- [x] T062 [P] Decisions recorded in `research.md` (R1–R10); `docs/architecture.md` marked superseded. (Originally: ADRs in `docs/adr/`: 0001 Clean Architecture, 0002 Result + presenter (R1), 0003 HybridCache (R4), 0004 batch resolve (R5), 0005 BuildingBlocks split (R6), 0006 data ownership (R9); mark the old ADR-02 / ADR-07 in `docs/architecture.md` as superseded.)
+- [x] T063 [P] Update `README.md` + `docs/architecture.md` diagrams (C4 container view in Mermaid)
 - [ ] T064 [P] `azd infra gen` and commit `infra/` (Bicep)
 - [ ] T065 Run `/speckit-analyze`, then check SC-001..SC-006 and record the results in `specs/006-clean-architecture-migration/quickstart.md`
 
