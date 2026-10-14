@@ -59,7 +59,7 @@ jobs:
         if: ${{ !cancelled() && steps.test.outcome != 'skipped' }}
         run: |
           dotnet tool restore
-          dotnet reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:TestResults/coverage -reporttypes:"Cobertura;TextSummary;MarkdownSummaryGithub;Html"
+          dotnet reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:TestResults/coverage -reporttypes:"Cobertura;TextSummary;MarkdownSummaryGithub;Html" "-filefilters:-*.g.cs"
           cat TestResults/coverage/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
 
       # Quality gate: merged line and branch coverage of production code must stay at or above 80%.

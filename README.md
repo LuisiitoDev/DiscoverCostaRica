@@ -78,7 +78,7 @@ dotnet test DiscoverCostaRica.sln --filter "Category!=RequiresAzure" --settings 
 
 # Coverage report and the 80% gate, exactly as CI runs them
 dotnet tool restore
-dotnet reportgenerator -reports:"**/TestResults/**/coverage.cobertura.xml" -targetdir:coverage -reporttypes:"Html;Cobertura"
+dotnet reportgenerator -reports:"**/TestResults/**/coverage.cobertura.xml" -targetdir:coverage -reporttypes:"Html;Cobertura" "-filefilters:-*.g.cs"
 eng/check-coverage.sh coverage/Cobertura.xml 80
 ```
 
