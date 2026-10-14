@@ -44,8 +44,8 @@
   <ItemGroup Label="Resilience, HTTP clients, identity">
     <PackageVersion Include="Azure.Identity" Version="1.17.1" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.1.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.10.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.10.0" />
     <PackageVersion Include="Scrutor" Version="7.0.0" />
   </ItemGroup>
 
