@@ -124,7 +124,7 @@ Work follows Spec Kit's flow: `/speckit-specify` → `/speckit-clarify` → `/sp
 
 - **Luis (LuisiitoDev)**: [@LuisiitoDev](https://github.com/LuisiitoDev), project creator and lead developer
 
-To contribute: create a branch, keep CI green (architecture, contract, coverage), and open a pull request. New behaviour starts with a new numbered spec in `specs/`.
+Contributions follow **GitHub Flow**: branch from `main`, open a pull request, merge once CI is green and the change is reviewed, and `main` deploys. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

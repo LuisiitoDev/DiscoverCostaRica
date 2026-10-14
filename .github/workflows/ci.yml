@@ -13,9 +13,10 @@ on:
 permissions:
   contents: read
 
+# A newer push to the same pull request supersedes the running check; runs on main always finish.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   DOTNET_NOLOGO: true
