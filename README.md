@@ -320,6 +320,14 @@ Starts the 4 microservices + SQL Server 2022 + Redis 7 + MongoDB 7, without requ
 
 Each service exposes interactive API documentation at `/docs` (Scalar/OpenAPI).
 
+## Spec-Driven Development
+
+This project follows [GitHub Spec Kit](https://github.com/github/spec-kit) and a
+[Clean Architecture constitution](.specify/memory/constitution.md). The specs in
+[`specs/`](specs/README.md) were reverse-engineered from the current code (001–005), and
+the migration to Uncle Bob's Clean Architecture is planned in
+[spec 006](specs/006-clean-architecture-migration/spec.md).
+
 ## Contributors
 
 ### Core Team
