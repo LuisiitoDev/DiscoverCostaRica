@@ -1,4 +1,7 @@
-﻿global using static DiscoverCostaRica.Shared.Utils.SharedExtensions;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Volcano_Application;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Volcano_Infrastructure;
-global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Shared;
+
+// Input boundaries of the Volcano use cases, named for readability in the endpoints.
+global using GetVolcanoesUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Volcano.Application.UseCases.GetVolcanoes.GetVolcanoesRequest, System.Collections.Generic.IReadOnlyList<DiscoverCostaRica.Volcano.Application.UseCases.VolcanoResponse>>;
+global using GetVolcanoByIdUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Volcano.Application.UseCases.GetVolcanoById.GetVolcanoByIdRequest, DiscoverCostaRica.Volcano.Application.UseCases.VolcanoResponse>;
+global using GetVolcanoesByProvinceUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Volcano.Application.UseCases.GetVolcanoesByProvince.GetVolcanoesByProvinceRequest, System.Collections.Generic.IReadOnlyList<DiscoverCostaRica.Volcano.Application.UseCases.VolcanoResponse>>;

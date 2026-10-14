@@ -4,23 +4,27 @@ using DiscoverCostaRica.Testing.Containers;
 
 namespace DiscoverCostaRica.CharacterizationTests.Volcano;
 
-/// <summary>Spec 004 / contract § Volcano, as built. Geo runs in-process behind Volcano's HTTP client.</summary>
+/// <summary>Spec 004 / contract § Volcano. Geo runs in-process behind Volcano's HTTP client.</summary>
 public sealed class VolcanoV1Tests(SeededCatalog catalog, SqlServerFixture sql) : IClassFixture<SeededCatalog>
 {
     private const string Role = "Volcano.Read";
+    private const string Arenal = """{"id":1,"name":"Arenal","description":"Young stratovolcano near La Fortuna.","location":{"province":{"id":2,"name":"Alajuela"},"canton":{"id":10,"name":"San Carlos"},"district":{"id":7,"name":"La Fortuna"}}}""";
+    private const string Poas = """{"id":2,"name":"Poás","description":"Active volcano with an acidic crater lake.","location":{"province":{"id":2,"name":"Alajuela"},"canton":{"id":8,"name":"Poás"}}}""";
+    private const string Rincon = """{"id":3,"name":"Rincón de la Vieja","description":"Complex volcano in Guanacaste.","location":{"province":{"id":5,"name":"Guanacaste"},"canton":{"id":1,"name":"Liberia"}}}""";
+
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
 
     [Fact]
-    [Trait("Defect", "VOL-D4")]
-    public async Task Volcanoes_ReturnAllWithLocationResolvedThroughGeo()
+    [Trait("Fixed", "VOL-D4")]
+    public async Task Volcanoes_ReturnAllWithLocation_InOneGeoCall()
     {
-        using var client = catalog.Volcano.CreateClientWithRoles(Role);
+        await using var volcano = await NewVolcanoAsync();
+        using var client = volcano.CreateClientWithRoles(Role);
 
-        // As built this costs up to 3 Geo calls per volcano (N+1, VOL-D4); the payload is the contract.
         var response = await client.GetAsync("/api/v1/volcanoes/", Ct);
 
-        await ResponseAssert.Exactly(response, HttpStatusCode.OK,
-            """{"value":[{"id":1,"name":"Arenal","description":"Young stratovolcano near La Fortuna.","location":{"province":{"id":2,"name":"Alajuela"},"canton":{"id":10,"name":"San Carlos"},"district":{"id":7,"name":"La Fortuna"}}},{"id":2,"name":"Poás","description":"Active volcano with an acidic crater lake.","location":{"province":{"id":2,"name":"Alajuela"},"canton":{"id":8,"name":"Poás"}}},{"id":3,"name":"Rincón de la Vieja","description":"Complex volcano in Guanacaste.","location":{"province":{"id":5,"name":"Guanacaste"},"canton":{"id":1,"name":"Liberia"}}}],"statusCode":200}""");
+        await ResponseAssert.Exactly(response, HttpStatusCode.OK, $$"""{"value":[{{Arenal}},{{Poas}},{{Rincon}}],"statusCode":200}""");
+        Assert.Equal(1, volcano.GeoCalls);
     }
 
     [Fact]
@@ -39,26 +43,15 @@ public sealed class VolcanoV1Tests(SeededCatalog catalog, SqlServerFixture sql) 
     }
 
     [Fact]
-    [Trait("Defect", "VOL-D1")]
-    public async Task VolcanoById_AsBuilt_IgnoresThePathAndNeedsAQueryId()
+    [Trait("Fixed", "VOL-D1")]
+    [Trait("Fixed", "VOL-D5")]
+    public async Task VolcanoById_ReadsThePath_AndIncludesTheLocation()
     {
         using var client = catalog.Volcano.CreateClientWithRoles(Role);
 
         var response = await client.GetAsync("/api/v1/volcanoes/1", Ct);
 
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    [Trait("Defect", "VOL-D5")]
-    public async Task VolcanoById_WithQueryId_ReturnsVolcanoWithoutLocation()
-    {
-        using var client = catalog.Volcano.CreateClientWithRoles(Role);
-
-        var response = await client.GetAsync("/api/v1/volcanoes/1?id=1", Ct);
-
-        await ResponseAssert.Exactly(response, HttpStatusCode.OK,
-            """{"value":{"id":1,"name":"Arenal","description":"Young stratovolcano near La Fortuna."},"statusCode":200}""");
+        await ResponseAssert.Exactly(response, HttpStatusCode.OK, $$"""{"value":{{Arenal}},"statusCode":200}""");
     }
 
     [Fact]
@@ -66,23 +59,22 @@ public sealed class VolcanoV1Tests(SeededCatalog catalog, SqlServerFixture sql) 
     {
         using var client = catalog.Volcano.CreateClientWithRoles(Role);
 
-        var response = await client.GetAsync("/api/v1/volcanoes/99?id=99", Ct);
+        var response = await client.GetAsync("/api/v1/volcanoes/99", Ct);
 
-        await ResponseAssert.Exactly(response, HttpStatusCode.NotFound,
-            """{"statusCode":404,"message":"Volcano was not found"}""");
+        await ResponseAssert.Exactly(response, HttpStatusCode.NotFound, """{"statusCode":404,"message":"Volcano was not found"}""");
     }
 
     [Fact]
-    [Trait("Defect", "VOL-D1")]
-    public async Task VolcanoesByProvince_AsBuilt_ReadTheQueryIdNotThePath()
+    [Trait("Fixed", "VOL-D1")]
+    [Trait("Fixed", "VOL-D5")]
+    public async Task VolcanoesByProvince_ReadThePath_AndIncludeLocations()
     {
         using var client = catalog.Volcano.CreateClientWithRoles(Role);
 
-        // Path says province 5 (Guanacaste); the query wins and returns province 2.
-        var response = await client.GetAsync("/api/v1/volcanoes/province/5?id=2", Ct);
+        // A leftover ?id= from old clients no longer wins over the path.
+        var response = await client.GetAsync("/api/v1/volcanoes/province/2?id=5", Ct);
 
-        await ResponseAssert.Exactly(response, HttpStatusCode.OK,
-            """{"value":[{"id":1,"name":"Arenal","description":"Young stratovolcano near La Fortuna."},{"id":2,"name":"Poás","description":"Active volcano with an acidic crater lake."}],"statusCode":200}""");
+        await ResponseAssert.Exactly(response, HttpStatusCode.OK, $$"""{"value":[{{Arenal}},{{Poas}}],"statusCode":200}""");
     }
 
     [Fact]
@@ -90,21 +82,49 @@ public sealed class VolcanoV1Tests(SeededCatalog catalog, SqlServerFixture sql) 
     {
         using var client = catalog.Volcano.CreateClientWithRoles(Role);
 
-        var response = await client.GetAsync("/api/v1/volcanoes/province/1?id=1", Ct);
+        var response = await client.GetAsync("/api/v1/volcanoes/province/1", Ct);
 
-        await ResponseAssert.Exactly(response, HttpStatusCode.NotFound,
-            """{"statusCode":404,"message":"Volcanos were not found"}""");
+        await ResponseAssert.Exactly(response, HttpStatusCode.NotFound, """{"statusCode":404,"message":"Volcanos were not found"}""");
     }
 
-    [Fact]
-    [Trait("Defect", "VOL-D2")]
-    public async Task VolcanoRoutes_AsBuilt_AnswerAnyHttpVerb()
+    [Theory]
+    [Trait("Fixed", "VOL-D2")]
+    [InlineData("DELETE", "/api/v1/volcanoes/1")]
+    [InlineData("POST", "/api/v1/volcanoes/")]
+    [InlineData("PUT", "/api/v1/volcanoes/province/2")]
+    public async Task VolcanoRoutes_AreReadOnly(string method, string route)
     {
         using var client = catalog.Volcano.CreateClientWithRoles(Role);
 
-        var response = await client.DeleteAsync("/api/v1/volcanoes/1?id=1", Ct);
+        var response = await client.SendAsync(new HttpRequestMessage(new HttpMethod(method), route), Ct);
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GeoDown_VolcanoesKeepTheLocationsResolvedBefore()
+    {
+        await using var volcano = await NewVolcanoAsync();
+        using var client = volcano.CreateClientWithRoles(Role);
+        Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/api/v1/volcanoes/", Ct)).StatusCode);
+
+        volcano.GeoAvailable = false;
+        var response = await client.GetAsync("/api/v1/volcanoes/1", Ct);
+
+        await ResponseAssert.Exactly(response, HttpStatusCode.OK, $$"""{"value":{{Arenal}},"statusCode":200}""");
+    }
+
+    [Fact]
+    public async Task GeoDown_VolcanoesAreServedWithoutLocation_NotAnError()
+    {
+        await using var volcano = await NewVolcanoAsync();
+        volcano.GeoAvailable = false;
+        using var client = volcano.CreateClientWithRoles(Role);
+
+        var response = await client.GetAsync("/api/v1/volcanoes/2", Ct);
+
+        await ResponseAssert.Exactly(response, HttpStatusCode.OK,
+            """{"value":{"id":2,"name":"Poás","description":"Active volcano with an acidic crater lake."},"statusCode":200}""");
     }
 
     [Fact]
@@ -112,7 +132,7 @@ public sealed class VolcanoV1Tests(SeededCatalog catalog, SqlServerFixture sql) 
     {
         using var client = catalog.Volcano.CreateClient();
 
-        var response = await client.GetAsync("/api/v1/volcanoes/1?id=1", Ct);
+        var response = await client.GetAsync("/api/v1/volcanoes/1", Ct);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -122,7 +142,7 @@ public sealed class VolcanoV1Tests(SeededCatalog catalog, SqlServerFixture sql) 
     {
         using var client = catalog.Volcano.CreateClientWithRoles("Geo.Read");
 
-        var response = await client.GetAsync("/api/v1/volcanoes/1?id=1", Ct);
+        var response = await client.GetAsync("/api/v1/volcanoes/1", Ct);
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
@@ -137,7 +157,10 @@ public sealed class VolcanoV1Tests(SeededCatalog catalog, SqlServerFixture sql) 
 
         var response = await client.GetAsync("/api/v1/volcanoes/", Ct);
 
-        await ResponseAssert.Exactly(response, HttpStatusCode.NotFound,
-            """{"statusCode":404,"message":"Volcanos were not found"}""");
+        await ResponseAssert.Exactly(response, HttpStatusCode.NotFound, """{"statusCode":404,"message":"Volcanos were not found"}""");
     }
+
+    /// <summary>A Volcano with its own cache, over the shared seeded database.</summary>
+    private Task<VolcanoApiFactory> NewVolcanoAsync() =>
+        Task.FromResult(new VolcanoApiFactory(catalog.ConnectionString, catalog.Geo));
 }

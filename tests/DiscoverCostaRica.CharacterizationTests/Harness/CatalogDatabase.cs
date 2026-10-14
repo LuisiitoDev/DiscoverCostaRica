@@ -2,7 +2,7 @@ using DiscoverCostaRica.Beaches.Infrastructure.Context;
 using DiscoverCostaRica.Culture.Infrastructure.Context;
 using DiscoverCostaRica.Geo.Infrastructure.Context;
 using DiscoverCostaRica.Testing.Containers;
-using DiscoverCostaRica.VolcanoService.Infrastructure.Context;
+using DiscoverCostaRica.Volcano.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscoverCostaRica.CharacterizationTests.Harness;

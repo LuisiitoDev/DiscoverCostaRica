@@ -1,28 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Volcano interface adapters (endpoints, presenter) and Main. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <UserSecretsId>c1842794-3b06-4210-83f5-3d513a4833e9</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
-		<UserSecretsId>c1842794-3b06-4210-83f5-3d513a4833e9</UserSecretsId>
-		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	</PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Infrastructure\DiscoverCostaRica.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Web\DiscoverCostaRica.BuildingBlocks.Web.csproj" />
-	  <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.Volcano.Application\DiscoverCostaRica.Volcano.Application.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.Volcano.Domain\DiscoverCostaRica.Volcano.Domain.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.Volcano.Infrastructure\DiscoverCostaRica.Volcano.Infrastructure.csproj" />
-	</ItemGroup>
-
-
+    <ProjectReference Include="..\DiscoverCostaRica.Volcano.Application\DiscoverCostaRica.Volcano.Application.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Volcano.Infrastructure\DiscoverCostaRica.Volcano.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>

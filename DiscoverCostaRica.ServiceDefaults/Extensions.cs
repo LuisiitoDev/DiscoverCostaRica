@@ -1,6 +1,4 @@
-using DiscoverCostaRica.BuildingBlocks.Infrastructure.Authentication;
 using DiscoverCostaRica.ServiceDefaults.Middleware;
-using DiscoverCostaRica.Shared.Constants;
 using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.logging;
 using DiscoverCostaRica.Shared.Services;
@@ -15,7 +13,6 @@ using MongoDB.Driver;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using Refit;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
@@ -67,19 +64,6 @@ public static class Extensions
         return builder;
     }
 
-    private static IServiceCollection AddRefitServices(this IServiceCollection services)
-    {
-        services.AddRefitClient<IGeoDiscoverCostaRica>()
-            .ConfigureHttpClient(http =>
-            {
-                http.BaseAddress = new Uri($"https://{Microservices.Geo}/api/v1/geo");
-
-            }).AddHttpMessageHandler<BearerTokenHandler>()
-            .AddStandardResilienceHandler();
-
-        return services;
-    }
-
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         builder.ConfigureOpenTelemetry();
@@ -106,7 +90,6 @@ public static class Extensions
             http.AddServiceDiscovery();
         });
 
-        builder.Services.AddRefitServices();
         builder.AddGlobalException();
 
         // Uncomment the following to restrict the allowed schemes for service discovery.

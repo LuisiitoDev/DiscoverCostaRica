@@ -1,20 +1,20 @@
-using DiscoverCostaRica.VolcanoService.Api.Extensions;
-using DiscoverCostaRica.VolcanoService.Api.Profiles;
-using DiscoverCostaRica.VolcanoService.Infrastructure.Context;
-using DiscoverCostaRica.VolcanoService.Infrastructure.Interfaces;
+using DiscoverCostaRica.Volcano.Api.Endpoints;
+using DiscoverCostaRica.Volcano.Infrastructure.Context;
 
+// Composition root (Clean Architecture "Main"): the only place that wires concrete types.
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddEntraIdAuthentication();
-builder.AddCatalogDbContext<IVolcanoContext, VolcanoContext>();
-builder.AddMappingProfile<MappingProfile>();
+builder.AddCatalogDbContext<VolcanoContext>();
+builder.AddCatalogHybridCache();
 builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();
+
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Volcano_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Volcano_Infrastructure();
-builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
+builder.Services.AddGeoLocationGateway();
 
 var app = builder.Build();
 
@@ -25,4 +25,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapVolcanoEndpoints();
 app.MapDefaultEndpoints();
+
 await app.RunAsync();

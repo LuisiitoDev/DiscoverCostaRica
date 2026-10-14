@@ -1,24 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <!-- Volcano gateways (frameworks and drivers): EF Core persistence and the Geo HTTP client. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
-	</PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Application\DiscoverCostaRica.BuildingBlocks.Application.csproj" />
-		<ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
-		<ProjectReference Include="..\..\..\DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-		<ProjectReference Include="..\DiscoverCostaRica.Volcano.Domain\DiscoverCostaRica.Volcano.Domain.csproj" />
-	</ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Application\DiscoverCostaRica.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Infrastructure\DiscoverCostaRica.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Contracts\DiscoverCostaRica.Contracts.Geo\DiscoverCostaRica.Contracts.Geo.csproj" />
+    <ProjectReference Include="..\..\..\DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\DiscoverCostaRica.Volcano.Application\DiscoverCostaRica.Volcano.Application.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Volcano.Domain\DiscoverCostaRica.Volcano.Domain.csproj" />
+  </ItemGroup>
 </Project>

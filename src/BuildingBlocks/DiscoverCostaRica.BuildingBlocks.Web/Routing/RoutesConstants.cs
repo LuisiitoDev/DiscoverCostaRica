@@ -17,12 +17,4 @@ public static class RoutesConstants
         public const string Tradition = "/tradition";
         public const string Dish = "/dish";
     }
-
-    public static class Volcanoes
-    {
-        public const string Group = "volcanoes";
-        public const string Volcano = "/";
-        public const string ByProvince = "/province/{provinceId}";
-        public const string ById = "/{id}";
-    }
 }
