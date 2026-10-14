@@ -42,17 +42,28 @@ jobs:
 
       # Testcontainers needs Docker, which ubuntu-latest provides.
       # Tests that need real Azure resources are tagged Category=RequiresAzure and excluded.
-      - name: Test
+      - name: Test (with coverage)
         run: >
           dotnet test DiscoverCostaRica.sln
           --configuration Release
           --no-build
           --filter "Category!=RequiresAzure"
-          --collect "XPlat Code Coverage"
+          --settings coverage.runsettings
           --results-directory ./TestResults
           --logger "trx"
 
-      - name: Upload test results
+      - name: Coverage report
+        if: always()
+        run: |
+          dotnet tool restore
+          dotnet reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:TestResults/coverage -reporttypes:"Cobertura;TextSummary;MarkdownSummaryGithub;Html"
+          cat TestResults/coverage/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Quality gate: merged line and branch coverage of production code must stay at or above 80%.
+      - name: Enforce coverage >= 80%
+        run: eng/check-coverage.sh TestResults/coverage/Cobertura.xml 80
+
+      - name: Upload test results and coverage
         if: always()
         uses: actions/upload-artifact@v4
         with:
