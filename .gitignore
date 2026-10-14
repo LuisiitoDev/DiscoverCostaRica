@@ -90,8 +90,7 @@ Logs/
 *.tfstate
 *.tfstate.*
 
-# Ignore .NET SDK locally installed files
-global.json
+# global.json is committed on purpose: it pins the SDK for CI and deploys (see ci.yml).
 DiscoverCostaRica.Api/service_account_key.json
 DiscoverCostaRica.Functions/service_account_key.json
 /.vs/DiscoverCostaRica/v17
