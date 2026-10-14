@@ -32,7 +32,7 @@ public sealed class TypeRules
         Baseline.Verify("inner-circles-bcl-only",
             from project in Solution.Projects.Where(p => p.Layer is Layer.Domain or Layer.BuildingBlocksApplication or Layer.Contracts)
             let assembly = Solution.LoadAssembly(project)
-            from type in Failing(Types.InAssembly(assembly).Should().OnlyHaveDependencyOn(["System", .. OwnNamespaces(assembly)]))
+            from type in Failing(Types.InAssembly(assembly).Should().OnlyHaveDependencyOn(["System", .. OwnNamespaces(assembly), .. AllowedAbstractions(project)]))
             select type);
 
     [Fact]
@@ -49,6 +49,8 @@ public sealed class TypeRules
         Baseline.Verify("use-cases-in-application",
             from project in Solution.Projects.Where(p => p.Layer is not (Layer.Application or Layer.Tooling))
             from type in Solution.LoadAssembly(project).GetTypes()
+            // Abstract bases such as BuildingBlocks' CachedUseCase<,> are tooling, not use cases.
+            where type is { IsClass: true, IsAbstract: false }
             where type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IUseCase<,>))
             select type.FullName!);
 
@@ -57,6 +59,10 @@ public sealed class TypeRules
         var result = conditions.GetResult();
         return result.IsSuccessful ? [] : result.FailingTypes.Select(t => t.FullName);
     }
+
+    /// <summary>Policy-neutral abstractions an inner circle may use (Constitution V).</summary>
+    private static IEnumerable<string> AllowedAbstractions(ProjectInfo project) =>
+        project.Layer == Layer.BuildingBlocksApplication ? ["Microsoft.Extensions.Caching.Hybrid"] : [];
 
     private static IEnumerable<string> OwnNamespaces(Assembly assembly) =>
         assembly.GetTypes().Select(t => t.Namespace).OfType<string>().Distinct();

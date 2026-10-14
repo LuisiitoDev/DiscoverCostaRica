@@ -6,14 +6,6 @@
 #
 # Format: <rule id> | <subject>     (each group names the spec 006 task that removes it)
 
-# Geo migration (US2, T030-T036)
-application-allowed-references | DiscoverCostaRica.Geo.Application -> AutoMapper
-application-no-framework-types | DiscoverCostaRica.Geo.Application.Services.GeoService
-application-no-framework-types | DiscoverCostaRica.Geo.Application.Services.ProvinceService
-no-legacy-shared | DiscoverCostaRica.Geo.Api -> DiscoverCostaRica.Shared
-no-legacy-shared | DiscoverCostaRica.Geo.Application -> DiscoverCostaRica.Shared
-no-legacy-shared | DiscoverCostaRica.Geo.Infrastructure -> DiscoverCostaRica.Shared
-
 # Volcano migration (US3, T041-T046): the Geo port lives in Infrastructure, so Application points outward.
 application-allowed-references | DiscoverCostaRica.Volcano.Application -> AutoMapper
 application-allowed-references | DiscoverCostaRica.Volcano.Application -> DiscoverCostaRica.Volcano.Infrastructure

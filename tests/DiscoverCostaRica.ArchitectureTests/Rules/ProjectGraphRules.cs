@@ -71,6 +71,8 @@ public sealed partial class ProjectGraphRules
         Baseline.Verify("pure-components-reference-nothing",
             from project in Solution.Projects.Where(p => p.Layer is Layer.BuildingBlocksApplication or Layer.Contracts)
             from reference in project.ProjectReferences.Concat(project.PackageReferences)
+            // Contracts are BCL only; the application building block may use abstractions (HybridCache).
+            where !(project.Layer == Layer.BuildingBlocksApplication && AbstractionPackage().IsMatch(reference))
             select Edge(project, reference));
 
     [Fact]

@@ -4,6 +4,7 @@ using DiscoverCostaRica.BuildingBlocks.Infrastructure.Authentication;
 using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.logging;
 using DiscoverCostaRica.Testing.Authentication;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -18,6 +19,10 @@ internal static class InfrastructureSeams
     public static void Replace(IServiceCollection services)
     {
         // Redis → in-memory, with the same JSON round trip the real cache does.
+        // Migrated services: HybridCache's L2 (IDistributedCache) becomes an in-process store.
+        services.RemoveAll<IDistributedCache>();
+        services.AddDistributedMemoryCache();
+        // Legacy services: the hand-written cache service.
         services.RemoveAll<ICacheService>();
         services.AddSingleton<ICacheService, InMemoryJsonCache>();
 

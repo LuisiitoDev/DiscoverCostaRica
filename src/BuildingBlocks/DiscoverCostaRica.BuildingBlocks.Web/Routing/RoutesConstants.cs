@@ -1,4 +1,4 @@
-﻿namespace DiscoverCostaRica.BuildingBlocks.Web.Routing;
+namespace DiscoverCostaRica.BuildingBlocks.Web.Routing;
 
 public static class RoutesConstants
 {
@@ -9,17 +9,6 @@ public static class RoutesConstants
     {
         public const string Group = "beaches";
         public const string Beach = "/";
-    }
-
-    public static class Geo
-    {
-        public const string Group = "geo";
-        public const string Provinces = "/provinces";
-        public const string ProvinceById = "/provinces/{provinceId}";
-        public const string Canton = "/cantons/{provinceId}";
-        public const string CantonById = "/cantons/{provinceId}/{cantonId}";
-        public const string Districts = "/districts/{cantonId}";
-        public const string DistrictsById = "/districts/{cantonId}/{districtId}";
     }
 
     public static class Traditions

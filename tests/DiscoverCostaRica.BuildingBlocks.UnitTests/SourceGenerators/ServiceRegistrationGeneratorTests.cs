@@ -50,6 +50,29 @@ public sealed class ServiceRegistrationGeneratorTests
     }
 
     [Fact]
+    public void DecoratorDerivingFromGenericBase_DecoratesTheInheritedInterface()
+    {
+        const string source = Attributes + """
+            namespace Sample
+            {
+                using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
+
+                public abstract class CachedUseCase<TRequest, TResponse> : IUseCase<TRequest, TResponse> { }
+
+                [DecoratorService]
+                public sealed class CachedGetProvinces : CachedUseCase<GetProvinces, ProvinceResponse> { }
+            }
+            """;
+
+        var (sources, diagnostics) = GeneratorHarness.Run(new ServiceRegistrationGenerator(), source);
+
+        Assert.Empty(diagnostics);
+        Assert.Contains(
+            "services.Decorate<global::Sample.IUseCase<global::Sample.GetProvinces, global::Sample.ProvinceResponse>, global::Sample.CachedGetProvinces>();",
+            Assert.Single(sources));
+    }
+
+    [Fact]
     public void DecoratorWithoutInterface_ReportsDcr001()
     {
         const string source = Attributes + """

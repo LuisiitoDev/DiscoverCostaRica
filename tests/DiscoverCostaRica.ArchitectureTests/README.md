@@ -13,10 +13,10 @@ that points a dependency outward fails the build.
 | `infrastructure-allowed-references` | `*.Infrastructure` points inward only (no Api, no Web building block) | .csproj |
 | `no-cross-service-references` | A service reaches another only through `Contracts.*` | .csproj |
 | `shared-components-independent-of-services` | BuildingBlocks, Contracts and ServiceDefaults never reference a service | .csproj |
-| `pure-components-reference-nothing` | `BuildingBlocks.Application` and `Contracts.*` have no dependencies | .csproj |
+| `pure-components-reference-nothing` | `Contracts.*` have no dependencies; `BuildingBlocks.Application` only `Microsoft.Extensions.*.Abstractions` | .csproj |
 | `no-legacy-shared` | Nothing references the legacy `DiscoverCostaRica.Shared` | .csproj |
 | `application-no-framework-types` | Application types do not use ASP.NET Core, EF Core, Redis, Refit, MongoDB, Azure SDK or AutoMapper types | IL |
-| `inner-circles-bcl-only` | Domain, `BuildingBlocks.Application` and `Contracts.*` types depend on `System.*` and themselves only | IL |
+| `inner-circles-bcl-only` | Domain and `Contracts.*` types depend on `System.*` and themselves only (`BuildingBlocks.Application` may also use the `HybridCache` abstraction) | IL |
 | `ports-are-interfaces` | Types in `*.Application.Ports` are interfaces | IL |
 | `use-cases-in-application` | `IUseCase<,>` implementations live in an Application assembly | IL |
 

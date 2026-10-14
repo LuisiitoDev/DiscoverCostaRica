@@ -45,9 +45,10 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
 
                 var (classSymbol, attributeName) = classInfo.Value;
 
+                // AllInterfaces so a decorator deriving from a generic base (CachedUseCase<,>) is found.
                 // Fully qualified and without nullable annotations, so closed generics such as
                 // IUseCase<TRequest, TResponse> produce valid registration code.
-                var interfaceType = classSymbol.Interfaces.FirstOrDefault()?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var interfaceType = classSymbol.AllInterfaces.FirstOrDefault()?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 var implementationType = classSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
                 if (attributeName == DecoratorServiceAttributeName && interfaceType is null)

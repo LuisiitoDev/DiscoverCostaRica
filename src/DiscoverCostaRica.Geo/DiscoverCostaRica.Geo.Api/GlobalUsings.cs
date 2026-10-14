@@ -1,4 +1,11 @@
-﻿global using static DiscoverCostaRica.Shared.Utils.SharedExtensions;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Geo_Application;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Geo_Infrastructure;
-global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Shared;
+
+// Input boundaries of the Geo use cases, named for readability in the endpoints.
+global using GetProvincesUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Geo.Application.UseCases.GetProvinces.GetProvincesRequest, System.Collections.Generic.IReadOnlyList<DiscoverCostaRica.Geo.Application.UseCases.DivisionResponse>>;
+global using GetProvinceByIdUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Geo.Application.UseCases.GetProvinceById.GetProvinceByIdRequest, DiscoverCostaRica.Geo.Application.UseCases.DivisionResponse>;
+global using GetCantonsByProvinceUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Geo.Application.UseCases.GetCantonsByProvince.GetCantonsByProvinceRequest, System.Collections.Generic.IReadOnlyList<DiscoverCostaRica.Geo.Application.UseCases.DivisionResponse>>;
+global using GetCantonByIdUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Geo.Application.UseCases.GetCantonById.GetCantonByIdRequest, DiscoverCostaRica.Geo.Application.UseCases.DivisionResponse>;
+global using GetDistrictsByCantonUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Geo.Application.UseCases.GetDistrictsByCanton.GetDistrictsByCantonRequest, System.Collections.Generic.IReadOnlyList<DiscoverCostaRica.Geo.Application.UseCases.DivisionResponse>>;
+global using GetDistrictByIdUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Geo.Application.UseCases.GetDistrictById.GetDistrictByIdRequest, DiscoverCostaRica.Geo.Application.UseCases.DivisionResponse>;
+global using ResolveLocationsUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Geo.Application.UseCases.ResolveLocations.ResolveLocationsRequest, DiscoverCostaRica.Geo.Application.UseCases.ResolveLocations.ResolveLocationsResponse>;

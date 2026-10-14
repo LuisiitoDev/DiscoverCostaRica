@@ -38,4 +38,8 @@ public sealed class Result<T>
 
     public TOut Match<TOut>(Func<T, TOut> onSuccess, Func<Error, TOut> onFailure) =>
         IsSuccess ? onSuccess(Value) : onFailure(Error);
+
+    /// <summary>Transforms the value of a success (e.g. into a wire contract); a failure passes through unchanged.</summary>
+    public Result<TOut> Map<TOut>(Func<T, TOut> map) =>
+        IsSuccess ? Result<TOut>.Success(map(Value)) : Result<TOut>.Failure(Error);
 }

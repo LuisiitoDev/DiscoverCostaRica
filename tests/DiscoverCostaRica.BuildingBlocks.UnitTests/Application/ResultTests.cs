@@ -37,4 +37,14 @@ public sealed class ResultTests
         Assert.Equal("value 7", success.Match(v => $"value {v}", e => e.Message));
         Assert.Equal("bad", failure.Match(v => $"value {v}", e => e.Message));
     }
+
+    [Fact]
+    public void Map_TransformsSuccessAndKeepsFailure()
+    {
+        Result<int> success = 7;
+        Result<int> failure = Error.NotFound("missing");
+
+        Assert.Equal("7", success.Map(v => v.ToString(System.Globalization.CultureInfo.InvariantCulture)).Value);
+        Assert.Equal(Error.NotFound("missing"), failure.Map(v => v.ToString(System.Globalization.CultureInfo.InvariantCulture)).Error);
+    }
 }

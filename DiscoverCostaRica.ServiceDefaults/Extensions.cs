@@ -3,10 +3,12 @@ using DiscoverCostaRica.ServiceDefaults.Middleware;
 using DiscoverCostaRica.Shared.Constants;
 using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.logging;
+using DiscoverCostaRica.Shared.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -51,6 +53,8 @@ public static class Extensions
 
     public static IHostApplicationBuilder AddDiscoverCostaRicaLogger(this IHostApplicationBuilder builder)
     {
+        // Registered here so services that no longer reference Shared keep the sink until it is removed (US7).
+        builder.Services.TryAddSingleton<ILoggerFunction, LoggerFunction>();
         builder.Services.AddSingleton<ILoggerProvider, DiscoverCostaRicaLoggerProvider>();
 
         return builder;

@@ -33,15 +33,15 @@ public sealed class GeoV1Tests(SeededCatalog catalog, SqlServerFixture sql) : IC
     }
 
     [Fact]
-    [Trait("Defect", "GEO-D4")]
-    public async Task UnknownProvince_Returns404WithMessage_AsBuiltTypo()
+    [Trait("Fixed", "GEO-D4")]
+    public async Task UnknownProvince_Returns404WithMessage()
     {
         using var client = catalog.Geo.CreateClientWithRoles(Role);
 
         var response = await client.GetAsync("/api/v1/geo/provinces/9", Ct);
 
         await ResponseAssert.Exactly(response, HttpStatusCode.NotFound,
-            """{"statusCode":404,"message":"No provice was found for 9"}""");
+            """{"statusCode":404,"message":"No province was found for 9"}""");
     }
 
     [Fact]
