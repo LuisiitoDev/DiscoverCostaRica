@@ -1,4 +1,4 @@
-﻿using DiscoverCostaRica.Shared.Attributes;
+﻿using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using DiscoverCostaRica.Shared.Constants;
 using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.Responses;

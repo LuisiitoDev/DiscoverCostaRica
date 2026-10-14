@@ -2,7 +2,7 @@
 using DiscoverCostaRica.Beaches.Application.Dtos;
 using DiscoverCostaRica.Beaches.Application.Interfaces;
 using DiscoverCostaRica.Beaches.Domain.Interfaces;
-using DiscoverCostaRica.Shared.Attributes;
+using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using DiscoverCostaRica.Shared.Responses;
 using Microsoft.AspNetCore.Http;
 namespace DiscoverCostaRica.Beaches.Application.Services;

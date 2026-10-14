@@ -2,7 +2,7 @@
 using DiscoverCostaRica.Culture.Application.Dtos;
 using DiscoverCostaRica.Culture.Application.Interfaces;
 using DiscoverCostaRica.Culture.Domain.Interfaces;
-using DiscoverCostaRica.Shared.Attributes;
+using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using DiscoverCostaRica.Shared.Responses;
 using Microsoft.AspNetCore.Http;
 

@@ -12,6 +12,9 @@ reverse engineering specs 001–005."
 
 ## Context
 
+> **Update 2026-10-14 (after phase 2)**: the characterization tests withdrew GEO-D1 and VOL-D3
+> (false positives, see specs 001 and 004) and found PLT-D13 (spec 005).
+
 Specs 001–005 describe the system **as built**. This feature moves it to the architecture
 required by the constitution (v1.0.0) and fixes the catalogued defects. It is a **refactor
 under a frozen contract**: v1 consumers see no change except the explicitly listed defect
@@ -49,7 +52,7 @@ offending type.
 A consumer gets correct provinces, cantons and districts. A developer finds one use case
 per behaviour, with no framework types in the core.
 
-**Why this priority**: Geo is the dependency of Volcano. GEO-D1 breaks two services.
+**Why this priority**: Geo is the dependency of Volcano, and GEO-D2/D3 return wrong data.
 
 **Independent Test**: Run the Geo characterization suite (v1 contract) plus the new
 hierarchical routes against Geo alone with fakes, then against SQL in Testcontainers.
@@ -57,7 +60,7 @@ hierarchical routes against Geo alone with fakes, then against SQL in Testcontai
 **Acceptance Scenarios**:
 
 1. **Given** province 1 exists, **When** `GET /api/v1/geo/provinces/1` is called, **Then**
-   200 with the province (fixes GEO-D1).
+   200 with the province (regression guard; GEO-D1 was withdrawn).
 2. **Given** canton 1 exists in provinces 1 and 2, **When** the districts of province 1 /
    canton 1 are requested through the hierarchical route, **Then** only districts of
    province 1 are returned (fixes GEO-D2 and GEO-D3).
@@ -76,7 +79,7 @@ hierarchical routes against Geo alone with fakes, then against SQL in Testcontai
 
 A visitor gets every volcano with its location, quickly, even while Geo is slow or down.
 
-**Why this priority**: The headline feature is broken today (VOL-D1, VOL-D3) and does not
+**Why this priority**: Detail and by-province routes are broken today (VOL-D1), and the list does not
 scale (VOL-D4).
 
 **Independent Test**: With a fake Geo contract server, list 50 volcanoes. Check exactly
@@ -168,7 +171,7 @@ An operator uses health probes and standard telemetry.
 - Contract drift between Volcano and Geo: consumer tests in Volcano run against Geo's
   published contract DTOs.
 - Partial migration: services migrate one at a time, and the architecture tests apply per
-  service as each one migrates (an allow-list shrinks to empty).
+  service as each one migrates (the architecture baseline shrinks to empty).
 
 ## Requirements *(mandatory)*
 

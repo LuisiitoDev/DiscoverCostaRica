@@ -1,7 +1,7 @@
 ﻿using DiscoverCostaRica.Culture.Domain.Interfaces;
 using DiscoverCostaRica.Culture.Domain.Models;
 using DiscoverCostaRica.Culture.Infrastructure.Interfaces;
-using DiscoverCostaRica.Shared.Attributes;
+using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscoverCostaRica.Culture.Infrastructure.Services;

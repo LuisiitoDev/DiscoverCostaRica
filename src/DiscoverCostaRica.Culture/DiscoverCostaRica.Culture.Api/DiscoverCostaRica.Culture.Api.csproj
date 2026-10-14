@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Infrastructure\DiscoverCostaRica.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Web\DiscoverCostaRica.BuildingBlocks.Web.csproj" />
     <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Culture.Application\DiscoverCostaRica.Culture.Application.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Culture.Domain\DiscoverCostaRica.Culture.Domain.csproj" />

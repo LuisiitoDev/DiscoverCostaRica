@@ -21,8 +21,8 @@
 
 ## Response 200
 
-Same order and same length as the request. Unknown levels are `null` (omitted in JSON).
-An item whose province is unknown resolves to `{}`.
+Same order and same length as the request. Items are never null; unknown levels are `null`
+(omitted in JSON), so an item whose province is unknown resolves to `{}`.
 
 ```json
 { "statusCode": 200,

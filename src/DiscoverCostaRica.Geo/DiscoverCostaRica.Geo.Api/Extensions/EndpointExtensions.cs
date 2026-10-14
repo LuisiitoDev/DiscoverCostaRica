@@ -1,7 +1,7 @@
 ﻿using DiscoverCostaRica.Geo.Api.Handler;
-using DiscoverCostaRica.Shared.ApiVersioning;
-using DiscoverCostaRica.Shared.Authentication;
-using DiscoverCostaRica.Shared.Routes;
+using DiscoverCostaRica.BuildingBlocks.Web.Versioning;
+using DiscoverCostaRica.BuildingBlocks.Web.Authentication;
+using DiscoverCostaRica.BuildingBlocks.Web.Routing;
 
 namespace DiscoverCostaRica.Geo.Api.Extensions;
 

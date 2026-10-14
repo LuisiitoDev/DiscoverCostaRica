@@ -26,10 +26,12 @@ source of truth: code follows specs, not the other way round.
 2. Restated the observed behaviour as user stories and acceptance scenarios, with the exact
    messages, routes and status codes the code produces today.
 3. Recorded every gap between intent and behaviour as a numbered **defect**
-   (`GEO-D1`, `VOL-D3`, …) instead of silently "fixing" it in the spec.
+   (`GEO-D2`, `VOL-D1`, …) instead of silently "fixing" it in the spec.
 4. Froze the observable HTTP surface as the v1 contract
    ([006/contracts/public-api-v1.md](006-clean-architecture-migration/contracts/public-api-v1.md)).
    Characterization tests then pin it before any refactor.
+5. Confirmed every suspected defect with a characterization test. Reading code is not
+   proof: GEO-D1 and VOL-D3 looked like bugs and were withdrawn once the tests ran.
 
 Baseline specs change only when the as-built behaviour changes. New behaviour always starts
 with a new numbered spec.

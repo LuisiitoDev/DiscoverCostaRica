@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
+using DiscoverCostaRica.BuildingBlocks.Infrastructure.Authentication;
 using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.logging;
 using DiscoverCostaRica.Testing.Authentication;
@@ -26,8 +27,8 @@ internal static class InfrastructureSeams
             services.Remove(descriptor);
 
         // Entra client credentials (service-to-service) → test token with the Geo.Read role.
-        services.RemoveAll<IDiscoverCostaRicaTokenAcquisitionService>();
-        services.AddSingleton<IDiscoverCostaRicaTokenAcquisitionService, TestTokenAcquisition>();
+        services.RemoveAll<IAccessTokenProvider>();
+        services.AddSingleton<IAccessTokenProvider, TestTokenProvider>();
     }
 
     private sealed class InMemoryJsonCache : ICacheService
@@ -44,7 +45,7 @@ internal static class InfrastructureSeams
         }
     }
 
-    private sealed class TestTokenAcquisition : IDiscoverCostaRicaTokenAcquisitionService
+    private sealed class TestTokenProvider : IAccessTokenProvider
     {
         public Task<string> GetTokenAsync(CancellationToken cancellationToken) =>
             Task.FromResult(TestAuthHandler.TokenFor("Geo.Read"));

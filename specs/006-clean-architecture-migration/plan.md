@@ -11,7 +11,7 @@ Architecture, under a frozen v1 HTTP contract that is pinned first by characteri
 tests. Replace the monolithic `Shared` library with components split by reason to change.
 Move persistence and transport behind ports owned by the Use Case layer, and enforce the
 Dependency Rule with architecture tests in CI. On the way, fix the defects catalogued in
-specs 001–005 (GEO-D1..D5, VOL-D1..D8, BCH-D1..D2, CUL-D1..D3, PLT-D1..D12).
+specs 001–005 (GEO-D2..D5, VOL-D1/D2/D4..D8, BCH-D1..D2, CUL-D1..D3, PLT-D1..D13; GEO-D1 and VOL-D3 were withdrawn by the characterization tests).
 
 ## Technical Context
 
@@ -146,11 +146,11 @@ Volcano.Infrastructure ──► Contracts.Geo   (only cross-service edge)
 ## Migration Strategy (Strangler, one service at a time)
 
 1. **Pin**: write characterization tests for the as-built v1 behaviour. Known-broken
-   behaviour is pinned as `Skip = "GEO-D1"` and later flipped to the fixed expectation.
+   behaviour is pinned as it is today, tagged `[Trait("Defect", "…")]`, and rewritten when fixed.
 2. **Foundation**: building blocks, contracts, central packages, architecture tests with a
-   per-service allow-list.
-3. **Geo** → **Volcano** → **Beaches** → **Culture**. Each migration removes its allow-list
-   entry. A service is "done" when its architecture tests run with an empty allow-list.
+   ratchet baseline of known violations.
+3. **Geo** → **Volcano** → **Beaches** → **Culture**. Each migration deletes its lines from
+   `architecture-baseline.txt`. A service is "done" when none of its lines remain.
 4. **Gateway** route table (US5).
 5. **Schemas** (US6) and **Ops** (US7).
 6. Delete `DiscoverCostaRica.Shared`, update docs and ADRs.
@@ -172,3 +172,5 @@ Volcano.Infrastructure ──► Contracts.Geo   (only cross-service edge)
 | Batch resolve endpoint in Geo | Removes 3N fan-out (SC-003) | Full replication needs a broker (deferred) |
 | 3 BuildingBlocks + 1 Contracts project | Component principles (CCP/CRP, SDP) | One Shared project is the defect PLT-D3 |
 | Characterization test project | Safe refactor under a frozen contract | Unit tests alone do not pin the wire format |
+| Scrutor allowed in `*.Application` | Generated DI code calls `Decorate<,>` for use-case decorators | Hand-written decorator wiring in every Main |
+| Ratchet baseline instead of allow-list | Rules apply to every project from day one; fixes are locked in | A per-service allow-list hides new violations in a listed service |

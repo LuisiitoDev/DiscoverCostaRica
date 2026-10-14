@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddEntraIdAuthentication();
-builder.AddDiscoverCostaRicaContext<IBeachContext, BeachContext>();
+builder.AddCatalogDbContext<IBeachContext, BeachContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();

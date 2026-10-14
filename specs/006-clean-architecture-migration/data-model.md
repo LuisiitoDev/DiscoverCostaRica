@@ -16,12 +16,12 @@ public sealed record Error(ErrorType Type, string Message)
     public static Error Unavailable(string message) => new(ErrorType.Unavailable, message);
 }
 
-public readonly record struct Result<T>
+public sealed class Result<T>          // a class, so default(Result<T>) cannot pose as a success
 {
     public T? Value { get; }
     public Error? Error { get; }
-    public bool IsSuccess => Error is null;
-    // private ctor; implicit operators from T and from Error
+    public bool IsSuccess => Error is null;   // [MemberNotNullWhen] on Value / Error
+    // private ctors; Success / Failure factories; implicit operators from T and from Error; Match
 }
 
 public interface IUseCase<in TRequest, TResponse>
@@ -108,7 +108,7 @@ public sealed record LocationCodeDto(int ProvinceId, int CantonId, int? District
 public sealed record NamedRefDto(int Id, string Name);
 public sealed record ResolvedLocationDto(NamedRefDto? Province, NamedRefDto? Canton, NamedRefDto? District);
 public sealed record ResolveLocationsRequest(IReadOnlyList<LocationCodeDto> Items);   // ≤ 200
-public sealed record ResolveLocationsResponse(IReadOnlyList<ResolvedLocationDto?> Items); // same order
+public sealed record ResolveLocationsResponse(IReadOnlyList<ResolvedLocationDto> Items); // same order; unknown levels are null
 ```
 
 ## 7. Cache keys and TTL

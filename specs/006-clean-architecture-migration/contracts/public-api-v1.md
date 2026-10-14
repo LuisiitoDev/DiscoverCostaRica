@@ -27,7 +27,7 @@ the fixes marked 🔧 and the additive routes marked ➕ (FR-004).
 | Method | Route | 200 `value` | 404 message |
 |---|---|---|---|
 | GET | `/api/v1/geo/provinces` | `[{id,name}]` | No provinces found. Please check later for updates. |
-| GET | `/api/v1/geo/provinces/{provinceId}` 🔧GEO-D1 | `{id,name}` | No province was found for {id} (🔧 typo) |
+| GET | `/api/v1/geo/provinces/{provinceId}` | `{id,name}` | No provice was found for {id} (as built; 🔧GEO-D4 → "province") |
 | GET | `/api/v1/geo/cantons/{provinceId}` | `[{id,name}]` | No cantons found. Please check later for updates. |
 | GET | `/api/v1/geo/cantons/{provinceId}/{cantonId}` | `{id,name}` | No canton was found for {cantonId} |
 | GET | `/api/v1/geo/districts/{cantonId}[?provinceId=]` ⚠️deprecated | `[{id,name}]` | No districts found. Please check later for updates. |

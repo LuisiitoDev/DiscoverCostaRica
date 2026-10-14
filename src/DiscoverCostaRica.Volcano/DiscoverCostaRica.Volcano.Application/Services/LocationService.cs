@@ -1,9 +1,8 @@
-﻿using DiscoverCostaRica.Shared.Attributes;
+﻿using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using DiscoverCostaRica.Volcano.Application.Dtos;
 using DiscoverCostaRica.Volcano.Application.Interfaces;
 using DiscoverCostaRica.Volcano.Infrastructure.Interfaces;
 using DiscoverCostaRica.VolcanoService.Domain.Models;
-using static DiscoverCostaRica.Shared.Routes.RoutesConstants;
 
 namespace DiscoverCostaRica.Volcano.Application.Services;
 

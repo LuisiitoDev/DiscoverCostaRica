@@ -1,4 +1,4 @@
-﻿using DiscoverCostaRica.Shared.Attributes;
+﻿using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using DiscoverCostaRica.Shared.Interfaces;
 using StackExchange.Redis;
 using System.Text.Json;

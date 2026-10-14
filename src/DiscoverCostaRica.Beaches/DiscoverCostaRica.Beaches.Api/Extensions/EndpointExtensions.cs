@@ -1,9 +1,9 @@
 ﻿using DiscoverCostaRica.Beaches.Api.Handlers;
 using DiscoverCostaRica.Beaches.Application.Dtos;
-using DiscoverCostaRica.Shared.ApiVersioning;
-using DiscoverCostaRica.Shared.Authentication;
+using DiscoverCostaRica.BuildingBlocks.Web.Versioning;
+using DiscoverCostaRica.BuildingBlocks.Web.Authentication;
 using DiscoverCostaRica.Shared.Responses;
-using DiscoverCostaRica.Shared.Routes;
+using DiscoverCostaRica.BuildingBlocks.Web.Routing;
 
 namespace DiscoverCostaRica.Beaches.Api.Extensions;
 

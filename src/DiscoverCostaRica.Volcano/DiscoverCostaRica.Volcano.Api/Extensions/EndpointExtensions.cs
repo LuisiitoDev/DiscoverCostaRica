@@ -1,6 +1,6 @@
-﻿using DiscoverCostaRica.Shared.ApiVersioning;
-using DiscoverCostaRica.Shared.Authentication;
-using DiscoverCostaRica.Shared.Routes;
+﻿using DiscoverCostaRica.BuildingBlocks.Web.Versioning;
+using DiscoverCostaRica.BuildingBlocks.Web.Authentication;
+using DiscoverCostaRica.BuildingBlocks.Web.Routing;
 using DiscoverCostaRica.VolcanoService.Api.Handler;
 
 namespace DiscoverCostaRica.VolcanoService.Api.Extensions;

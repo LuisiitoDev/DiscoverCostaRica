@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddEntraIdAuthentication();
-builder.AddDiscoverCostaRicaContext<IVolcanoContext, VolcanoContext>();
+builder.AddCatalogDbContext<IVolcanoContext, VolcanoContext>();
 builder.AddMappingProfile<MappingProfile>();
 builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();

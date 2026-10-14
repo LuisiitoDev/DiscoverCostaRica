@@ -1,0 +1,38 @@
+# Known architecture violations: a ratchet, not an allow-list (spec 006 US1).
+#
+#  - A violation that is NOT listed here fails the build. Fix it instead of adding it.
+#  - A listed violation that no longer happens also fails the build until its line is deleted,
+#    so every improvement is locked in. The file only shrinks; it is empty when spec 006 is done.
+#
+# Format: <rule id> | <subject>     (each group names the spec 006 task that removes it)
+
+# Geo migration (US2, T030-T036)
+application-allowed-references | DiscoverCostaRica.Geo.Application -> AutoMapper
+application-no-framework-types | DiscoverCostaRica.Geo.Application.Services.GeoService
+application-no-framework-types | DiscoverCostaRica.Geo.Application.Services.ProvinceService
+no-legacy-shared | DiscoverCostaRica.Geo.Api -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Geo.Application -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Geo.Infrastructure -> DiscoverCostaRica.Shared
+
+# Volcano migration (US3, T041-T046): the Geo port lives in Infrastructure, so Application points outward.
+application-allowed-references | DiscoverCostaRica.Volcano.Application -> AutoMapper
+application-allowed-references | DiscoverCostaRica.Volcano.Application -> DiscoverCostaRica.Volcano.Infrastructure
+application-no-framework-types | DiscoverCostaRica.Volcano.Application.Services.MapperVolcanoService
+no-legacy-shared | DiscoverCostaRica.Volcano.Api -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Volcano.Application -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Volcano.Infrastructure -> DiscoverCostaRica.Shared
+
+# Beaches and Culture migration (US4, T049-T052)
+application-allowed-references | DiscoverCostaRica.Beaches.Application -> AutoMapper
+application-allowed-references | DiscoverCostaRica.Culture.Application -> AutoMapper
+application-no-framework-types | DiscoverCostaRica.Beaches.Application.Services.BeachService
+application-no-framework-types | DiscoverCostaRica.Culture.Application.Services.CultureService
+no-legacy-shared | DiscoverCostaRica.Beaches.Api -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Beaches.Application -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Beaches.Domain -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Culture.Api -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Culture.Application -> DiscoverCostaRica.Shared
+no-legacy-shared | DiscoverCostaRica.Culture.Infrastructure -> DiscoverCostaRica.Shared
+
+# Platform (US7 T059 removes the Mongo logger; T061 deletes Shared)
+no-legacy-shared | DiscoverCostaRica.ServiceDefaults -> DiscoverCostaRica.Shared

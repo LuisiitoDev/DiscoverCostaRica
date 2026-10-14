@@ -88,15 +88,16 @@ A visitor who browses a province sees its volcanoes.
 
 ### Known defects found during reverse engineering
 
-- **VOL-D1 (critical)**: The handlers bind `id` from the **query string** (`[FromQuery] int id`),
+- **VOL-D1 (critical, confirmed)**: The handlers bind `id` from the **query string** (`[FromQuery] int id`),
   but the routes declare `{id}` / `{provinceId}` path parameters. `GET /api/v1/volcanoes/5`
   returns 400 unless `?id=5` is also sent. "By province" reads `?id=` and ignores the path.
-- **VOL-D2 (high)**: The endpoints use `Map` instead of `MapGet`, so they answer every HTTP
+- **VOL-D2 (high, confirmed)**: The endpoints use `Map` instead of `MapGet`, so they answer every HTTP
   verb (POST, DELETE, and so on).
-- **VOL-D3 (critical)**: The list depends on Geo "province by id", which always fails
-  (GEO-D1), so the uncached list is broken.
+- **VOL-D3 (withdrawn)**: Reverse engineering expected the list to fail because of GEO-D1.
+  GEO-D1 turned out to be a false positive, and the characterization test shows the list
+  returns every volcano with its location.
 - **VOL-D4 (high)**: N+1 fan-out to Geo (3 calls per volcano).
-- **VOL-D5 (medium)**: Detail and by-province responses leave out `location`, even though
+- **VOL-D5 (medium, confirmed)**: Detail and by-province responses leave out `location`, even though
   the response model marks it as required. The responses are inconsistent.
 - **VOL-D6 (medium)**: The typed Geo client declares wrong return types for list
   operations (`Result<DtoProvince>` where lists are returned).

@@ -320,6 +320,23 @@ Starts the 4 microservices + SQL Server 2022 + Redis 7 + MongoDB 7, without requ
 
 Each service exposes interactive API documentation at `/docs` (Scalar/OpenAPI).
 
+### Running the tests
+
+Docker must be running, because SQL Server and Redis start in Testcontainers. No Azure resources are needed.
+
+```bash
+dotnet test DiscoverCostaRica.sln --filter "Category!=RequiresAzure"
+```
+
+| Suite | What it guards |
+|---|---|
+| `tests/DiscoverCostaRica.ArchitectureTests` | The Dependency Rule (Clean Architecture), with a ratchet baseline of known violations |
+| `tests/DiscoverCostaRica.CharacterizationTests` | The frozen v1 HTTP contract of every service, run against real SQL Server |
+| `tests/DiscoverCostaRica.IntegrationTests` | EF Core migrations and the Redis-backed hybrid cache |
+| `tests/DiscoverCostaRica.BuildingBlocks.UnitTests` | `Result<T>`, the v1 presenter and the source generators |
+
+CI (`.github/workflows/ci.yml`) runs the same command on every pull request, and deployment waits for it.
+
 ## Spec-Driven Development
 
 This project follows [GitHub Spec Kit](https://github.com/github/spec-kit) and a

@@ -1,18 +1,14 @@
-using Asp.Versioning;
+using DiscoverCostaRica.BuildingBlocks.Infrastructure.Authentication;
 using DiscoverCostaRica.ServiceDefaults.Middleware;
-using DiscoverCostaRica.Shared.Authentication;
 using DiscoverCostaRica.Shared.Constants;
 using DiscoverCostaRica.Shared.Interfaces;
 using DiscoverCostaRica.Shared.logging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Web;
 using MongoDB.Driver;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
@@ -53,17 +49,6 @@ public static class Extensions
         return builder;
     }
 
-    public static IHostApplicationBuilder AddVersioning(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddApiVersioning(options =>
-        {
-            options.DefaultApiVersion = new ApiVersion(1, 0);
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.ReportApiVersions = true;
-        });
-        return builder;
-    }
-
     public static IHostApplicationBuilder AddDiscoverCostaRicaLogger(this IHostApplicationBuilder builder)
     {
         builder.Services.AddSingleton<ILoggerProvider, DiscoverCostaRicaLoggerProvider>();
@@ -78,50 +63,17 @@ public static class Extensions
         return builder;
     }
 
-    public static IHostApplicationBuilder AddDiscoverCostaRicaContext<TInterfaceContext, Context>(this IHostApplicationBuilder builder, string connectionStringKey = "DiscoverCostaRica")
-    where TInterfaceContext : class
-    where Context : DbContext, TInterfaceContext
-
-
-    {
-        builder.AddSqlServerDbContext<Context>(connectionName: "DiscoverCostaRica",
-            _ => { },
-            options =>
-            {
-                options.UseSqlServer(sql =>
-                {
-                    sql.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null);
-                });
-            });
-
-        builder.Services.AddScoped<TInterfaceContext, Context>();
-
-        return builder;
-    }
     private static IServiceCollection AddRefitServices(this IServiceCollection services)
     {
-        services.AddTransient<DiscoverCostaRicaAuthHandler>();
-
         services.AddRefitClient<IGeoDiscoverCostaRica>()
             .ConfigureHttpClient(http =>
             {
                 http.BaseAddress = new Uri($"https://{Microservices.Geo}/api/v1/geo");
 
-            }).AddHttpMessageHandler<DiscoverCostaRicaAuthHandler>()
+            }).AddHttpMessageHandler<BearerTokenHandler>()
             .AddStandardResilienceHandler();
 
         return services;
-    }
-
-    private static TBuilder AddConfigureEntraId<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
-    {
-        builder.Services.Configure<DiscoverCostaRicaTokenOptions>(options =>
-            builder.Configuration.GetSection("Azure").Bind(options));
-
-        return builder;
     }
 
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
@@ -132,7 +84,7 @@ public static class Extensions
 
         builder.AddDefaultHealthChecks();
 
-        builder.AddConfigureEntraId();
+        builder.AddClientCredentialsTokenProvider();
 
         builder.AddRedisClient(connectionName: "redis");
 
@@ -250,31 +202,4 @@ public static class Extensions
         return app;
     }
 
-    public static IHostApplicationBuilder AddEntraIdAuthentication(this IHostApplicationBuilder builder)
-    {
-        var entraIdSection = builder.Configuration.GetSection(EntraIdOptions.SectionName);
-        var entraIdOptions = entraIdSection.Get<EntraIdOptions>()
-            ?? throw new InvalidOperationException($"Configuration section '{EntraIdOptions.SectionName}' is required.");
-
-        builder.Services.AddHttpContextAccessor();
-
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApi(jwtOptions =>
-            {
-                jwtOptions.RequireHttpsMetadata = false;
-                jwtOptions.Events = new DiscoverCostaRicaBearerEvents();
-                jwtOptions.TokenValidationParameters.ValidAudiences = [entraIdOptions.Audience];
-                jwtOptions.TokenValidationParameters.RoleClaimType = "roles";
-
-            }, identityOptions =>
-            {
-                identityOptions.Instance = entraIdOptions.Instance;
-                identityOptions.TenantId = entraIdOptions.TenantId;
-                identityOptions.ClientId = entraIdOptions.ClientId;
-            });
-
-        builder.Services.AddPolicies();
-
-        return builder;
-    }
 }

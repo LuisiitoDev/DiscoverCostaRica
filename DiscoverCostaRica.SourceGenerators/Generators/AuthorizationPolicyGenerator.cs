@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
@@ -45,14 +45,16 @@ public class AuthorizationPolicyGenerator : IIncrementalGenerator
                                 .AddPolicy(""{name}"", policy => 
                                     policy.RequireAssertion(context => 
                                         context.User.Claims
-                                            .Where(c => c.Type == DiscoverCostaRica.Shared.Authentication.AuthConstants.ClaimTypes.Roles)
+                                            .Where(c => c.Type == global::DiscoverCostaRica.BuildingBlocks.Web.Authentication.AuthConstants.ClaimTypes.Roles)
                                            .Any(c => c.Value.Split(' ',StringSplitOptions.RemoveEmptyEntries).Contains(""{scope}""))))");
                     }
                 }
 
-                var requiredAuthorization = registrations.Count > 0 
-                    ? $"services.AddAuthorizationBuilder(){string.Concat(registrations)}"
-                    : "services.AddAuthorizationBuilder()";
+                // Only the assembly that declares the policies gets the registration class;
+                // emitting an empty one everywhere created duplicate public types.
+                if (registrations.Count == 0) return;
+
+                var requiredAuthorization = $"services.AddAuthorizationBuilder(){string.Concat(registrations)}";
 
                 var sourceText = GenerateExtensionsClass(requiredAuthorization);
                 spc.AddSource("ServiceRegistrationExtensions.Policies.g.cs", SourceText.From(sourceText, Encoding.UTF8));

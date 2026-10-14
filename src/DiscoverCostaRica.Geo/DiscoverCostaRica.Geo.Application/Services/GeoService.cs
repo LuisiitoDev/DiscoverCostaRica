@@ -2,7 +2,7 @@
 using DiscoverCostaRica.Geo.Application.Dtos;
 using DiscoverCostaRica.Geo.Application.Interfaces;
 using DiscoverCostaRica.Geo.Domain.Interfaces;
-using DiscoverCostaRica.Shared.Attributes;
+using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using DiscoverCostaRica.Shared.Responses;
 using Microsoft.AspNetCore.Http;
 

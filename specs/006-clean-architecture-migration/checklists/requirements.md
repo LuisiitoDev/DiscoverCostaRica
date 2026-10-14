@@ -33,12 +33,12 @@
 
 | Defect | Story | Defect | Story |
 |---|---|---|---|
-| GEO-D1..D5 | US2 | PLT-D1 | US5 |
-| VOL-D1..D6, D8 | US3 | PLT-D2 | US6 |
+| GEO-D2..D5 (D1 withdrawn) | US2 | PLT-D1 | US5 |
+| VOL-D1, D2, D4..D6, D8 (D3 withdrawn) | US3 | PLT-D2 | US6 |
 | VOL-D7 | US5 | PLT-D3, D4, D12 | US1 / Foundation |
 | BCH-D1 | US5 | PLT-D5, D7, D11 | Setup |
 | BCH-D2, CUL-D1..D3 | US4 (CUL-D1 → future v2) | PLT-D6, D10 | US7 |
-| PLT-D8, D9 | US1 | | |
+| PLT-D8, D9 | US1 | PLT-D13 | Phase 2 (fixed) |
 
 ## Notes
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DiscoverCostaRica.Shared.Attributes;
+using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using DiscoverCostaRica.Volcano.Application.Dtos;
 using DiscoverCostaRica.Volcano.Application.Interfaces;
 using DiscoverCostaRica.VolcanoService.Domain.Models;

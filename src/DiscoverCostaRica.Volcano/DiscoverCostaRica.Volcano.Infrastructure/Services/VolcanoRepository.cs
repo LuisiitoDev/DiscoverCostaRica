@@ -1,4 +1,4 @@
-﻿using DiscoverCostaRica.Shared.Attributes;
+﻿using DiscoverCostaRica.BuildingBlocks.Application.DependencyInjection;
 using DiscoverCostaRica.VolcanoService.Domain.Interfaces;
 using DiscoverCostaRica.VolcanoService.Domain.Models;
 using DiscoverCostaRica.VolcanoService.Infrastructure.Interfaces;

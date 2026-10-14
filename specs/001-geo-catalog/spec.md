@@ -117,14 +117,19 @@ Response body: the v1 envelope `{ "statusCode": int, "message"?: string, "value"
 
 ### Known defects found during reverse engineering
 
-- **GEO-D1 (critical)**: "Province by id" always fails with 500. The repository passes the
-  cancellation token as part of the primary key (`FindAsync([provinceId, cancellationToken])`).
-  It also breaks Volcano's location enrichment (see 004).
-- **GEO-D2 (high)**: "Districts of canton" filters by canton id only. Canton ids repeat
-  across provinces, so districts from several provinces are mixed together.
-- **GEO-D3 (high)**: "District by id" has the same ambiguity and can return a district
+- **GEO-D1 (withdrawn)**: Reverse engineering flagged "province by id" as always failing,
+  because the repository passes the cancellation token inside the key array
+  (`FindAsync([provinceId, cancellationToken])`). The characterization tests showed that it
+  works: EF Core ignores a trailing `CancellationToken` in the key values. The code is still
+  misleading and gets cleaned up in spec 006 T033, but it is not a defect. Lesson: pin
+  behaviour with tests before you trust a reading of the code.
+- **GEO-D2 (high, confirmed)**: "Districts of canton" filters by canton id only. Canton ids
+  repeat across provinces, so districts from several provinces are mixed together.
+  Characterization: `GET /districts/1` returns Carmen and Merced (San José) plus Alajuela and
+  Liberia (provinces 2 and 5).
+- **GEO-D3 (high, confirmed)**: "District by id" has the same ambiguity and can return a district
   from the wrong province.
-- **GEO-D4 (low)**: The message typo "provice".
+- **GEO-D4 (low, confirmed)**: The message typo "provice".
 - **GEO-D5 (medium)**: The cached province list never expires.
 
 ### Key Entities

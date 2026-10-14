@@ -26,7 +26,7 @@ As-built gateway table (prefix transform = `/api/v1/<group>` + the original path
 
 | Public | Forwarded to | Works? |
 |---|---|---|
-| `/provinces/{**}` | Geo `/api/v1/geo/provinces/...` | ✅ (by-id fails, GEO-D1) |
+| `/provinces/{**}` | Geo `/api/v1/geo/provinces/...` | ✅ |
 | `/canton/{**}` | Geo `/api/v1/geo/canton/...` | ❌ service route is `cantons` |
 | `/districts/{**}` | Geo `/api/v1/geo/districts/...` | ✅ |
 | `/beaches/{**}` | Beaches `/api/v1/beaches/beaches...` | ❌ BCH-D1 |
@@ -110,6 +110,10 @@ An operator sees traces, metrics and logs and checks health.
 - **PLT-D10 (low)**: `RequireHttpsMetadata = false` on JWT validation.
 - **PLT-D11 (low)**: Typos in public identifiers (`CachedProviceService`, `DaprCompoonents`,
   `ResourceParemeterBuilder`, `AddGlobalExeption`, `DiscoverCostaRica.CultureSerice.Api.http`).
+- **PLT-D13 (medium, fixed in spec 006 phase 2)**: Two dead project references pointed the
+  wrong way: `Culture.Application → Geo.Infrastructure` (cross-service) and
+  `Geo.Application → Geo.Infrastructure` (inverted). The compiler dropped them because nothing
+  used them, so only the .csproj-based architecture rules found them.
 - **PLT-D12 (medium)**: AutoMapper ≥ 15 has a commercial licence. Mapping profiles live in the
   Api layer and map Domain → Application DTOs, so the outer layer knows the inner model
   shapes on the wrong side.
