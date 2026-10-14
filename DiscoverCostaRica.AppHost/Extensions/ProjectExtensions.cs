@@ -1,4 +1,4 @@
-﻿namespace DiscoverCostaRica.AppHost.Extensions;
+namespace DiscoverCostaRica.AppHost.Extensions;
 
 public static class ResourceParameterBuilder
 {
@@ -34,40 +34,24 @@ public static class ResourceParameterBuilder
 
 public static class ProjectExtensions
 {
-    public static IResourceBuilder<ProjectResource> CreateProject<TProject>(this IDistributedApplicationBuilder builder,
-        string name,
-        IResourceBuilder<IResourceWithConnectionString> azureSql,
-        IResourceBuilder<IResourceWithConnectionString> mongodb,
-        IResourceBuilder<IResourceWithConnectionString> redis) where TProject : IProjectMetadata, new()
-    {
-        return ResourceParameterBuilder.SetParameterForProject(builder,builder.AddProject<TProject>(name)
-            .WithReference(azureSql)
-            .WaitFor(azureSql)
-            .WithReference(mongodb)
-            .WaitFor(mongodb)
-            .WithReference(redis)
-            .WaitFor(redis));
-    }
-
+    /// <summary>A catalog service with its database, cache and Entra settings; <paramref name="dependsOn"/> for services it calls.</summary>
     public static IResourceBuilder<ProjectResource> CreateProject<TProject>(
         this IDistributedApplicationBuilder builder,
         string name,
         IResourceBuilder<IResourceWithConnectionString> azureSql,
-        IResourceBuilder<IResourceWithConnectionString> mongodb,
         IResourceBuilder<IResourceWithConnectionString> redis,
-        IResourceBuilder<ProjectResource> geo) where TProject : IProjectMetadata, new()
+        params IResourceBuilder<ProjectResource>[] dependsOn) where TProject : IProjectMetadata, new()
     {
-        return ResourceParameterBuilder.SetParameterForProject(
-            builder,
-            builder.AddProject<TProject>(name)
-                .WithReference(azureSql)
-                .WaitFor(azureSql)
-                .WithReference(mongodb)
-                .WaitFor(mongodb)
-                .WithReference(redis)
-                .WaitFor(redis)
-                .WithReference(geo)
-                .WaitFor(geo)
-        );
+        var project = builder.AddProject<TProject>(name)
+            .WithReference(azureSql)
+            .WaitFor(azureSql)
+            .WithReference(redis)
+            .WaitFor(redis)
+            .WithHttpHealthCheck("/health");
+
+        foreach (var dependency in dependsOn)
+            project.WithReference(dependency).WaitFor(dependency);
+
+        return ResourceParameterBuilder.SetParameterForProject(builder, project);
     }
 }

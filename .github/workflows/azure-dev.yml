@@ -62,7 +62,6 @@ jobs:
           AZURE_EXISTING_SQL_SERVER_NAME: ${{ secrets.AZURE_EXISTING_SQL_SERVER_NAME }}
           AZURE_EXISTING_SQL_SERVER_RESOURCE_GROUP: ${{ secrets.AZURE_EXISTING_SQL_SERVER_RESOURCE_GROUP }}
           AZURE_REDIS: ${{ secrets.AZURE_REDIS }}
-          AZURE_MONGODB: ${{ secrets.AZURE_MONGODB }}
 
       - name: Deploy Application
         run: azd deploy --no-prompt
@@ -71,5 +70,4 @@ jobs:
           AZURE_EXISTING_SQL_SERVER_NAME: ${{ secrets.AZURE_EXISTING_SQL_SERVER_NAME }}
           AZURE_EXISTING_SQL_SERVER_RESOURCE_GROUP: ${{ secrets.AZURE_EXISTING_SQL_SERVER_RESOURCE_GROUP }}
           AZURE_REDIS: ${{ secrets.AZURE_REDIS }}
-          AZURE_MONGODB: ${{ secrets.AZURE_MONGODB }}
         

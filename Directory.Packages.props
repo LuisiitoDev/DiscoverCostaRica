@@ -14,12 +14,10 @@
 
   <ItemGroup Label="Aspire">
     <PackageVersion Include="Aspire.Hosting.Azure.Sql" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.MongoDB" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Testing" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Yarp" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.MongoDB.Driver" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="$(AspireVersion)" />
     <PackageVersion Include="KubernetesClient" Version="18.0.5" />
   </ItemGroup>
@@ -51,10 +49,6 @@
     <PackageVersion Include="Scrutor" Version="7.0.0" />
   </ItemGroup>
 
-  <ItemGroup Label="Mapping (removed in spec 006 T051)">
-    <PackageVersion Include="AutoMapper" Version="16.2.0" />
-  </ItemGroup>
-
   <ItemGroup Label="Observability">
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.19.1" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.19.1" />
@@ -69,11 +63,9 @@
   </ItemGroup>
 
   <ItemGroup Label="Transitive security pins (CentralPackageTransitivePinningEnabled)">
-    <!-- Pulled in by MongoDB.Driver; both disappear when the MongoDB logger is removed (spec 006 T059). -->
-    <PackageVersion Include="SharpCompress" Version="0.50.5" />
-    <PackageVersion Include="Snappier" Version="1.3.1" />
     <!-- Pulled in by Aspire.Hosting (StreamJsonRpc); stays on the 2.5 line for binary compatibility. -->
     <PackageVersion Include="MessagePack" Version="2.5.307" />
+    <!-- Pulled in through the identity stack (Microsoft.Identity.Web); the 9.0.0 default has known CVEs. -->
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 

@@ -23,20 +23,4 @@ public static class CatalogDbContextExtensions
 
         return builder;
     }
-
-    /// <summary>
-    /// Same as <see cref="AddCatalogDbContext{TContext}"/>, and also exposes the context through the
-    /// narrow interface a not-yet-migrated service's repositories depend on.
-    /// </summary>
-    public static IHostApplicationBuilder AddCatalogDbContext<TContextInterface, TContext>(
-        this IHostApplicationBuilder builder,
-        string connectionName = DefaultConnectionName)
-        where TContextInterface : class
-        where TContext : DbContext, TContextInterface
-    {
-        builder.AddCatalogDbContext<TContext>(connectionName);
-        builder.Services.AddScoped<TContextInterface>(provider => provider.GetRequiredService<TContext>());
-
-        return builder;
-    }
 }

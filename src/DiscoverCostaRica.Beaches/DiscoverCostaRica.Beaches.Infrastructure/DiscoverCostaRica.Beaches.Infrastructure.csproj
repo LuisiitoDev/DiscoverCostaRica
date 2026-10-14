@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <!-- Beaches gateways: EF Core persistence behind the Application port. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
@@ -17,7 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Application\DiscoverCostaRica.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\..\DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\DiscoverCostaRica.Beaches.Application\DiscoverCostaRica.Beaches.Application.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Beaches.Domain\DiscoverCostaRica.Beaches.Domain.csproj" />
   </ItemGroup>
-
 </Project>

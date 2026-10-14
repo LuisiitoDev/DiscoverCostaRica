@@ -6,17 +6,4 @@
 #
 # Format: <rule id> | <subject>     (each group names the spec 006 task that removes it)
 
-# Beaches and Culture migration (US4, T049-T052)
-application-allowed-references | DiscoverCostaRica.Beaches.Application -> AutoMapper
-application-allowed-references | DiscoverCostaRica.Culture.Application -> AutoMapper
-application-no-framework-types | DiscoverCostaRica.Beaches.Application.Services.BeachService
-application-no-framework-types | DiscoverCostaRica.Culture.Application.Services.CultureService
-no-legacy-shared | DiscoverCostaRica.Beaches.Api -> DiscoverCostaRica.Shared
-no-legacy-shared | DiscoverCostaRica.Beaches.Application -> DiscoverCostaRica.Shared
-no-legacy-shared | DiscoverCostaRica.Beaches.Domain -> DiscoverCostaRica.Shared
-no-legacy-shared | DiscoverCostaRica.Culture.Api -> DiscoverCostaRica.Shared
-no-legacy-shared | DiscoverCostaRica.Culture.Application -> DiscoverCostaRica.Shared
-no-legacy-shared | DiscoverCostaRica.Culture.Infrastructure -> DiscoverCostaRica.Shared
-
-# Platform (US7 T059 removes the Mongo logger; T061 deletes Shared)
-no-legacy-shared | DiscoverCostaRica.ServiceDefaults -> DiscoverCostaRica.Shared
+# Empty: spec 006 removed every known violation. Keep it that way.

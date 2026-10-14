@@ -1,17 +1,10 @@
-﻿using DiscoverCostaRica.Beaches.Domain.Models;
-using DiscoverCostaRica.Beaches.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscoverCostaRica.Beaches.Infrastructure.Context;
 
-public class BeachContext : DbContext, IBeachContext
+/// <summary>EF Core unit of work for the Beach table. Public for migrations tooling; the row it maps is internal.</summary>
+public class BeachContext(DbContextOptions<BeachContext> options) : DbContext(options)
 {
-    public BeachContext(DbContextOptions<BeachContext> options) : base(options) { }
-
-    public DbSet<BeachModel> Beaches { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(BeachContext).Assembly);
-    }
 }

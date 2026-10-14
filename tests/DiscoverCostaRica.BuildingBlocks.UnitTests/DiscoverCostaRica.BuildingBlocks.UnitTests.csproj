@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\src\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Application\DiscoverCostaRica.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\src\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Infrastructure\DiscoverCostaRica.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Web\DiscoverCostaRica.BuildingBlocks.Web.csproj" />
+    <ProjectReference Include="..\..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj" />
   </ItemGroup>
 

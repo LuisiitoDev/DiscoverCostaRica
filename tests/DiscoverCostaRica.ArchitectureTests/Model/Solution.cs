@@ -25,7 +25,6 @@ public static class Solution
     {
         var files = Directory.EnumerateFiles(Path.Combine(Root, "src"), "*.csproj", SearchOption.AllDirectories)
             .Append(Path.Combine(Root, "DiscoverCostaRica.ServiceDefaults", "DiscoverCostaRica.ServiceDefaults.csproj"))
-            .Append(Path.Combine(Root, "DiscoverCostaRica.Shared", "DiscoverCostaRica.Shared.csproj"))
             .Where(File.Exists);
 
         return [.. files.Select(Read).OrderBy(p => p.Name, StringComparer.Ordinal)];

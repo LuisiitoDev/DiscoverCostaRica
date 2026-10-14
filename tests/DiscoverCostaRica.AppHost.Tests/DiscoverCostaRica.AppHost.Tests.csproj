@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\DiscoverCostaRica.AppHost\DiscoverCostaRica.AppHost.csproj" />
   </ItemGroup>
 

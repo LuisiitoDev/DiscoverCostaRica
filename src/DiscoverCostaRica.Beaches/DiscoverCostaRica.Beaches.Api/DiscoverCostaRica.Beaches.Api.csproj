@@ -1,27 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Beaches interface adapters (endpoints, presenter) and Main. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <UserSecretsId>a5206703-27b4-46b5-bbd0-73ca6e88b7fe</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
-		<UserSecretsId>a5206703-27b4-46b5-bbd0-73ca6e88b7fe</UserSecretsId>
-		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	</PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DiscoverCostaRica.ServiceDefaults\DiscoverCostaRica.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Infrastructure\DiscoverCostaRica.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Web\DiscoverCostaRica.BuildingBlocks.Web.csproj" />
-	  <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Application\DiscoverCostaRica.Beaches.Application.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Domain\DiscoverCostaRica.Beaches.Domain.csproj" />
-	  <ProjectReference Include="..\DiscoverCostaRica.Beaches.Infrastructure\DiscoverCostaRica.Beaches.Infrastructure.csproj" />
-	</ItemGroup>
-
+    <ProjectReference Include="..\DiscoverCostaRica.Beaches.Application\DiscoverCostaRica.Beaches.Application.csproj" />
+    <ProjectReference Include="..\DiscoverCostaRica.Beaches.Infrastructure\DiscoverCostaRica.Beaches.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>

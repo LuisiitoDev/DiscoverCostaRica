@@ -20,7 +20,8 @@ public static class EntraIdAuthenticationExtensions
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(jwtOptions =>
             {
-                jwtOptions.RequireHttpsMetadata = false;
+                // Plain-HTTP metadata only for local development (PLT-D10).
+                jwtOptions.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
                 jwtOptions.Events = new DiscoverCostaRicaBearerEvents();
                 jwtOptions.TokenValidationParameters.ValidAudiences = [entraIdOptions.Audience];
                 jwtOptions.TokenValidationParameters.RoleClaimType = "roles";

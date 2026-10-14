@@ -1,6 +1,7 @@
 using Aspire.Hosting.Yarp.Transforms;
 using DiscoverCostaRica.AppHost.Constants;
 using DiscoverCostaRica.AppHost.Extensions;
+using DiscoverCostaRica.AppHost.Gateway;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -12,31 +13,23 @@ var azureSql = builder.AddAzureSqlServer("sqlserver")
                       .AddDatabase("discovercostarica");
 
 var cache = builder.AddConnectionString("redis");
-var mongodb = builder.AddConnectionString("mongodb");
 
-var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, mongodb, cache);
-var beaches = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, mongodb, cache, geo);
-var culture = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, mongodb, cache, geo);
-var volcano = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, mongodb, cache, geo);
+var geo = builder.CreateProject<Projects.DiscoverCostaRica_Geo_Api>(Microservices.Geo, azureSql, cache);
+var services = new Dictionary<string, IResourceBuilder<ProjectResource>>
+{
+    [Microservices.Geo] = geo,
+    [Microservices.Beaches] = builder.CreateProject<Projects.DiscoverCostaRica_Beaches_Api>(Microservices.Beaches, azureSql, cache),
+    [Microservices.Culture] = builder.CreateProject<Projects.DiscoverCostaRica_Culture_Api>(Microservices.Culture, azureSql, cache),
+    // Volcano resolves location names through Geo's batch contract.
+    [Microservices.Volcano] = builder.CreateProject<Projects.DiscoverCostaRica_Volcano_Api>(Microservices.Volcano, azureSql, cache, geo),
+};
 
 builder.AddYarp(Microservices.Gateway)
     .WithDeveloperCertificateTrust(true)
     .WithConfiguration(yarp =>
     {
-        yarp.AddRoute("/provinces/{**catch-all}", geo).WithTransformPathPrefix("/api/v1/geo");
-        yarp.AddRoute("/canton/{**catch-all}", geo).WithTransformPathPrefix("/api/v1/geo");
-        yarp.AddRoute("/districts/{**catch-all}", geo).WithTransformPathPrefix("/api/v1/geo");
-
-        yarp.AddRoute("/beaches/{**catch-all}", beaches).WithTransformPathPrefix("/api/v1/beaches");
-
-        yarp.AddRoute("/tradition/{**catch-all}", culture).WithTransformPathPrefix("/api/v1/traditions");
-        yarp.AddRoute("/dish/{**catch-all}", culture).WithTransformPathPrefix("/api/v1/traditions");
-
-        yarp.AddRoute("/volcano/{**catch-all}", volcano).WithTransformPathPrefix("/api/v1/volcanoes");
-        yarp.AddRoute("/province/{**catch-all}", volcano).WithTransformPathPrefix("/api/v1/volcanoes");
-        yarp.AddRoute("/{**catch-all}", volcano).WithTransformPathPrefix("/api/v1/volcanoes");
+        foreach (var route in GatewayRoutes.All)
+            yarp.AddRoute(route.Path, services[route.Service]).WithTransformPathRouteValues(route.Upstream);
     });
 
 await builder.Build().RunAsync();
-
-

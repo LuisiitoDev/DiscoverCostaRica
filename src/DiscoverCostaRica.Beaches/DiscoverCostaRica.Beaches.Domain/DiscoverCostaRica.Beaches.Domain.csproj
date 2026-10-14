@@ -1,11 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <!-- Beaches entities (enterprise rules). BCL only. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
-  </ItemGroup>
-
 </Project>

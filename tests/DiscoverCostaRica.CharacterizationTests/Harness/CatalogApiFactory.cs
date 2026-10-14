@@ -46,9 +46,8 @@ public class CatalogApiFactory<TMarker>(string connectionString) : WebApplicatio
     private static IEnumerable<(string Key, string Value)> Settings(string connectionString) =>
     [
         ("ConnectionStrings:DiscoverCostaRica", connectionString),
-        // Never reached: the cache and the log sink are replaced in InfrastructureSeams.
+        // Never reached: the Redis-backed cache is replaced in InfrastructureSeams.
         ("ConnectionStrings:redis", "localhost:6390,abortConnect=false,connectTimeout=100"),
-        ("ConnectionStrings:mongodb", "mongodb://localhost:27099"),
         ("Aspire:StackExchange:Redis:DisableHealthChecks", "true"),
         ("Aspire:StackExchange:Redis:DisableTracing", "true"),
         ("EntraId:Instance", "https://login.microsoftonline.com/"),

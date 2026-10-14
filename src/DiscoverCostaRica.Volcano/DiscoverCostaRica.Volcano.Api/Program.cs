@@ -8,7 +8,6 @@ builder.AddServiceDefaults();
 builder.AddEntraIdAuthentication();
 builder.AddCatalogDbContext<VolcanoContext>();
 builder.AddCatalogHybridCache();
-builder.AddDiscoverCostaRicaLogger();
 builder.AddVersioning();
 
 builder.Services.AddOpenApi();
