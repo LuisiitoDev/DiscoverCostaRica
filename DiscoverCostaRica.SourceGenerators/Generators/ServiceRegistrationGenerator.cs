@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
@@ -15,6 +15,15 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
     private const string ScopedServiceAttributeName = "ScopedServiceAttribute";
     private const string SingletonServiceAttributeName = "SingletonServiceAttribute";
     private const string DecoratorServiceAttributeName = "DecoratorServiceAttribute";
+
+    private static readonly DiagnosticDescriptor DecoratorWithoutInterface = new(
+        id: "DCR001",
+        title: "Decorator does not implement an interface",
+        messageFormat: "'{0}' is marked [DecoratorService] but implements no interface to decorate",
+        category: "DiscoverCostaRica.DependencyInjection",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var classDeclarations = context.SyntaxProvider
@@ -36,8 +45,17 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
 
                 var (classSymbol, attributeName) = classInfo.Value;
 
-                var interfaceType = classSymbol.Interfaces.FirstOrDefault()?.ToDisplayString();
-                var implementationType = classSymbol.ToDisplayString();
+                // AllInterfaces so a decorator deriving from a generic base (CachedUseCase<,>) is found.
+                // Fully qualified and without nullable annotations, so closed generics such as
+                // IUseCase<TRequest, TResponse> produce valid registration code.
+                var interfaceType = classSymbol.AllInterfaces.FirstOrDefault()?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var implementationType = classSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+                if (attributeName == DecoratorServiceAttributeName && interfaceType is null)
+                {
+                    spc.ReportDiagnostic(Diagnostic.Create(DecoratorWithoutInterface, classSymbol.Locations.FirstOrDefault(), classSymbol.Name));
+                    continue;
+                }
 
                 var registration = attributeName switch
                 {
@@ -54,7 +72,7 @@ public class ServiceRegistrationGenerator : IIncrementalGenerator
                             ? $"services.AddSingleton<{interfaceType}, {implementationType}>();"
                             : $"services.AddSingleton<{implementationType}>();",
 
-                    DecoratorServiceAttributeName => $"services.Decorate<{interfaceType},{implementationType}>();",
+                    DecoratorServiceAttributeName => $"services.Decorate<{interfaceType}, {implementationType}>();",
 
                     _ => null
                 };

@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Published contract of the Geo service (Constitution VI). Consumers depend on this, never on Geo internals.
+    BCL only. Versioned with Geo API v1: additive changes only; a breaking change needs a v2 contract.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+</Project>

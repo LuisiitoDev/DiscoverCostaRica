@@ -1,15 +1,10 @@
-﻿using DiscoverCostaRica.VolcanoService.Domain.Models;
-using DiscoverCostaRica.VolcanoService.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace DiscoverCostaRica.VolcanoService.Infrastructure.Context;
+namespace DiscoverCostaRica.Volcano.Infrastructure.Context;
 
-public class VolcanoContext(DbContextOptions<VolcanoContext> options) : DbContext(options), IVolcanoContext
+/// <summary>EF Core unit of work for the Volcano table. Public for migrations tooling; the row it maps is internal.</summary>
+public class VolcanoContext(DbContextOptions<VolcanoContext> options) : DbContext(options)
 {
-    public DbSet<VolcanoModel> Volcanos { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(VolcanoContext).Assembly);
-    }
 }

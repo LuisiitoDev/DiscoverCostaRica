@@ -1,4 +1,5 @@
-﻿global using static DiscoverCostaRica.Shared.Utils.SharedExtensions;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Culture_Application;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Culture_Infrastructure;
-global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Shared;
+
+global using GetTraditionsUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Culture.Application.UseCases.GetTraditions.GetTraditionsRequest, System.Collections.Generic.IReadOnlyList<DiscoverCostaRica.Culture.Application.UseCases.GetTraditions.TraditionResponse>>;
+global using GetDishesUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Culture.Application.UseCases.GetDishes.GetDishesRequest, System.Collections.Generic.IReadOnlyList<DiscoverCostaRica.Culture.Application.UseCases.GetDishes.DishResponse>>;

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Architecture fitness functions (Constitution I, VII; spec 006 US1).
+    Project-graph rules read the .csproj files; type rules inspect compiled IL with NetArchTest.
+    Known violations live in architecture-baseline.txt and may only shrink (ratchet).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NetArchTest.eNhancedEdition" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+
+  <!-- Every production assembly must be loadable from the test output. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Contracts\DiscoverCostaRica.Contracts.Geo\DiscoverCostaRica.Contracts.Geo.csproj" />
+    <ProjectReference Include="..\..\src\DiscoverCostaRica.Beaches\DiscoverCostaRica.Beaches.Api\DiscoverCostaRica.Beaches.Api.csproj" />
+    <ProjectReference Include="..\..\src\DiscoverCostaRica.Culture\DiscoverCostaRica.Culture.Api\DiscoverCostaRica.Culture.Api.csproj" />
+    <ProjectReference Include="..\..\src\DiscoverCostaRica.Geo\DiscoverCostaRica.Geo.Api\DiscoverCostaRica.Geo.Api.csproj" />
+    <ProjectReference Include="..\..\src\DiscoverCostaRica.Volcano\DiscoverCostaRica.Volcano.Api\DiscoverCostaRica.Volcano.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="architecture-baseline.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

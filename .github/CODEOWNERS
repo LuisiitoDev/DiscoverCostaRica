@@ -1,0 +1,7 @@
+# Reviewers requested automatically on pull requests (GitHub Flow, see CONTRIBUTING.md).
+*                              @LuisiitoDev
+
+# Rules that protect the architecture and the delivery pipeline.
+/.specify/memory/constitution.md                          @LuisiitoDev
+/tests/DiscoverCostaRica.ArchitectureTests/               @LuisiitoDev
+/.github/workflows/                                       @LuisiitoDev

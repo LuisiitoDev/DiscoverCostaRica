@@ -1,3 +1,5 @@
+name: azure-dev
+
 # Run when commits are pushed to main
 on:
   workflow_dispatch:
@@ -7,6 +9,11 @@ on:
     branches:
       - main
 
+# GitHub Flow: what is on main is deployed. One deployment at a time, never cancelled half-way.
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
 permissions:
@@ -15,7 +22,12 @@ permissions:
 
 
 jobs:
-  build:
+  # Deploy only what passed the quality gate.
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: ci
     runs-on: ubuntu-latest
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -37,10 +49,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: | 
-            8.x
-            9.x
-            10.x
+          global-json-file: global.json
 
       - name: Log in with Azure (Federated Credentials)
         run: |
@@ -58,7 +67,6 @@ jobs:
           AZURE_EXISTING_SQL_SERVER_NAME: ${{ secrets.AZURE_EXISTING_SQL_SERVER_NAME }}
           AZURE_EXISTING_SQL_SERVER_RESOURCE_GROUP: ${{ secrets.AZURE_EXISTING_SQL_SERVER_RESOURCE_GROUP }}
           AZURE_REDIS: ${{ secrets.AZURE_REDIS }}
-          AZURE_MONGODB: ${{ secrets.AZURE_MONGODB }}
 
       - name: Deploy Application
         run: azd deploy --no-prompt
@@ -67,5 +75,4 @@ jobs:
           AZURE_EXISTING_SQL_SERVER_NAME: ${{ secrets.AZURE_EXISTING_SQL_SERVER_NAME }}
           AZURE_EXISTING_SQL_SERVER_RESOURCE_GROUP: ${{ secrets.AZURE_EXISTING_SQL_SERVER_RESOURCE_GROUP }}
           AZURE_REDIS: ${{ secrets.AZURE_REDIS }}
-          AZURE_MONGODB: ${{ secrets.AZURE_MONGODB }}
         

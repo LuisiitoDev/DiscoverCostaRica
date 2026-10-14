@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Application building blocks: the use-case boundary, its outcome type and the caching decorator.
+    Constitution I and V: BCL plus policy-neutral Microsoft.Extensions abstractions only.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- HybridCache (abstract type) lives here; the Redis-backed implementation is wired in BuildingBlocks.Infrastructure. -->
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
+  </ItemGroup>
+</Project>

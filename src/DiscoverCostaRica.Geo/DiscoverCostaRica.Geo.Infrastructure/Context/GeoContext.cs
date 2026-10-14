@@ -1,17 +1,10 @@
-﻿using DiscoverCostaRica.Geo.Domain.Models;
-using DiscoverCostaRica.Geo.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiscoverCostaRica.Geo.Infrastructure.Context;
 
-public class GeoContext(DbContextOptions<GeoContext> options) : DbContext(options), IGeoContext
+/// <summary>EF Core unit of work for the Geo tables. Public for migrations tooling; the rows it maps are internal.</summary>
+public class GeoContext(DbContextOptions<GeoContext> options) : DbContext(options)
 {
-    public DbSet<ProvinceModel> Provinces { get; set; }
-    public DbSet<CantonModel> Cantons { get; set; }
-    public DbSet<DistrictModel> Districts { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(GeoContext).Assembly);
-    }
 }

@@ -102,3 +102,7 @@ DiscoverCostaRica.Functions/service_account_key.json
 .azure
 /k8s/secrets.json
 /DiscoverCostaRica.AppHost/appsettings.Development.json
+
+# Test results and coverage reports
+TestResults/
+coverage/

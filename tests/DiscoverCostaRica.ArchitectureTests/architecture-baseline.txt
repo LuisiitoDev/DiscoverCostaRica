@@ -1,0 +1,9 @@
+# Known architecture violations: a ratchet, not an allow-list (spec 006 US1).
+#
+#  - A violation that is NOT listed here fails the build. Fix it instead of adding it.
+#  - A listed violation that no longer happens also fails the build until its line is deleted,
+#    so every improvement is locked in. The file only shrinks; it is empty when spec 006 is done.
+#
+# Format: <rule id> | <subject>     (each group names the spec 006 task that removes it)
+
+# Empty: spec 006 removed every known violation. Keep it that way.

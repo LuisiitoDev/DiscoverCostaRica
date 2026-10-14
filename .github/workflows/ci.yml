@@ -1,0 +1,73 @@
+name: ci
+
+# Quality gate (Constitution VII): build, analyzers, unit, architecture,
+# characterization and integration tests. Deploy (azure-dev.yml) depends on it.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push to the same pull request supersedes the running check; runs on main always finish.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET (global.json)
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore DiscoverCostaRica.sln
+
+      - name: Build (warnings as errors)
+        run: dotnet build DiscoverCostaRica.sln --configuration Release --no-restore
+
+      # Testcontainers needs Docker, which ubuntu-latest provides.
+      # Tests that need real Azure resources are tagged Category=RequiresAzure and excluded.
+      - name: Test (with coverage)
+        run: >
+          dotnet test DiscoverCostaRica.sln
+          --configuration Release
+          --no-build
+          --filter "Category!=RequiresAzure"
+          --settings coverage.runsettings
+          --results-directory ./TestResults
+          --logger "trx"
+
+      - name: Coverage report
+        if: always()
+        run: |
+          dotnet tool restore
+          dotnet reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:TestResults/coverage -reporttypes:"Cobertura;TextSummary;MarkdownSummaryGithub;Html"
+          cat TestResults/coverage/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Quality gate: merged line and branch coverage of production code must stay at or above 80%.
+      - name: Enforce coverage >= 80%
+        run: eng/check-coverage.sh TestResults/coverage/Cobertura.xml 80
+
+      - name: Upload test results and coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults
+          retention-days: 14

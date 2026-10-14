@@ -1,29 +1,27 @@
-using DiscoverCostaRica.Geo.Api.Extensions;
-using DiscoverCostaRica.Geo.Api.Profiles;
+using DiscoverCostaRica.Geo.Api.Endpoints;
 using DiscoverCostaRica.Geo.Infrastructure.Context;
-using DiscoverCostaRica.Geo.Infrastructure.Interfaces;
 
+// Composition root (Clean Architecture "Main"): the only place that wires concrete types.
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddEntraIdAuthentication();
-builder.AddDiscoverCostaRicaContext<IGeoContext, GeoContext>();
-builder.AddMappingProfile<MappingProfile>();
-builder.AddDiscoverCostaRicaLogger();
+builder.AddCatalogDbContext<GeoContext>();
+builder.AddCatalogHybridCache();
 builder.AddVersioning();
+
 builder.Services.AddOpenApi();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Application();
 builder.Services.AddGeneratedServices_DiscoverCostaRica_Geo_Infrastructure();
-builder.Services.AddGeneratedServices_DiscoverCostaRica_Shared();
 
 var app = builder.Build();
 
 app.MapOpenApi();
 app.AddScalar();
-
 app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapGeoEndpoints();
 app.MapDefaultEndpoints();
+
 await app.RunAsync();

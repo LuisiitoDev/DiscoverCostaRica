@@ -1,4 +1,4 @@
-﻿global using static DiscoverCostaRica.Shared.Utils.SharedExtensions;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Beaches_Application;
 global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Beaches_Infrastructure;
-global using static DiscoverCostaRica.Generated.ServiceRegistrationExtensions_DiscoverCostaRica_Shared;
+
+global using GetBeachesUseCase = DiscoverCostaRica.BuildingBlocks.Application.UseCases.IUseCase<DiscoverCostaRica.Beaches.Application.UseCases.GetBeaches.GetBeachesRequest, System.Collections.Generic.IReadOnlyList<DiscoverCostaRica.Beaches.Application.UseCases.GetBeaches.BeachResponse>>;

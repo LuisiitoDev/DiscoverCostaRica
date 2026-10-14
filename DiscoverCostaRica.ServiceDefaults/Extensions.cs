@@ -1,35 +1,56 @@
-﻿using Asp.Versioning;
+using System.Text.Json.Serialization;
 using DiscoverCostaRica.ServiceDefaults.Middleware;
-using DiscoverCostaRica.Shared.Authentication;
-using DiscoverCostaRica.Shared.Constants;
-using DiscoverCostaRica.Shared.Interfaces;
-using DiscoverCostaRica.Shared.logging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Web;
-using MongoDB.Driver;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using Refit;
 using Scalar.AspNetCore;
-using System.Text.Json.Serialization;
 
 namespace Microsoft.Extensions.Hosting;
 
-// Adds common .NET Aspire services: service discovery, resilience, health checks, and OpenTelemetry.
-// This project should be referenced by each service project in your solution.
-// To learn more about using this project, see https://aka.ms/dotnet/aspire/service-defaults
+/// <summary>
+/// Aspire service defaults shared by every service: OpenTelemetry, JSON, health checks, service
+/// discovery, HTTP resilience, error handling and API docs. Service-specific wiring lives in each Program.cs.
+/// </summary>
 public static class Extensions
 {
-    private const string HealthEndpointPath = "/health";
-    private const string AlivenessEndpointPath = "/alive";
+    /// <summary>Readiness: every registered check (SQL, Redis, ...) must pass.</summary>
+    public const string HealthEndpointPath = "/health";
+
+    /// <summary>Liveness: only checks tagged <c>live</c>, i.e. the process answers.</summary>
+    public const string AlivenessEndpointPath = "/alive";
+
+    public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    {
+        builder.ConfigureOpenTelemetry();
+        builder.AddJsonOptions();
+        builder.AddDefaultHealthChecks();
+        builder.AddClientCredentialsTokenProvider();
+        builder.AddRedisClient(connectionName: "redis");
+
+        builder.Services.AddServiceDiscovery();
+        builder.Services.ConfigureHttpClientDefaults(http =>
+        {
+            // Retry, circuit breaker and timeouts on every outbound call (Constitution VIII).
+            http.AddStandardResilienceHandler();
+            http.AddServiceDiscovery();
+        });
+
+        builder.AddGlobalException();
+
+        return builder;
+    }
+
+    public static IHostApplicationBuilder AddGlobalException(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
+        return builder;
+    }
 
     public static WebApplication AddScalar(this WebApplication app)
     {
@@ -42,133 +63,6 @@ public static class Extensions
         return app;
     }
 
-    private static IHostApplicationBuilder AddJsonOptions(this IHostApplicationBuilder builder)
-    {
-        builder.Services.ConfigureHttpJsonOptions(options =>
-        {
-            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        });
-        return builder;
-    }
-
-    public static IHostApplicationBuilder AddVersioning(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddApiVersioning(options =>
-        {
-            options.DefaultApiVersion = new ApiVersion(1, 0);
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.ReportApiVersions = true;
-        });
-        return builder;
-    }
-
-    public static IHostApplicationBuilder AddDiscoverCostaRicaLogger(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddSingleton<ILoggerProvider, DiscoverCostaRicaLoggerProvider>();
-
-        return builder;
-    }
-
-    public static IHostApplicationBuilder AddMappingProfile<TProfile>(this IHostApplicationBuilder builder)
-        where TProfile : AutoMapper.Profile
-    {
-        builder.Services.AddAutoMapper(cfg => cfg.AddProfile(typeof(TProfile)));
-        return builder;
-    }
-
-    public static IHostApplicationBuilder AddDiscoverCostaRicaContext<TInterfaceContext, Context>(this IHostApplicationBuilder builder, string connectionStringKey = "DiscoverCostaRica")
-    where TInterfaceContext : class
-    where Context : DbContext, TInterfaceContext
-
-
-    {
-        builder.AddSqlServerDbContext<Context>(connectionName: "DiscoverCostaRica",
-            _ => { },
-            options =>
-            {
-                options.UseSqlServer(sql =>
-                {
-                    sql.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null);
-                });
-            });
-
-        builder.Services.AddScoped<TInterfaceContext, Context>();
-
-        return builder;
-    }
-    private static IServiceCollection AddRefitServices(this IServiceCollection services)
-    {
-        services.AddTransient<DiscoverCostaRicaAuthHandler>();
-
-        services.AddRefitClient<IGeoDiscoverCostaRica>()
-            .ConfigureHttpClient(http =>
-            {
-                http.BaseAddress = new Uri($"https://{Microservices.Geo}/api/v1/geo");
-
-            }).AddHttpMessageHandler<DiscoverCostaRicaAuthHandler>()
-            .AddStandardResilienceHandler();
-
-        return services;
-    }
-
-    private static TBuilder AddConfigureEntraId<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
-    {
-        builder.Services.Configure<DiscoverCostaRicaTokenOptions>(options =>
-            builder.Configuration.GetSection("Azure").Bind(options));
-
-        return builder;
-    }
-
-    public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
-    {
-        builder.ConfigureOpenTelemetry();
-
-        builder.AddJsonOptions();
-
-        builder.AddDefaultHealthChecks();
-
-        builder.AddConfigureEntraId();
-
-        builder.AddRedisClient(connectionName: "redis");
-
-        builder.Services.AddSingleton<IMongoClient>(mongo => 
-            new MongoClient(builder.Configuration.GetConnectionString("mongodb")));
-
-        builder.Services.AddServiceDiscovery();
-
-        builder.Services.ConfigureHttpClientDefaults(http =>
-        {
-            // Turn on resilience by default
-            http.AddStandardResilienceHandler();
-
-            // Turn on service discovery by default
-            http.AddServiceDiscovery();
-        });
-
-        builder.Services.AddRefitServices();
-        builder.AddGlobalExeption();
-
-        // Uncomment the following to restrict the allowed schemes for service discovery.
-        // builder.Services.Configure<ServiceDiscoveryOptions>(options =>
-        // {
-        //     options.AllowedSchemes = ["https"];
-        // });
-
-        return builder;
-    }
-
-    public static IHostApplicationBuilder AddGlobalExeption(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-        builder.Services.AddProblemDetails();
-        return builder;
-    }
-
     public static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         builder.Logging.AddOpenTelemetry(logging =>
@@ -178,46 +72,21 @@ public static class Extensions
         });
 
         builder.Services.AddOpenTelemetry()
-            .WithMetrics(metrics =>
-            {
-                metrics.AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
-            })
-            .WithTracing(tracing =>
-            {
-                tracing.AddSource(builder.Environment.ApplicationName)
-                    .AddAspNetCoreInstrumentation(tracing =>
-                        // Exclude health check requests from tracing
-                        tracing.Filter = context =>
-                            !context.Request.Path.StartsWithSegments(HealthEndpointPath)
-                            && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath)
-                    )
-                    // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
-                    //.AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation();
-            });
+            .WithMetrics(metrics => metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation())
+            .WithTracing(tracing => tracing
+                .AddSource(builder.Environment.ApplicationName)
+                .AddAspNetCoreInstrumentation(options =>
+                    // Probes would drown the traces.
+                    options.Filter = context =>
+                        !context.Request.Path.StartsWithSegments(HealthEndpointPath)
+                        && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath))
+                .AddHttpClientInstrumentation());
 
-        builder.AddOpenTelemetryExporters();
-
-        return builder;
-    }
-
-    private static TBuilder AddOpenTelemetryExporters<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
-    {
-        var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
-
-        if (useOtlpExporter)
-        {
+        if (!string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]))
             builder.Services.AddOpenTelemetry().UseOtlpExporter();
-        }
-
-        // Uncomment the following lines to enable the Azure Monitor exporter (requires the Azure.Monitor.OpenTelemetry.AspNetCore package)
-        //if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
-        //{
-        //    builder.Services.AddOpenTelemetry()
-        //       .UseAzureMonitor();
-        //}
 
         return builder;
     }
@@ -225,55 +94,31 @@ public static class Extensions
     public static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         builder.Services.AddHealthChecks()
-            // Add a default liveness check to ensure app is responsive
             .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
 
         return builder;
     }
 
+    /// <summary>
+    /// Health probes for Azure Container Apps, in every environment (PLT-D6). Anonymous by design;
+    /// the default writer only returns "Healthy", "Degraded" or "Unhealthy", never details.
+    /// </summary>
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {
-        // Adding health checks endpoints to applications in non-development environments has security implications.
-        // See https://aka.ms/dotnet/aspire/healthchecks for details before enabling these endpoints in non-development environments.
-        if (app.Environment.IsDevelopment())
-        {
-            // All health checks must pass for app to be considered ready to accept traffic after starting
-            app.MapHealthChecks(HealthEndpointPath);
-
-            // Only health checks tagged with the "live" tag must pass for app to be considered alive
-            app.MapHealthChecks(AlivenessEndpointPath, new HealthCheckOptions
-            {
-                Predicate = r => r.Tags.Contains("live")
-            });
-        }
+        app.MapHealthChecks(HealthEndpointPath).AllowAnonymous();
+        app.MapHealthChecks(AlivenessEndpointPath, new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") }).AllowAnonymous();
 
         return app;
     }
 
-    public static IHostApplicationBuilder AddEntraIdAuthentication(this IHostApplicationBuilder builder)
+    private static IHostApplicationBuilder AddJsonOptions(this IHostApplicationBuilder builder)
     {
-        var entraIdSection = builder.Configuration.GetSection(EntraIdOptions.SectionName);
-        var entraIdOptions = entraIdSection.Get<EntraIdOptions>();
-
-        builder.Services.AddHttpContextAccessor();
-
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApi(jwtOptions =>
-            {
-                jwtOptions.RequireHttpsMetadata = false;
-                jwtOptions.Events = new DiscoverCostaRicaBearerEvents();
-                jwtOptions.TokenValidationParameters.ValidAudiences = [entraIdOptions.Audience];
-                jwtOptions.TokenValidationParameters.RoleClaimType = "roles";
-
-            }, identityOptions =>
-            {
-                identityOptions.Instance = entraIdOptions.Instance;
-                identityOptions.TenantId = entraIdOptions.TenantId;
-                identityOptions.ClientId = entraIdOptions.ClientId;
-            });
-
-        builder.Services.AddPolicies();
-
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
         return builder;
     }
 }

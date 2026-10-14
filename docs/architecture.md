@@ -1,5 +1,13 @@
 # System Architecture Document — Discover Costa Rica
 
+> **Superseded (2026-10-14).** This document describes the architecture *before* spec 006.
+> The current rules are the [constitution](../.specify/memory/constitution.md); the current design and
+> its decisions (R1–R10, replacing ADR-02 "shared database" and ADR-07 "Redis decorators") are in
+> [spec 006: plan](../specs/006-clean-architecture-migration/plan.md) and
+> [research](../specs/006-clean-architecture-migration/research.md). Notable changes: MongoDB logging,
+> AutoMapper, Refit and the `Shared` library were removed; caching is HybridCache with TTLs; Volcano
+> resolves locations through one batch call to Geo.
+
 **Version:** 1.0  
 **Date:** April 2026  
 **Status:** Current

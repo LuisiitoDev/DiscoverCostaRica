@@ -1,21 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Culture use cases and the ports they own. Depends inward only. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="15.1.0" />
-    <PackageReference Include="Scrutor" Version="7.0.0" />
+    <!-- Generated DI registration calls Decorate<,> (accepted deviation, plan.md Complexity Tracking). -->
+    <PackageReference Include="Scrutor" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DiscoverCostaRica.Shared\DiscoverCostaRica.Shared.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\DiscoverCostaRica.BuildingBlocks.Application\DiscoverCostaRica.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\..\DiscoverCostaRica.SourceGenerators\DiscoverCostaRica.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\..\DiscoverCostaRica.Geo\DiscoverCostaRica.Geo.Infrastructure\DiscoverCostaRica.Geo.Infrastructure.csproj" />
     <ProjectReference Include="..\DiscoverCostaRica.Culture.Domain\DiscoverCostaRica.Culture.Domain.csproj" />
   </ItemGroup>
-
 </Project>
