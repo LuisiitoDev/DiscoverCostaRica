@@ -37,15 +37,15 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EfCoreVersion)" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.1.7" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.10.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.11.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 
   <ItemGroup Label="Resilience, HTTP clients, identity">
     <PackageVersion Include="Azure.Identity" Version="1.17.1" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.1.0" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.11.0" />
     <PackageVersion Include="Scrutor" Version="7.0.0" />
   </ItemGroup>
 
