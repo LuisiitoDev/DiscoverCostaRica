@@ -6,7 +6,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AspireVersion>13.1.0</AspireVersion>
+    <AspireVersion>13.6.5</AspireVersion>
     <EfCoreVersion>10.0.13</EfCoreVersion>
     <AspNetCoreVersion>10.0.13</AspNetCoreVersion>
     <OpenTelemetryVersion>1.19.0</OpenTelemetryVersion>
@@ -19,7 +19,7 @@
     <PackageVersion Include="Aspire.Hosting.Yarp" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="$(AspireVersion)" />
-    <PackageVersion Include="KubernetesClient" Version="18.0.5" />
+    <PackageVersion Include="KubernetesClient" Version="19.0.2" />
   </ItemGroup>
 
   <ItemGroup Label="ASP.NET Core">
